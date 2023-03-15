@@ -1,22 +1,20 @@
-import ParserService.ChainResponsibilityParser.GitHubParser;
+import ParserService.ChainResponsibilityParser.ParserImpl;
 import ParserService.ChainResponsibilityParser.ParserStrategies.GitHubParserStrategy;
 import ParserService.ChainResponsibilityParser.ParserStrategies.StackOverflowParserStrategy;
-import ParserService.ChainResponsibilityParser.StackOverflowParser;
-import ParserService.DAL.GitHubInfoRepository;
-import ParserService.DAL.StackOverflowRepository;
+import ParserService.WebsiteInfoRepository;
 import ParserService.DTO.GitHubInfo;
 import ParserService.DTO.StackOverflowInfo;
 import ParserService.Parser;
 
 public class Test {
     public static void main(String[] args){
-        GitHubInfoRepository gitHubInfoRepository = new GitHubInfoRepository() {
+        WebsiteInfoRepository<GitHubInfo> gitHubInfoRepository = new WebsiteInfoRepository<>() {
             @Override
             public void save(GitHubInfo gitHubInfo) {
                 System.out.println("UserName: " + gitHubInfo.getUserName() + " RepositoryName: " + gitHubInfo.getRepositoryName());
             }
         };
-        StackOverflowRepository stackOverflowRepository = new StackOverflowRepository() {
+        WebsiteInfoRepository<StackOverflowInfo> stackOverflowRepository = new WebsiteInfoRepository<>() {
             @Override
             public void save(StackOverflowInfo stackOverflowInfo) {
                 System.out.println("AnswerId: " + stackOverflowInfo.getIdAnswer());
@@ -28,9 +26,9 @@ public class Test {
                 System.out.println(path + " is not valid for any parser");
             }
         };
-        GitHubParser gitHubParser = new GitHubParser(new GitHubParserStrategy("github.com"),
+        ParserImpl<GitHubInfo> gitHubParser = new ParserImpl<>(new GitHubParserStrategy("github.com"),
                 resultParser, gitHubInfoRepository);
-        StackOverflowParser stackOverflowParser = new StackOverflowParser(
+        ParserImpl<StackOverflowInfo> stackOverflowParser = new ParserImpl<>(
                 new StackOverflowParserStrategy("stackoverflow.com"),
                 gitHubParser, stackOverflowRepository);
 

@@ -1,7 +1,5 @@
 package ParserService.ChainResponsibilityParser.ParserStrategies;
 
-import ParserService.ChainResponsibilityParser.StackOverflowParser;
-import ParserService.DTO.GitHubInfo;
 import ParserService.DTO.StackOverflowInfo;
 
 public class StackOverflowParserStrategy extends ParserStrategy<StackOverflowInfo> {

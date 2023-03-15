@@ -1,15 +1,18 @@
 package ParserService.ChainResponsibilityParser;
 
 import ParserService.ChainResponsibilityParser.ParserStrategies.ParserStrategy;
+import ParserService.WebsiteInfoRepository;
 import ParserService.Parser;
 
-public abstract class AbstractParser <T>  implements Parser {
+public class ParserImpl<T>  implements Parser {
     private ParserStrategy<T> parserStrategy;
     private Parser nextParser;
+    private WebsiteInfoRepository<T> websiteInfoRepository;
 
-    public AbstractParser(ParserStrategy<T> parserStrategy, Parser nextParser) {
+    public ParserImpl(ParserStrategy<T> parserStrategy, Parser nextParser, WebsiteInfoRepository<T> websiteInfoRepository) {
         this.parserStrategy = parserStrategy;
         this.nextParser = nextParser;
+        this.websiteInfoRepository = websiteInfoRepository;
     }
 
     @Override
@@ -20,10 +23,8 @@ public abstract class AbstractParser <T>  implements Parser {
             return;
         }
         T result = parserStrategy.parse(path);
-        saveResult(result);
+        websiteInfoRepository.save(result);
     }
-
-    abstract void saveResult(T result);
     public void setNextParser(Parser nextParser) {
         this.nextParser = nextParser;
     }
