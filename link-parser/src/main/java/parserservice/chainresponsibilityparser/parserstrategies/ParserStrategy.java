@@ -1,6 +1,8 @@
-package ParserService.ChainResponsibilityParser.ParserStrategies;
+package parserservice.chainresponsibilityparser.parserstrategies;
 
-public abstract class ParserStrategy <T> {
+import parserservice.dto.WebsiteInfo;
+
+public abstract class ParserStrategy <T extends WebsiteInfo> {
     private String website;
 
     public ParserStrategy(String website) {

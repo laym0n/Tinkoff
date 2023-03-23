@@ -1,10 +1,10 @@
-package ParserService.ChainResponsibilityParser.ParserStrategies;
+package parserservice.chainresponsibilityparser.parserstrategies;
 
-import ParserService.DTO.StackOverflowInfo;
+import parserservice.dto.StackOverflowInfo;
 
 public class StackOverflowParserStrategy extends ParserStrategy<StackOverflowInfo> {
-    public StackOverflowParserStrategy(String website) {
-        super(website);
+    public StackOverflowParserStrategy() {
+        super("stackoverflow.com");
     }
 
     @Override

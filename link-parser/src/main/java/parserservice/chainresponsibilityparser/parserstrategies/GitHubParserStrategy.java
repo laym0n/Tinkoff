@@ -1,10 +1,10 @@
-package ParserService.ChainResponsibilityParser.ParserStrategies;
+package parserservice.chainresponsibilityparser.parserstrategies;
 
-import ParserService.DTO.GitHubInfo;
+import parserservice.dto.GitHubInfo;
 
 public class GitHubParserStrategy extends ParserStrategy<GitHubInfo> {
-    public GitHubParserStrategy(String website) {
-        super(website);
+    public GitHubParserStrategy() {
+        super("github.com");
     }
 
     @Override
