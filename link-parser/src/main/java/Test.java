@@ -8,7 +8,9 @@ import parserservice.dto.WebsiteInfo;
 
 import java.util.logging.Logger;
 
+
 public class Test {
+    private static Logger log = Logger.getLogger(Test.class.getName());
     public static void main(String[] args){
         ParserImpl gitHubParser = new ParserImpl(new GitHubParserStrategy(),
                 null);
@@ -38,15 +40,20 @@ public class Test {
     }
     public static void showWebsiteInfo(WebsiteInfo info){
         if(info == null){
-            System.out.println("Путь не валиден");
+            log.info("Путь не валиден");
             return;
         }
         switch (info){
             case GitHubInfo githubInfo:
-                System.out.println("Имя пользователя " + githubInfo.userName() + " Имя репозитория " + githubInfo.repositoryName());
+                log.info(()->"Имя пользователя " + githubInfo.userName() + " Имя репозитория " + githubInfo.repositoryName());
                 break;
             case StackOverflowInfo stackOverflowInfo:
-                System.out.println("Id ответа " + stackOverflowInfo.idAnswer());
+                log.info(()->"Id ответа " + stackOverflowInfo.idAnswer());
+                break;
+            default:
+                log.info("Неизвестный объект");
+                break;
+
         }
     }
 }
