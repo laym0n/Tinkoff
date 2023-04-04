@@ -4,12 +4,13 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import ru.tinkoff.edu.java.scrapper.configuration.ApplicationConfig;
-import ru.tinkoff.edu.java.scrapper.configuration.ClientConfiguration;
+import ru.tinkoff.edu.java.scrapper.configuration.CheckerUpdateConfiguration;
+import ru.tinkoff.edu.java.scrapper.configuration.ParserLinksConfiguration;
 
 import java.util.logging.Logger;
 
 @SpringBootApplication
-@EnableConfigurationProperties({ApplicationConfig.class, ClientConfiguration.class})
+@EnableConfigurationProperties({ApplicationConfig.class, ParserLinksConfiguration.class, CheckerUpdateConfiguration.class})
 public class ScrapperApplication {
     private static Logger log = Logger.getLogger(ScrapperApplication.class.getName());
     public static void main(String[] args) {

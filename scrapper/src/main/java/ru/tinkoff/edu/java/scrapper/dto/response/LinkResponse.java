@@ -1,30 +1,22 @@
 package ru.tinkoff.edu.java.scrapper.dto.response;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import ru.tinkoff.edu.java.scrapper.entities.TrackedLink;
+
+import java.net.URI;
+
+@NoArgsConstructor
+@AllArgsConstructor
+@Getter
+@Setter
 public class LinkResponse {
     private int id;
-    private String url;
-
-    public LinkResponse() {
-    }
-
-    public LinkResponse(int id, String url) {
-        this.id = id;
-        this.url = url;
-    }
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    public String getUrl() {
-        return url;
-    }
-
-    public void setUrl(String url) {
-        this.url = url;
+    private URI uri;
+    public LinkResponse(TrackedLink trackedLink){
+        id = trackedLink.getId();
+        uri = trackedLink.getLinkPathInURI();
     }
 }

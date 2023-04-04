@@ -29,4 +29,13 @@ public class ExceptionHandler {
                         ex.getMessage(),
                         stacktrace));
     }
+    @org.springframework.web.bind.annotation.ExceptionHandler(Exception.class)
+    public ResponseEntity<ApiErrorResponse> handleException(Exception ex) {
+        String[] stacktrace = Arrays.stream(ex.getStackTrace()).map(Object::toString).toArray(String[]::new);
+        return ResponseEntity
+                .status(HttpStatus.NOT_FOUND)
+                .body(new ApiErrorResponse(ex.getMessage(), HttpStatus.NOT_FOUND.toString(), ex.getClass().getName(),
+                        ex.getMessage(),
+                        stacktrace));
+    }
 }
