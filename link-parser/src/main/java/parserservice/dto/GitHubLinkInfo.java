@@ -2,13 +2,13 @@ package parserservice.dto;
 
 import java.util.Objects;
 
-public record GitHubInfo(String userName, String repositoryName) implements WebsiteInfo{
+public record GitHubLinkInfo(String userName, String repositoryName) implements LinkInfo {
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        GitHubInfo that = (GitHubInfo) o;
+        GitHubLinkInfo that = (GitHubLinkInfo) o;
         return userName.equals(that.userName) && repositoryName.equals(that.repositoryName);
     }
 
@@ -23,7 +23,7 @@ public record GitHubInfo(String userName, String repositoryName) implements Webs
     }
 
     @Override
-    public String getDescriptionOfParsedWebsite() {
+    public String getDescriptionOfParsedLink() {
         return "GitHub repository with repository name " + repositoryName
                 + " of user with username " + userName;
     }

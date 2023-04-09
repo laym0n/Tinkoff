@@ -1,8 +1,8 @@
 package parserservice.chainresponsibilityparser.parserstrategies;
 
-import parserservice.dto.GitHubInfo;
+import parserservice.dto.GitHubLinkInfo;
 
-public class GitHubParserStrategy extends ParserStrategy<GitHubInfo> {
+public class GitHubParserStrategy extends ParserStrategy<GitHubLinkInfo> {
     public GitHubParserStrategy() {
         super("github.com");
     }
@@ -13,8 +13,8 @@ public class GitHubParserStrategy extends ParserStrategy<GitHubInfo> {
     }
 
     @Override
-    public GitHubInfo parse(String path) {
+    public GitHubLinkInfo parse(String path) {
         String[] separatedPath = path.split("/");
-        return new GitHubInfo(separatedPath[3], separatedPath[4]);
+        return new GitHubLinkInfo(separatedPath[3], separatedPath[4]);
     }
 }

@@ -4,7 +4,7 @@ import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.ArgumentsProvider;
 import org.junit.jupiter.params.provider.ArgumentsSource;
 import parserservice.chainresponsibilityparser.parserstrategies.GitHubParserStrategy;
-import parserservice.dto.GitHubInfo;
+import parserservice.dto.GitHubLinkInfo;
 
 import java.util.stream.Stream;
 
@@ -16,11 +16,11 @@ public class ParserLinksGitHubLinksTest {
 
     @ParameterizedTest
     @ArgumentsSource(ValidLinksArgumentsProvider.class)
-    public void parseValidLinksTest(String path, GitHubInfo expectedResult){
+    public void parseValidLinksTest(String path, GitHubLinkInfo expectedResult){
         GitHubParserStrategy gitHubParserStrategy = new GitHubParserStrategy();
 
         boolean canParseResult = gitHubParserStrategy.canParse(path);
-        GitHubInfo gitHubInfoResult = gitHubParserStrategy.parse(path);
+        GitHubLinkInfo gitHubInfoResult = gitHubParserStrategy.parse(path);
 
         assertTrue(canParseResult, ()-> path + " can be parsed by GitHubParserStrategy but result of canParse is false");
         assertEquals(expectedResult, gitHubInfoResult, ()-> "result of parsing " + path + " don't equal to expected result");
@@ -39,9 +39,9 @@ public class ParserLinksGitHubLinksTest {
         public Stream<? extends Arguments> provideArguments(ExtensionContext context) {
             return Stream.of(
                     Arguments.of("https://github.com/sanyarnd/tinkoff-java-course-2022/",
-                            new GitHubInfo("sanyarnd", "tinkoff-java-course-2022")),
+                            new GitHubLinkInfo("sanyarnd", "tinkoff-java-course-2022")),
                     Arguments.of("https://github.com/spring-projects/spring-framework",
-                            new GitHubInfo("spring-projects", "spring-framework"))
+                            new GitHubLinkInfo("spring-projects", "spring-framework"))
             );
         }
     }

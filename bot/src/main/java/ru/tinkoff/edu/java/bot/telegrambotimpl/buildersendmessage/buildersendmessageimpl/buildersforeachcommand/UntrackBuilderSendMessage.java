@@ -3,16 +3,11 @@ package ru.tinkoff.edu.java.bot.telegrambotimpl.buildersendmessage.buildersendme
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
-import org.webjars.NotFoundException;
-import parserservice.ParserLinks;
-import parserservice.dto.WebsiteInfo;
 import ru.tinkoff.edu.java.bot.dto.request.RemoveLinkRequest;
 import ru.tinkoff.edu.java.bot.telegrambotimpl.buildersendmessage.BuilderSendMessage;
 import ru.tinkoff.edu.java.bot.telegrambotimpl.Command;
 import ru.tinkoff.edu.java.bot.telegrambotimpl.ParsedCommand;
 import ru.tinkoff.edu.java.bot.webclients.ScrapperClient;
-
-import java.security.InvalidParameterException;
 
 @Component
 @AllArgsConstructor

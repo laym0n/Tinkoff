@@ -1,10 +1,9 @@
 package ru.tinkoff.edu.java.scrapper.dataaccess.impl.websiteinfodaservice;
 
 import org.springframework.stereotype.Repository;
-import parserservice.dto.GitHubInfo;
-import parserservice.dto.WebsiteInfo;
+import parserservice.dto.GitHubLinkInfo;
+import parserservice.dto.LinkInfo;
 import ru.tinkoff.edu.java.scrapper.dataaccess.TrackedLinkDAService;
-import ru.tinkoff.edu.java.scrapper.entities.TrackedLink;
 
 import java.time.OffsetDateTime;
 import java.util.List;
@@ -24,7 +23,7 @@ public class TrackedLinksDAServiceImplLogger implements TrackedLinkDAService {
     public Optional<TrackedLink> findById(Integer idEntity) {
         log.info("Find tracked link with id " + idEntity);
         return Optional.of(new TrackedLink(idEntity,
-                new GitHubInfo("drownedtears", "forum"),
+                new GitHubLinkInfo("drownedtears", "forum"),
                 5, OffsetDateTime.now()));
     }
 
@@ -39,10 +38,10 @@ public class TrackedLinksDAServiceImplLogger implements TrackedLinkDAService {
     }
 
     @Override
-    public Optional<TrackedLink> findTrackedLinkByWebsiteInfoAndIdChat(int idChat, WebsiteInfo websiteInfoForRemove) {
-        log.info("Find tracked link by WebsiteInfo " + websiteInfoForRemove.getDescriptionOfParsedWebsite());
+    public Optional<TrackedLink> findTrackedLinkByIdChatAndLinkInfo(int idChat, LinkInfo linkInfoForRemove) {
+        log.info("Find tracked link by WebsiteInfo " + linkInfoForRemove.getDescriptionOfParsedLink());
         return Optional.of(new TrackedLink(5,
-                websiteInfoForRemove,
+                linkInfoForRemove,
                 5, OffsetDateTime.now()));
     }
 
@@ -50,7 +49,7 @@ public class TrackedLinksDAServiceImplLogger implements TrackedLinkDAService {
     public List<TrackedLink> getAllTrackedLinksByChatId(int idChat) {
         log.info("Get all links from chat with id " + idChat);
         return List.of(new TrackedLink(2,
-                new GitHubInfo("drownedtears", "forum"),
+                new GitHubLinkInfo("drownedtears", "forum"),
                 idChat, OffsetDateTime.now()));
     }
 
@@ -61,7 +60,7 @@ public class TrackedLinksDAServiceImplLogger implements TrackedLinkDAService {
     }
 
     @Override
-    public boolean containsTrackedLinkWithId(int trackedLinkId) {
+    public boolean containsWebsiteInfoWithLinkInfo(int trackedLinkId) {
         log.info("Check exist TrackedLink with id " + trackedLinkId);
         return true;
     }

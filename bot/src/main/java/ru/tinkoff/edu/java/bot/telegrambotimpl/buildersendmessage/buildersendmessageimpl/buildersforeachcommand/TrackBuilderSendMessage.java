@@ -4,16 +4,12 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 
-import parserservice.ParserLinks;
-import parserservice.dto.WebsiteInfo;
 import ru.tinkoff.edu.java.bot.dto.request.AddLinkRequest;
 import ru.tinkoff.edu.java.bot.dto.response.LinkResponse;
 import ru.tinkoff.edu.java.bot.telegrambotimpl.buildersendmessage.BuilderSendMessage;
 import ru.tinkoff.edu.java.bot.telegrambotimpl.Command;
 import ru.tinkoff.edu.java.bot.telegrambotimpl.ParsedCommand;
 import ru.tinkoff.edu.java.bot.webclients.ScrapperClient;
-
-import java.security.InvalidParameterException;
 
 @Component
 @AllArgsConstructor

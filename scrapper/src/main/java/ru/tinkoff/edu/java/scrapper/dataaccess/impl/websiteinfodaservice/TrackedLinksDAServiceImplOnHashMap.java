@@ -1,10 +1,10 @@
 package ru.tinkoff.edu.java.scrapper.dataaccess.impl.websiteinfodaservice;
 
-import parserservice.dto.WebsiteInfo;
+import parserservice.dto.LinkInfo;
 import ru.tinkoff.edu.java.scrapper.dataaccess.ChatDAService;
 import ru.tinkoff.edu.java.scrapper.dataaccess.TrackedLinkDAService;
 import ru.tinkoff.edu.java.scrapper.entities.Chat;
-import ru.tinkoff.edu.java.scrapper.entities.TrackedLink;
+
 import java.security.InvalidParameterException;
 import java.util.HashMap;
 import java.util.List;
@@ -56,15 +56,15 @@ public class TrackedLinksDAServiceImplOnHashMap implements TrackedLinkDAService 
     }
 
     @Override
-    public boolean containsTrackedLinkWithId(int trackedLinkId) {
+    public boolean containsWebsiteInfoWithLinkInfo(int trackedLinkId) {
         return false;
     }
 
     @Override
-    public Optional<TrackedLink> findTrackedLinkByWebsiteInfoAndIdChat(int idChat, WebsiteInfo websiteInfoForRemove) {
+    public Optional<TrackedLink> findTrackedLinkByIdChatAndLinkInfo(int idChat, LinkInfo linkInfoForRemove) {
         Optional<TrackedLink> result = Optional.empty();
         for (TrackedLink trackedLink: savedTrackedLink.values()) {
-            if(trackedLink.getChatId() == idChat && trackedLink.getWebsiteInfo().equals(websiteInfoForRemove)){
+            if(trackedLink.getChatId() == idChat && trackedLink.getLinkInfo().equals(linkInfoForRemove)){
                 result = Optional.of(trackedLink);
                 break;
             }

@@ -2,7 +2,7 @@ package parserservice.chainresponsibilityparser;
 
 import parserservice.chainresponsibilityparser.parserstrategies.ParserStrategy;
 import parserservice.ParserLinks;
-import parserservice.dto.WebsiteInfo;
+import parserservice.dto.LinkInfo;
 
 public class ParserLinksImpl implements ParserLinks {
     private ParserStrategy parserStrategy;
@@ -18,11 +18,11 @@ public class ParserLinksImpl implements ParserLinks {
     }
 
     @Override
-    public WebsiteInfo parse(String path) {
+    public LinkInfo parse(String path) {
         if(!parserStrategy.canParse(path)){
             return (nextParserLinks != null? nextParserLinks.parse(path) : null);
         }
-        WebsiteInfo result = parserStrategy.parse(path);
+        LinkInfo result = parserStrategy.parse(path);
         return result;
     }
     public void setNextParser(ParserLinks nextParserLinks) {
