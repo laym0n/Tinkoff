@@ -10,9 +10,10 @@ import parserservice.factories.factoryimpl.ParserLinksFactoryImpl;
 import ru.tinkoff.edu.java.scrapper.dataaccess.TrackedLinkDAService;
 import ru.tinkoff.edu.java.scrapper.dto.request.AddLinkRequest;
 import ru.tinkoff.edu.java.scrapper.dto.request.RemoveLinkRequest;
+import ru.tinkoff.edu.java.scrapper.entities.TrackedLink;
 import ru.tinkoff.edu.java.scrapper.usecases.ManageLinksUseCase;
 import ru.tinkoff.edu.java.scrapper.usecases.impl.managelinks.ManageLinksUseCaseImpl;
-import ru.tinkoff.edu.java.scrapper.webclients.CheckerOfWebsiteInfo;
+import ru.tinkoff.edu.java.scrapper.webclients.WebsiteInfoWebClient;
 
 import java.security.InvalidParameterException;
 import java.time.OffsetDateTime;
@@ -26,41 +27,39 @@ import static org.junit.jupiter.api.Assertions.*;
 @ExtendWith(MockitoExtension.class)
 public class ManageTrackedLinksUseCaseTest {
     @Test
-    public void testValidAddLinkForChat(){
+    public void testValidAddLinkWithAlreadySavedWebsiteInfoForChat(){
         //Assign
         final int idChat = 1;
         final int expectedIdTrackedLink = 100;
         final String path = "https://github.com/sanyarnd/tinkoff-java-course-2022/";
-        OffsetDateTime expectedOffsetDateTime = OffsetDateTime.MAX;
 
         ParserLinks parserLinks = new ParserLinksFactoryImpl().getParserLinks();
         final LinkInfo expectedLinkInfo = parserLinks.parse(path);
 
         TrackedLink expectedResultFromSUT =
-                new TrackedLink(expectedIdTrackedLink, expectedLinkInfo, idChat, expectedOffsetDateTime);
-        TrackedLink expectedArgumentForDAService = new TrackedLink(expectedLinkInfo, idChat, expectedOffsetDateTime);
-
-        CheckerOfWebsiteInfo checkerOfWebsiteInfo = mock(CheckerOfWebsiteInfo.class);
-        when(checkerOfWebsiteInfo.checkUpdateOfWebsite(any(LinkInfo.class))).thenReturn(expectedOffsetDateTime);
+                new TrackedLink(expectedIdTrackedLink, idChat, expectedLinkInfo);
+        TrackedLink expectedArgumentForDAService = new TrackedLink(idChat, expectedLinkInfo);
 
         TrackedLinkDAService trackedLinkDAService = mock(TrackedLinkDAService.class);
         when(trackedLinkDAService.containsChatWithId(anyInt())).thenReturn(true);
-        when(trackedLinkDAService.
-                findTrackedLinkByIdChatAndLinkInfo(anyInt(), any(LinkInfo.class))
-        ).thenReturn(Optional.empty());
-        when(trackedLinkDAService.create(any(TrackedLink.class))).thenAnswer(i-> {
+        when(trackedLinkDAService
+                .containsTrackedLinkWithIdChatAndLinkInfo(anyInt(), any(LinkInfo.class)))
+        .thenReturn(false);
+        when(trackedLinkDAService.containsWebsiteInfoWithLinkInfo(any(LinkInfo.class)))
+                .thenReturn(true);
+        when(trackedLinkDAService.createTrackedLink(any(TrackedLink.class))).thenAnswer(i-> {
             ((TrackedLink)i.getArgument(0)).setId(expectedIdTrackedLink);
             return i.getArgument(0);
         });
 
-        ManageLinksUseCase sut = new ManageLinksUseCaseImpl(parserLinks, trackedLinkDAService, checkerOfWebsiteInfo);
+        ManageLinksUseCase sut = new ManageLinksUseCaseImpl(parserLinks, trackedLinkDAService, null);
 
         //Action
         TrackedLink resultFromSUT = sut.addLinkForChat(idChat, new AddLinkRequest(path));
 
         //Assert
         ArgumentCaptor<TrackedLink> argument = ArgumentCaptor.forClass(TrackedLink.class);
-        verify(trackedLinkDAService).create(argument.capture());
+        verify(trackedLinkDAService).createTrackedLink(argument.capture());
         assertEquals(expectedArgumentForDAService.getChatId(), argument.getValue().getChatId(),
                 ()->"Expected chatId of argument for DAService is "
                         + expectedArgumentForDAService.getChatId() +
@@ -85,12 +84,12 @@ public class ManageTrackedLinksUseCaseTest {
         ParserLinks parserLinks = new ParserLinksFactoryImpl().getParserLinks();
         final LinkInfo expectedLinkInfo = parserLinks.parse(path);
 
-        CheckerOfWebsiteInfo checkerOfWebsiteInfo = mock(CheckerOfWebsiteInfo.class);
+        WebsiteInfoWebClient websiteInfoWebClient = mock(WebsiteInfoWebClient.class);
 
         TrackedLinkDAService trackedLinkDAService = mock(TrackedLinkDAService.class);
         when(trackedLinkDAService.containsChatWithId(anyInt())).thenReturn(false);
 
-        ManageLinksUseCase sut = new ManageLinksUseCaseImpl(parserLinks, trackedLinkDAService, checkerOfWebsiteInfo);
+        ManageLinksUseCase sut = new ManageLinksUseCaseImpl(parserLinks, trackedLinkDAService, websiteInfoWebClient);
 
         //Action
         InvalidParameterException resultExceptionFromSUT =
@@ -117,13 +116,13 @@ public class ManageTrackedLinksUseCaseTest {
                 " is parsed as " + expectedLinkInfo.getDescriptionOfParsedLink()
                 + " but can not be checked for update because any checker for that site don't exist";
 
-        CheckerOfWebsiteInfo checkerOfWebsiteInfo = mock(CheckerOfWebsiteInfo.class);
-        when(checkerOfWebsiteInfo.checkUpdateOfWebsite(any(LinkInfo.class))).thenReturn(null);
+        WebsiteInfoWebClient websiteInfoWebClient = mock(WebsiteInfoWebClient.class);
+        when(websiteInfoWebClient.checkUpdateOfWebsite(any(LinkInfo.class))).thenReturn(null);
 
         TrackedLinkDAService trackedLinkDAService = mock(TrackedLinkDAService.class);
         when(trackedLinkDAService.containsChatWithId(anyInt())).thenReturn(true);
 
-        ManageLinksUseCase sut = new ManageLinksUseCaseImpl(parserLinks, trackedLinkDAService, checkerOfWebsiteInfo);
+        ManageLinksUseCase sut = new ManageLinksUseCaseImpl(parserLinks, trackedLinkDAService, websiteInfoWebClient);
 
         //Action
         InvalidParameterException resultExceptionFromSUT =
@@ -177,7 +176,7 @@ public class ManageTrackedLinksUseCaseTest {
 
         final TrackedLink expectedResult = new TrackedLink(expectedIdLink, expectedLinkInfo, idChat, expectedOffsetDateTime);
 
-        CheckerOfWebsiteInfo checkerOfWebsiteInfo = mock(CheckerOfWebsiteInfo.class);
+        WebsiteInfoWebClient websiteInfoWebClient = mock(WebsiteInfoWebClient.class);
 
         TrackedLinkDAService trackedLinkDAService = mock(TrackedLinkDAService.class);
         when(trackedLinkDAService.containsChatWithId(anyInt())).thenReturn(true);
@@ -185,7 +184,7 @@ public class ManageTrackedLinksUseCaseTest {
                 findTrackedLinkByIdChatAndLinkInfo(anyInt(), any(LinkInfo.class))
         ).thenReturn(Optional.of(expectedResult));
 
-        ManageLinksUseCase sut = new ManageLinksUseCaseImpl(parserLinks, trackedLinkDAService, checkerOfWebsiteInfo);
+        ManageLinksUseCase sut = new ManageLinksUseCaseImpl(parserLinks, trackedLinkDAService, websiteInfoWebClient);
 
         //Action
         TrackedLink resultFromSUT = sut.removeLinkFromChat(idChat, new RemoveLinkRequest(path));
@@ -206,12 +205,12 @@ public class ManageTrackedLinksUseCaseTest {
         ParserLinks parserLinks = new ParserLinksFactoryImpl().getParserLinks();
         final LinkInfo expectedLinkInfo = parserLinks.parse(path);
 
-        CheckerOfWebsiteInfo checkerOfWebsiteInfo = mock(CheckerOfWebsiteInfo.class);
+        WebsiteInfoWebClient websiteInfoWebClient = mock(WebsiteInfoWebClient.class);
 
         TrackedLinkDAService trackedLinkDAService = mock(TrackedLinkDAService.class);
         when(trackedLinkDAService.containsChatWithId(anyInt())).thenReturn(true);
 
-        ManageLinksUseCase sut = new ManageLinksUseCaseImpl(parserLinks, trackedLinkDAService, checkerOfWebsiteInfo);
+        ManageLinksUseCase sut = new ManageLinksUseCaseImpl(parserLinks, trackedLinkDAService, websiteInfoWebClient);
 
         //Action
         InvalidParameterException resultExceptionFromSUT =
@@ -235,14 +234,14 @@ public class ManageTrackedLinksUseCaseTest {
         ParserLinks parserLinks = new ParserLinksFactoryImpl().getParserLinks();
         final LinkInfo expectedLinkInfo = parserLinks.parse(path);
 
-        CheckerOfWebsiteInfo checkerOfWebsiteInfo = mock(CheckerOfWebsiteInfo.class);
+        WebsiteInfoWebClient websiteInfoWebClient = mock(WebsiteInfoWebClient.class);
 
         TrackedLinkDAService trackedLinkDAService = mock(TrackedLinkDAService.class);
         when(trackedLinkDAService.containsChatWithId(anyInt())).thenReturn(true);
         when(trackedLinkDAService.findTrackedLinkByIdChatAndLinkInfo(anyInt(), any(LinkInfo.class)))
                 .thenReturn(Optional.empty());
 
-        ManageLinksUseCase sut = new ManageLinksUseCaseImpl(parserLinks, trackedLinkDAService, checkerOfWebsiteInfo);
+        ManageLinksUseCase sut = new ManageLinksUseCaseImpl(parserLinks, trackedLinkDAService, websiteInfoWebClient);
 
         //Action
         NotFoundException resultExceptionFromSUT =
@@ -284,14 +283,14 @@ public class ManageTrackedLinksUseCaseTest {
                 new GitHubLinkInfo("user3", "repository3"),
                 1, expectedOffsetDateTime));
 
-        CheckerOfWebsiteInfo checkerOfWebsiteInfo = mock(CheckerOfWebsiteInfo.class);
+        WebsiteInfoWebClient websiteInfoWebClient = mock(WebsiteInfoWebClient.class);
 
         TrackedLinkDAService trackedLinkDAService = mock(TrackedLinkDAService.class);
         when(trackedLinkDAService.containsChatWithId(anyInt())).thenReturn(true);
         when(trackedLinkDAService.getAllTrackedLinksByChatId(anyInt()))
                 .thenReturn(resultFromDAService);
 
-        ManageLinksUseCase sut = new ManageLinksUseCaseImpl(null, trackedLinkDAService, checkerOfWebsiteInfo);
+        ManageLinksUseCase sut = new ManageLinksUseCaseImpl(null, trackedLinkDAService, websiteInfoWebClient);
 
         //Action
         List<TrackedLink> resultFromSUT = sut.findAllLinksByIdChat(idChat);

@@ -19,11 +19,9 @@ import java.time.Duration;
 
 @Validated
 @ConfigurationProperties(prefix = "app", ignoreUnknownFields = false)
-public record ApplicationConfig(@NotNull String test, @Bean Scheduler scheduler, @Bean TelegramBotInfo telegramBotInfo,
+public record ApplicationConfig(@NotNull String test, @Bean TelegramBotInfo telegramBotInfo,
                                 @Bean ScrapperInfo scrapperInfo) {
-    record Scheduler(Duration interval){
 
-    }
     record TelegramBotInfo(String botName, String botToken){
 
     }

@@ -2,7 +2,7 @@ package ru.tinkoff.edu.java.scrapper.configuration;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
-import ru.tinkoff.edu.java.scrapper.webclients.CheckerOfWebsiteInfo;
+import ru.tinkoff.edu.java.scrapper.webclients.WebsiteInfoWebClient;
 import ru.tinkoff.edu.java.scrapper.webclients.CheckerOfWebsiteInfoFactory;
 import ru.tinkoff.edu.java.scrapper.webclients.checkerupdateofwebsitefactory.CheckerOfWebsiteInfoFactoryImpl;
 import ru.tinkoff.edu.java.scrapper.webclients.githubclient.GitHubClient;
@@ -16,7 +16,7 @@ public class CheckerUpdateConfiguration {
 
     }
     @Bean
-    public CheckerOfWebsiteInfo checkerUpdateOfWebsite(CheckerOfWebsiteInfoFactory checkerOfWebsiteInfoFactory){
+    public WebsiteInfoWebClient checkerUpdateOfWebsite(CheckerOfWebsiteInfoFactory checkerOfWebsiteInfoFactory){
         return checkerOfWebsiteInfoFactory.getCheckerOfWebsiteInfo();
     }
 }

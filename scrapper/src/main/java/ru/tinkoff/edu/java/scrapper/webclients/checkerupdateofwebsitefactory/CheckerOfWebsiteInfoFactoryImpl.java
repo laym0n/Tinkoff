@@ -2,9 +2,9 @@ package ru.tinkoff.edu.java.scrapper.webclients.checkerupdateofwebsitefactory;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import ru.tinkoff.edu.java.scrapper.webclients.CheckerOfWebsiteInfo;
+import ru.tinkoff.edu.java.scrapper.webclients.WebsiteInfoWebClient;
 import ru.tinkoff.edu.java.scrapper.webclients.CheckerOfWebsiteInfoFactory;
-import ru.tinkoff.edu.java.scrapper.webclients.checkerupdateofwebsiteimpl.CheckerOfWebsiteInfoChainImpl;
+import ru.tinkoff.edu.java.scrapper.webclients.checkerupdateofwebsiteimpl.WebsiteInfoWebClientChainImpl;
 import ru.tinkoff.edu.java.scrapper.webclients.githubclient.GitHubClient;
 import ru.tinkoff.edu.java.scrapper.webclients.stackoverflowclient.StackOverflowClient;
 
@@ -19,11 +19,11 @@ public class CheckerOfWebsiteInfoFactoryImpl implements CheckerOfWebsiteInfoFact
     }
 
     @Override
-    public CheckerOfWebsiteInfo getCheckerOfWebsiteInfo() {
-        CheckerOfWebsiteInfo firstCheckerOfWebsiteInfo =
-                new CheckerOfWebsiteInfoChainImpl(gitHubClient, null);
-        CheckerOfWebsiteInfo secondCheckerOfWebsiteInfo =
-                new CheckerOfWebsiteInfoChainImpl(stackOverflowClient, firstCheckerOfWebsiteInfo);
-        return secondCheckerOfWebsiteInfo;
+    public WebsiteInfoWebClient getCheckerOfWebsiteInfo() {
+        WebsiteInfoWebClient firstWebsiteInfoWebClient =
+                new WebsiteInfoWebClientChainImpl(gitHubClient, null);
+        WebsiteInfoWebClient secondWebsiteInfoWebClient =
+                new WebsiteInfoWebClientChainImpl(stackOverflowClient, firstWebsiteInfoWebClient);
+        return secondWebsiteInfoWebClient;
     }
 }

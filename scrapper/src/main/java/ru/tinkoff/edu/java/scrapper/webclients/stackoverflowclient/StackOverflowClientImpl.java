@@ -5,7 +5,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
 import parserservice.dto.StackOverflowLinkInfo;
 import parserservice.dto.LinkInfo;
-import ru.tinkoff.edu.java.scrapper.dto.response.stackoverflow.StackOverflowAnswerResponse;
 import ru.tinkoff.edu.java.scrapper.dto.response.stackoverflow.StackOverflowAnswersResponse;
 import ru.tinkoff.edu.java.scrapper.dto.response.stackoverflow.StackOverflowCommentsResponse;
 import ru.tinkoff.edu.java.scrapper.dto.response.stackoverflow.StackoverflowQuestionsResponse;
@@ -15,9 +14,7 @@ import ru.tinkoff.edu.java.scrapper.entities.websiteinfo.stackoverflow.StackOver
 import ru.tinkoff.edu.java.scrapper.entities.websiteinfo.stackoverflow.StackOverflowComment;
 import ru.tinkoff.edu.java.scrapper.entities.websiteinfo.stackoverflow.StackOverflowUser;
 
-import java.time.OffsetDateTime;
 import java.util.Arrays;
-import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;

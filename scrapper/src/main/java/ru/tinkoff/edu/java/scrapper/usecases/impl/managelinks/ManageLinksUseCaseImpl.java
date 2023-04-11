@@ -12,7 +12,7 @@ import ru.tinkoff.edu.java.scrapper.dto.request.RemoveLinkRequest;
 import ru.tinkoff.edu.java.scrapper.entities.TrackedLink;
 import ru.tinkoff.edu.java.scrapper.entities.websiteinfo.WebsiteInfo;
 import ru.tinkoff.edu.java.scrapper.usecases.ManageLinksUseCase;
-import ru.tinkoff.edu.java.scrapper.webclients.CheckerOfWebsiteInfo;
+import ru.tinkoff.edu.java.scrapper.webclients.WebsiteInfoWebClient;
 
 import java.security.InvalidParameterException;
 import java.util.List;
@@ -22,14 +22,14 @@ import java.util.Optional;
 public class ManageLinksUseCaseImpl implements ManageLinksUseCase {
     private ParserLinks parserLinks;
     private TrackedLinkDAService trackedLinkDAService;
-    private CheckerOfWebsiteInfo checkerOfWebsiteInfo;
+    private WebsiteInfoWebClient websiteInfoWebClient;
     @Autowired
     public ManageLinksUseCaseImpl(ParserLinks parserLinks,
                                   TrackedLinkDAService trackedLinkDAService,
-                                  @Qualifier("checkerUpdateOfWebsite") CheckerOfWebsiteInfo checkerOfWebsiteInfo) {
+                                  @Qualifier("checkerUpdateOfWebsite") WebsiteInfoWebClient websiteInfoWebClient) {
         this.parserLinks = parserLinks;
         this.trackedLinkDAService = trackedLinkDAService;
-        this.checkerOfWebsiteInfo = checkerOfWebsiteInfo;
+        this.websiteInfoWebClient = websiteInfoWebClient;
     }
 
     @Override
@@ -54,7 +54,7 @@ public class ManageLinksUseCaseImpl implements ManageLinksUseCase {
         boolean isAlreadyWebsiteInfoSaved =
                 trackedLinkDAService.containsWebsiteInfoWithLinkInfo(linkInfoForAdd);
         if(!isAlreadyWebsiteInfoSaved){
-            WebsiteInfo newWebsiteInfo = checkerOfWebsiteInfo.getWebSiteInfoByLinkInfo(linkInfoForAdd);
+            WebsiteInfo newWebsiteInfo = websiteInfoWebClient.getWebSiteInfoByLinkInfo(linkInfoForAdd);
             trackedLinkDAService.createWebsiteInfo(newWebsiteInfo);
         }
 
