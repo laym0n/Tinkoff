@@ -2,6 +2,6 @@ package parserservice;
 
 import parserservice.dto.WebsiteInfo;
 
-public interface Parser {
+public interface ParserLinks {
     WebsiteInfo parse(String path);
 }
