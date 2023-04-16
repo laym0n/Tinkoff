@@ -10,10 +10,16 @@ import java.time.OffsetDateTime;
 @AllArgsConstructor
 @Getter
 @Setter
-public sealed abstract class WebsiteInfo permits GitHubInfo, StackoverflowInfo {
-    private LinkInfo linkInfo;
+public sealed abstract class WebsiteInfo permits GitHubInfo, StackOverflowInfo {
+    private int id;
     private OffsetDateTime lastCheckUpdateDateTime;
-    public WebsiteInfo(LinkInfo linkInfo) {
-        this(linkInfo, OffsetDateTime.now());
+    public WebsiteInfo() {
+        this(OffsetDateTime.now());
     }
+
+    public WebsiteInfo(OffsetDateTime lastCheckUpdateDateTime) {
+        this(0, lastCheckUpdateDateTime);
+    }
+
+    public abstract LinkInfo getLinkInfo();
 }

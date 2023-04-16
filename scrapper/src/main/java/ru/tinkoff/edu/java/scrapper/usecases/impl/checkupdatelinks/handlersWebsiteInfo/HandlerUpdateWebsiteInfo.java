@@ -7,5 +7,5 @@ import java.util.List;
 import java.util.Optional;
 
 public interface HandlerUpdateWebsiteInfo {
-    Optional<List<LinkUpdateRequest>> updateWebsiteInfo(WebsiteInfo websiteInfo);
+    Optional<LinkUpdateRequest> updateWebsiteInfo(WebsiteInfo websiteInfo);
 }

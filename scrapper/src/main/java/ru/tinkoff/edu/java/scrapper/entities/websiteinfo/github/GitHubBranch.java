@@ -1,4 +1,13 @@
 package ru.tinkoff.edu.java.scrapper.entities.websiteinfo.github;
 
-public record GitHubBranch(String branchName) {
+import lombok.*;
+
+@AllArgsConstructor
+@Getter
+@EqualsAndHashCode
+@ToString
+
+public class GitHubBranch {
+    private String branchName;
+
 }

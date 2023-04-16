@@ -5,10 +5,11 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
 import parserservice.dto.StackOverflowLinkInfo;
 import parserservice.dto.LinkInfo;
-import ru.tinkoff.edu.java.scrapper.dto.response.stackoverflow.StackOverflowAnswersResponse;
-import ru.tinkoff.edu.java.scrapper.dto.response.stackoverflow.StackOverflowCommentsResponse;
-import ru.tinkoff.edu.java.scrapper.dto.response.stackoverflow.StackoverflowQuestionsResponse;
-import ru.tinkoff.edu.java.scrapper.entities.websiteinfo.StackoverflowInfo;
+import ru.tinkoff.edu.java.scrapper.dto.response.website.StackOverflowResponse;
+import ru.tinkoff.edu.java.scrapper.dto.response.website.stackoverflow.StackOverflowAnswersResponse;
+import ru.tinkoff.edu.java.scrapper.dto.response.website.stackoverflow.StackOverflowCommentsResponse;
+import ru.tinkoff.edu.java.scrapper.dto.response.website.stackoverflow.StackOverflowQuestionsResponse;
+import ru.tinkoff.edu.java.scrapper.entities.websiteinfo.StackOverflowInfo;
 import ru.tinkoff.edu.java.scrapper.entities.websiteinfo.WebsiteInfo;
 import ru.tinkoff.edu.java.scrapper.entities.websiteinfo.stackoverflow.StackOverflowAnswer;
 import ru.tinkoff.edu.java.scrapper.entities.websiteinfo.stackoverflow.StackOverflowComment;
@@ -29,28 +30,22 @@ public class StackOverflowClientImpl implements StackOverflowClient {
         webClient = WebClient.create(baseURL);
     }
     @Override
-    public StackoverflowInfo getStackoverflowInfo(StackOverflowLinkInfo linkInfo) {
-        StackoverflowQuestionsResponse stackoverflowQuestionsResponse =
-                getStackoverflowQuestionsResponse(linkInfo);
-        if(stackoverflowQuestionsResponse.getItems().equals(null) || stackoverflowQuestionsResponse.getItems().length == 0)
-            new RuntimeException(linkInfo.getDescriptionOfParsedLink() +
-                    " don't exist");
-        StackOverflowAnswersResponse answersResponse = getStackOverflowAnswersResponse(linkInfo);
-        StackOverflowCommentsResponse commentsResponse = getStackOverflowCommentsResponse(linkInfo);
+    public StackOverflowResponse getStackOverflowResponse(StackOverflowLinkInfo linkInfo) {
+        StackOverflowAnswersResponse answers = getStackOverflowAnswersResponse(linkInfo);
+        StackOverflowCommentsResponse comments = getStackOverflowCommentsResponse(linkInfo);
 
-        StackoverflowInfo result = getStackOverflowInfo(linkInfo, stackoverflowQuestionsResponse,
-                answersResponse, commentsResponse);
+        StackOverflowResponse result = new StackOverflowResponse(answers, comments);
 
         return result;
     }
-    private StackoverflowQuestionsResponse getStackoverflowQuestionsResponse(StackOverflowLinkInfo linkInfo){
-        StackoverflowQuestionsResponse stackoverflowQuestionsResponse = webClient
+    private StackOverflowQuestionsResponse getStackoverflowQuestionsResponse(StackOverflowLinkInfo linkInfo){
+        StackOverflowQuestionsResponse stackoverflowQuestionsResponse = webClient
                 .get()
                 .uri("/2.3/questions/{idAnswer}?order=desc&sort=activity&site=stackoverflow",
                         linkInfo.idQuestion())
                 .accept(MediaType.APPLICATION_JSON)
                 .retrieve()
-                .bodyToMono(StackoverflowQuestionsResponse.class).block();
+                .bodyToMono(StackOverflowQuestionsResponse.class).block();
         return stackoverflowQuestionsResponse;
     }
     private StackOverflowAnswersResponse getStackOverflowAnswersResponse(StackOverflowLinkInfo linkInfo){
@@ -72,34 +67,5 @@ public class StackOverflowClientImpl implements StackOverflowClient {
                 .retrieve()
                 .bodyToMono(StackOverflowCommentsResponse.class).block();
         return commentsResponse;
-    }
-
-    private StackoverflowInfo getStackOverflowInfo(StackOverflowLinkInfo linkInfo,
-                                                   StackoverflowQuestionsResponse stackoverflowQuestionsResponse,
-                                                   StackOverflowAnswersResponse answersResponse,
-                                                   StackOverflowCommentsResponse commentsResponse){
-        Set<StackOverflowComment> comments = Arrays.stream(commentsResponse.items())
-                .map(comment -> {
-                    StackOverflowUser user = new StackOverflowUser(comment.owner().name());
-                    StackOverflowComment stackOverflowComment = new StackOverflowComment(user,
-                            comment.idComment());
-                    return stackOverflowComment;
-                }).collect(Collectors.toSet());
-        Set<StackOverflowAnswer> answers = Arrays.stream(answersResponse.items())
-                .map(answer->{
-                    StackOverflowUser user = new StackOverflowUser(answer.owner().name());
-
-                    StackOverflowAnswer result = new StackOverflowAnswer(user, answer.answerId(),
-                            Optional.of(answer.lastEditDate()).orElse(answer.creationDate()));
-                    return result;
-                }).collect(Collectors.toSet());
-        StackoverflowInfo result = new StackoverflowInfo(linkInfo, comments, answers);
-        return result;
-    }
-    @Override
-    public WebsiteInfo getWebSiteInfoByLinkInfo(LinkInfo linkInfo) {
-        if(!(linkInfo instanceof StackOverflowLinkInfo))
-            return null;
-        return getStackoverflowInfo((StackOverflowLinkInfo) linkInfo);
     }
 }

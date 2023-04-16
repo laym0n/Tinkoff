@@ -12,7 +12,7 @@ import ru.tinkoff.edu.java.scrapper.dto.request.RemoveLinkRequest;
 import ru.tinkoff.edu.java.scrapper.entities.TrackedLink;
 import ru.tinkoff.edu.java.scrapper.entities.websiteinfo.WebsiteInfo;
 import ru.tinkoff.edu.java.scrapper.usecases.ManageLinksUseCase;
-import ru.tinkoff.edu.java.scrapper.webclients.WebsiteInfoWebClient;
+import ru.tinkoff.edu.java.scrapper.webclients.websiteinfowebclient.WebsiteInfoWebClient;
 
 import java.security.InvalidParameterException;
 import java.util.List;
@@ -45,9 +45,9 @@ public class ManageLinksUseCaseImpl implements ManageLinksUseCase {
 
         LinkInfo linkInfoForAdd = getLinkInfoFromParser(addLinkRequest.getLink());
 
-        boolean isAlreadyContainsLink =
+        boolean isAlreadyContainsTrackedLink =
                 trackedLinkDAService.containsTrackedLinkWithIdChatAndLinkInfo(idChat, linkInfoForAdd);
-        if(isAlreadyContainsLink)
+        if(isAlreadyContainsTrackedLink)
             throw new InvalidParameterException("Link with path " + addLinkRequest.getLink() + " already " +
                     "tracked in chat with id " + idChat);
 

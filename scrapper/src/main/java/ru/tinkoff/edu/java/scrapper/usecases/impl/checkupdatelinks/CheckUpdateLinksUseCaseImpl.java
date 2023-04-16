@@ -19,10 +19,10 @@ public class CheckUpdateLinksUseCaseImpl implements CheckUpdateLinksUseCase {
         List<LinkUpdateRequest> result = new ArrayList<>();
         List<WebsiteInfo> websiteInfos = checkUpdateLinksDAService.getListWebsiteInfoByLastCheckTime(countSites);
         for (WebsiteInfo savedWebsiteInfo: websiteInfos) {
-            Optional<List<LinkUpdateRequest>> optionalLinkUpdateRequest = handlerUpdateWebsiteInfo
+            Optional<LinkUpdateRequest> optionalLinkUpdateRequest = handlerUpdateWebsiteInfo
                     .updateWebsiteInfo(savedWebsiteInfo);
             if(optionalLinkUpdateRequest.isPresent()){
-                result.addAll(optionalLinkUpdateRequest.get());
+                result.add(optionalLinkUpdateRequest.get());
             }
         }
         return result;

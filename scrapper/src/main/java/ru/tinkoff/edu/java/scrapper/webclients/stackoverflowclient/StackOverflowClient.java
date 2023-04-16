@@ -1,9 +1,8 @@
 package ru.tinkoff.edu.java.scrapper.webclients.stackoverflowclient;
 
 import parserservice.dto.StackOverflowLinkInfo;
-import ru.tinkoff.edu.java.scrapper.entities.websiteinfo.StackoverflowInfo;
-import ru.tinkoff.edu.java.scrapper.webclients.WebsiteInfoWebClient;
+import ru.tinkoff.edu.java.scrapper.dto.response.website.StackOverflowResponse;
 
-public interface StackOverflowClient extends WebsiteInfoWebClient {
-    StackoverflowInfo getStackoverflowInfo(StackOverflowLinkInfo stackOverflowInfo);
+public interface StackOverflowClient {
+    StackOverflowResponse getStackOverflowResponse(StackOverflowLinkInfo stackOverflowInfo);
 }
