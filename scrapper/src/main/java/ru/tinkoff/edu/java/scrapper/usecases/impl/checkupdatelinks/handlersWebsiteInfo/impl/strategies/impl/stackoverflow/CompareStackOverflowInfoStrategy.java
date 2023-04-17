@@ -1,74 +1,80 @@
 package ru.tinkoff.edu.java.scrapper.usecases.impl.checkupdatelinks.handlersWebsiteInfo.impl.strategies.impl.stackoverflow;
 
-import ru.tinkoff.edu.java.scrapper.dto.ResultOfCompareWebsiteInfo;
+import ru.tinkoff.edu.java.scrapper.dto.resultofcomparewebsiteinfo.ResultOfCompareStackOverflowInfo;
 import ru.tinkoff.edu.java.scrapper.dto.response.website.StackOverflowResponse;
 import ru.tinkoff.edu.java.scrapper.dto.response.website.stackoverflow.StackOverflowAnswerResponse;
-import ru.tinkoff.edu.java.scrapper.dto.response.website.stackoverflow.StackOverflowAnswersResponse;
 import ru.tinkoff.edu.java.scrapper.dto.response.website.stackoverflow.StackOverflowCommentResponse;
-import ru.tinkoff.edu.java.scrapper.dto.response.website.stackoverflow.StackOverflowCommentsResponse;
 import ru.tinkoff.edu.java.scrapper.entities.websiteinfo.StackOverflowInfo;
 import ru.tinkoff.edu.java.scrapper.entities.websiteinfo.stackoverflow.StackOverflowAnswer;
 import ru.tinkoff.edu.java.scrapper.entities.websiteinfo.stackoverflow.StackOverflowComment;
 import ru.tinkoff.edu.java.scrapper.usecases.impl.checkupdatelinks.handlersWebsiteInfo.impl.strategies.CompareInfoStrategy;
 
+import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Optional;
+import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-public class CompareStackOverflowInfoStrategy implements CompareInfoStrategy<StackOverflowInfo, StackOverflowResponse> {
+public class CompareStackOverflowInfoStrategy implements CompareInfoStrategy<StackOverflowInfo, StackOverflowResponse, ResultOfCompareStackOverflowInfo> {
     @Override
-    public ResultOfCompareWebsiteInfo<StackOverflowInfo, StackOverflowResponse> compare(StackOverflowInfo savedInfo, StackOverflowResponse loadedResponse) {
-        Set<StackOverflowAnswer> uniqueAnswers = findUniqueAnswersForSaved(savedInfo, loadedResponse);
-        Set<StackOverflowComment> uniqueComments = findUniqueCommentsForSaved(savedInfo, loadedResponse);
-        StackOverflowInfo uniqueInfo = new StackOverflowInfo(savedInfo.getId(),
-                savedInfo.getLastCheckUpdateDateTime(), savedInfo.getLinkInfo(), uniqueComments, uniqueAnswers);
+    public ResultOfCompareStackOverflowInfo compare(StackOverflowInfo savedInfo, StackOverflowResponse loadedResponse) {
+        ResultOfCompareStackOverflowInfo result = new ResultOfCompareStackOverflowInfo(savedInfo.getId(), savedInfo.getLinkInfo());
 
-        StackOverflowAnswersResponse uniqueAnswersForLoaded = findUniqueAnswersForLoaded(savedInfo, loadedResponse);
-        StackOverflowCommentsResponse uniqueCommentsForLoaded = findUniqueCommentsForLoaded(savedInfo, loadedResponse);
-        StackOverflowResponse uniqueResponse = new StackOverflowResponse(
-                uniqueAnswersForLoaded,
-                uniqueCommentsForLoaded
-                );
+        findDeletedAnswers(result, savedInfo, loadedResponse);
+        findDeletedComments(result, savedInfo, loadedResponse);
+        findAddedAndEditedAnswers(result, savedInfo, loadedResponse);
+        findAddedComments(result, savedInfo, loadedResponse);
 
-        boolean isDifferent = isDifferent(uniqueInfo, uniqueResponse);
-        ResultOfCompareWebsiteInfo<StackOverflowInfo, StackOverflowResponse> result =
-                new ResultOfCompareWebsiteInfo<>(isDifferent, uniqueInfo, uniqueResponse);
         return result;
     }
-    private Set<StackOverflowAnswer> findUniqueAnswersForSaved(StackOverflowInfo savedInfo, StackOverflowResponse loadedResponse){
+    private void findDeletedAnswers(ResultOfCompareStackOverflowInfo result,
+                                    StackOverflowInfo savedInfo, StackOverflowResponse loadedResponse){
         Set<Integer> loadedAnswers = Arrays.stream(loadedResponse.getAnswers().getItems())
                 .map(answerResponse -> answerResponse.getAnswerId()).collect(Collectors.toSet());
-        Set<StackOverflowAnswer> uniqueAnswers = savedInfo.getAnswers().stream()
+        StackOverflowAnswer[] deletedAnswers = savedInfo.getAnswers().values().stream()
                 .filter(savedAnswer -> !loadedAnswers.contains(savedAnswer.getIdAnswer()))
-                .collect(Collectors.toSet());
-        return uniqueAnswers;
+                .toArray(StackOverflowAnswer[]::new);
+        result.setDeletedAnswers(deletedAnswers);
+        if(deletedAnswers.length > 0)
+            result.setDifferent(true);
     }
-    private Set<StackOverflowComment> findUniqueCommentsForSaved(StackOverflowInfo savedInfo, StackOverflowResponse loadedResponse){
+    private void findDeletedComments(ResultOfCompareStackOverflowInfo result,
+                                            StackOverflowInfo savedInfo, StackOverflowResponse loadedResponse){
         Set<Integer> loadedComments = Arrays.stream(loadedResponse.getComments().getItems())
                 .map(loadedComment -> loadedComment.getIdComment()).collect(Collectors.toSet());
 
-        Set<StackOverflowComment> uniqueComments = savedInfo.getComments().stream()
+        StackOverflowComment[] deletedComments = savedInfo.getComments().values().stream()
                 .filter(savedComment -> !loadedComments.contains(savedComment.getIdComment()))
-                .collect(Collectors.toSet());
-        return uniqueComments;
+                .toArray(StackOverflowComment[]::new);
+        result.setDeletedComments(deletedComments);
+        if(deletedComments.length > 0)
+            result.setDifferent(true);
     }
-    private StackOverflowAnswersResponse findUniqueAnswersForLoaded(StackOverflowInfo savedInfo, StackOverflowResponse loadedResponse){
-        StackOverflowAnswerResponse[] uniqueAnswers = Arrays.stream(loadedResponse.getAnswers().getItems())
-                .filter(answerResponse -> !savedInfo.getAnswers().contains(answerResponse.getStackOverflowAnswer()))
-                .toArray(StackOverflowAnswerResponse[]::new);
-        StackOverflowAnswersResponse result = new StackOverflowAnswersResponse(uniqueAnswers);
-        return result;
+    private void findAddedAndEditedAnswers(ResultOfCompareStackOverflowInfo result,
+                                           StackOverflowInfo savedInfo, StackOverflowResponse loadedResponse){
+        List<StackOverflowAnswerResponse> editedAnswers = new ArrayList<>();
+        List<StackOverflowAnswerResponse> addedAnswers = new ArrayList<>();
+        Arrays.stream(loadedResponse.getAnswers().getItems())
+                .forEach(answerResponse ->{
+                    StackOverflowAnswer savedAnswer = savedInfo.getAnswers().get(answerResponse.getAnswerId());
+                    if(savedAnswer == null){
+                        addedAnswers.add(answerResponse);
+                    } else if(!savedAnswer.getLastEditDate().equals(answerResponse.getLastEditDate())){
+                        editedAnswers.add(answerResponse);
+                    }
+                });
+        result.setEditedAnswers(editedAnswers.toArray(StackOverflowAnswerResponse[]::new));
+        result.setAddedAnswers(addedAnswers.toArray(StackOverflowAnswerResponse[]::new));
+        if(editedAnswers.size() > 0 || addedAnswers.size() > 0)
+            result.setDifferent(true);
     }
-    private StackOverflowCommentsResponse findUniqueCommentsForLoaded(StackOverflowInfo savedInfo, StackOverflowResponse loadedResponse){
-        StackOverflowCommentResponse[] uniqueComments = Arrays.stream(loadedResponse.getComments().getItems())
-                .filter(commentResponse -> !savedInfo.getComments().contains(commentResponse.getStackOverflowComment()))
+    private void findAddedComments(ResultOfCompareStackOverflowInfo result,
+                                   StackOverflowInfo savedInfo, StackOverflowResponse loadedResponse){
+        StackOverflowCommentResponse[] addedComments = Arrays.stream(loadedResponse.getComments().getItems())
+                .filter(commentResponse -> !savedInfo.getComments().containsKey(commentResponse.getIdComment()))
                 .toArray(StackOverflowCommentResponse[]::new);
-        StackOverflowCommentsResponse result = new StackOverflowCommentsResponse(uniqueComments);
-        return result;
-    }
-    private boolean isDifferent(StackOverflowInfo savedInfo, StackOverflowResponse loadedResponse){
-        return (savedInfo.getComments().size() != 0 || savedInfo.getAnswers().size() != 0 ||
-                loadedResponse.getComments().getItems().length != 0 || loadedResponse.getAnswers().getItems().length != 0);
+        result.setAddedComments(addedComments);
+        if(addedComments.length > 0)
+            result.setDifferent(true);
     }
 }

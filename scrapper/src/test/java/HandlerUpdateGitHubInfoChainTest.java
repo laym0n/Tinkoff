@@ -7,7 +7,8 @@ import org.junit.jupiter.params.provider.ArgumentsSource;
 import org.mockito.ArgumentCaptor;
 import parserservice.dto.GitHubLinkInfo;
 import ru.tinkoff.edu.java.scrapper.dataaccess.UpdateWebsiteInfoDAService;
-import ru.tinkoff.edu.java.scrapper.dto.ResultOfCompareWebsiteInfo;
+import ru.tinkoff.edu.java.scrapper.dto.resultofcomparewebsiteinfo.ResultOfCompareGitHubInfo;
+import ru.tinkoff.edu.java.scrapper.dto.resultofcomparewebsiteinfo.ResultOfCompareWebsiteInfo;
 import ru.tinkoff.edu.java.scrapper.dto.request.LinkUpdateRequest;
 import ru.tinkoff.edu.java.scrapper.dto.response.website.GitHubResponse;
 import ru.tinkoff.edu.java.scrapper.dto.response.website.github.*;
@@ -21,10 +22,8 @@ import ru.tinkoff.edu.java.scrapper.webclients.githubclient.GitHubClient;
 
 import java.net.URI;
 import java.time.OffsetDateTime;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
+import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
@@ -40,20 +39,22 @@ public class HandlerUpdateGitHubInfoChainTest {
         final OffsetDateTime lastActivityDate = OffsetDateTime.now();
         final OffsetDateTime lastCheckUpdateDate = OffsetDateTime.now();
 
-        Set<GitHubBranch> branches = new HashSet<>();
-        branches.add(new GitHubBranch("hw1"));
-        branches.add(new GitHubBranch("hw2"));
-        branches.add(new GitHubBranch("hw3"));
+        Map<String, GitHubBranch> branchesForArgument = Stream.of(
+                new GitHubBranch("hw1"),
+                new GitHubBranch("hw2"),
+                new GitHubBranch("hw3")
+        ).collect(Collectors.toMap(i->i.getBranchName(), i->i));
 
-        Set<GitHubCommit> commits = new HashSet<>();
-        commits.add(new GitHubCommit("12345"));
-        commits.add(new GitHubCommit("67890"));
+        Map<String, GitHubCommit> commitsForArgument = Stream.of(
+                new GitHubCommit("12345"),
+                new GitHubCommit("67890")
+        ).collect(Collectors.toMap(i->i.getSha(), i->i));
 
-        GitHubLinkInfo expectedLinkInfo = new GitHubLinkInfo("drownedtears", "forum");
+        GitHubLinkInfo linkInfoForArgument = new GitHubLinkInfo("drownedtears", "forum");
         GitHubInfo argumentGitHubInfo = new GitHubInfo(idWebSiteInfo, lastCheckUpdateDate,
-                expectedLinkInfo, branches, commits,lastActivityDate);
+                linkInfoForArgument, branchesForArgument, commitsForArgument ,lastActivityDate);
 
-        UpdateWebsiteInfoDAService<GitHubInfo, GitHubResponse> mockDAService = mock(UpdateWebsiteInfoDAService.class);
+        UpdateWebsiteInfoDAService<ResultOfCompareGitHubInfo> mockDAService = mock(UpdateWebsiteInfoDAService.class);
         when(mockDAService.getAllChatIdWithTrackedIdWebsiteInfo(eq(idWebSiteInfo)))
                 .thenReturn(chatIds.clone());
 
@@ -67,7 +68,7 @@ public class HandlerUpdateGitHubInfoChainTest {
         GitHubResponse valueForReturn = new GitHubResponse(new GitHubInfoResponse(lastActivityDate),
                 branchResponses, commitResponses);
         GitHubClient mockGitHubClient = mock(GitHubClient.class);
-        when(mockGitHubClient.getGitHubResponse(eq(expectedLinkInfo)))
+        when(mockGitHubClient.getGitHubResponse(eq(linkInfoForArgument)))
                 .thenReturn(valueForReturn);
 
         HandlerUpdateGitHubInfoChain sut = new HandlerUpdateGitHubInfoChain(mockDAService,
@@ -77,22 +78,23 @@ public class HandlerUpdateGitHubInfoChainTest {
         Optional<LinkUpdateRequest> optionalResultFromSUT = sut.updateWebsiteInfo(argumentGitHubInfo);
 
         //Assert
-        assertFalse(optionalResultFromSUT.isPresent(), ()->"LinkUpdateRequest must be null");
-        ArgumentCaptor<ResultOfCompareWebsiteInfo<GitHubInfo, GitHubResponse>> argumentOfApplyChanges =
-                ArgumentCaptor.forClass(ResultOfCompareWebsiteInfo.class);
+        assertFalse(optionalResultFromSUT.isPresent(), ()->"LinkUpdateRequest must be null.\n Description of update is "
+        + optionalResultFromSUT.get().getDescription());
+        ArgumentCaptor<ResultOfCompareGitHubInfo> argumentOfApplyChanges =
+                ArgumentCaptor.forClass(ResultOfCompareGitHubInfo.class);
         verify(mockDAService).applyChanges(argumentOfApplyChanges.capture());
-        ResultOfCompareWebsiteInfo<GitHubInfo, GitHubResponse> compareResult = argumentOfApplyChanges.getValue();
-        assertFalse(compareResult.isDifferent, ()->"Input data is equal for load data but compareResult.isDifferent is True");
+        ResultOfCompareGitHubInfo compareResult = argumentOfApplyChanges.getValue();
+        assertFalse(compareResult.isDifferent(), ()->"Input data is equal for load data but compareResult.isDifferent is True");
     }
     @ParameterizedTest
     @ArgumentsSource(DataArgumentsProvider.class)
     public void handleUpdatedLinkTest(GitHubResponse responseForReturnFromWebClient,
                                       GitHubInfo argumentForSUT,
                                       LinkUpdateRequest expectedResultRequest,
-                                      ResultOfCompareWebsiteInfo<GitHubInfo, GitHubResponse> expectedResultOfCompare,
+                                      ResultOfCompareGitHubInfo expectedResultOfCompare,
                                       int[] chatIds){
         //Assign
-        UpdateWebsiteInfoDAService<GitHubInfo, GitHubResponse> mockDAService = mock(UpdateWebsiteInfoDAService.class);
+        UpdateWebsiteInfoDAService<ResultOfCompareGitHubInfo> mockDAService = mock(UpdateWebsiteInfoDAService.class);
         when(mockDAService.getAllChatIdWithTrackedIdWebsiteInfo(eq(argumentForSUT.getId())))
                 .thenReturn(chatIds.clone());
 
@@ -109,9 +111,6 @@ public class HandlerUpdateGitHubInfoChainTest {
         //Assert
         assertTrue(optionalResultFromSUT.isPresent(), ()->"LinkUpdateRequest must be null");
         LinkUpdateRequest resultFromSUT = optionalResultFromSUT.get();
-        assertEquals(expectedResultRequest.getDescription(), resultFromSUT.getDescription(),
-                ()->"Expected description is " + expectedResultRequest.getDescription() +
-                " but result description is " + resultFromSUT.getDescription());
         assertTrue(Arrays.equals(expectedResultRequest.getTgChatIds(), resultFromSUT.getTgChatIds()),
                 ()->"Expected chat Ids is " + expectedResultRequest.getTgChatIds() +
                         " but result chat Ids is " + resultFromSUT.getTgChatIds());
@@ -119,15 +118,12 @@ public class HandlerUpdateGitHubInfoChainTest {
                 ()->"Expected URI is " + expectedResultRequest.getUri() +
                         " but result URI is " + resultFromSUT.getUri());
 
-        ArgumentCaptor<ResultOfCompareWebsiteInfo<GitHubInfo, GitHubResponse>> argumentOfApplyChanges =
-                ArgumentCaptor.forClass(ResultOfCompareWebsiteInfo.class);
+        ArgumentCaptor<ResultOfCompareGitHubInfo> argumentOfApplyChanges =
+                ArgumentCaptor.forClass(ResultOfCompareGitHubInfo.class);
         verify(mockDAService).applyChanges(argumentOfApplyChanges.capture());
 
-        ResultOfCompareWebsiteInfo<GitHubInfo, GitHubResponse> compareResultFromSUT = argumentOfApplyChanges.getValue();
-        assertTrue(compareResultFromSUT.isDifferent, ()->"Input data is not equal for load data but compareResult.isDifferent is False");
-        boolean asd = expectedResultOfCompare.uniqueLoadedData.getCommits()[0].equals(compareResultFromSUT.uniqueLoadedData.getCommits()[0]);
-
-        boolean asd2 = expectedResultOfCompare.uniqueLoadedData.getCommits()[1].equals(compareResultFromSUT.uniqueLoadedData.getCommits()[1]);
+        ResultOfCompareGitHubInfo compareResultFromSUT = argumentOfApplyChanges.getValue();
+        assertTrue(compareResultFromSUT.isDifferent(), ()->"Input data is not equal for load data but compareResult.isDifferent is False");
         assertEquals(expectedResultOfCompare, compareResultFromSUT,
                 ()->"Expected result is " + expectedResultOfCompare +
                 " but result is " + compareResultFromSUT);
@@ -142,8 +138,7 @@ public class HandlerUpdateGitHubInfoChainTest {
                 final OffsetDateTime lastCheckUpdateDate = OffsetDateTime.now();
                 int[] chatIdsForFirstTest = {1, 2, 3, 4};
 
-                final OffsetDateTime lastActivityDateForSavedForFirstTest = OffsetDateTime.now();
-                final OffsetDateTime lastActivityDateForLoadedForFirstTest = OffsetDateTime.now().minusDays(5);
+                final OffsetDateTime lastActivityDateForBoth = OffsetDateTime.now();
                 GitHubBranchResponse[] branchResponses = Stream.of(
                         new GitHubBranchResponse("hw3"),
                         new GitHubBranchResponse("hw4"),
@@ -154,59 +149,44 @@ public class HandlerUpdateGitHubInfoChainTest {
                                 new GitHubCommitResponse("asdfg", new GitHubNestedCommitResponse(new GitHubCommiterResponse(lastCheckUpdateDate))),
                                 new GitHubCommitResponse("zxcvb", new GitHubNestedCommitResponse(new GitHubCommiterResponse(lastCheckUpdateDate))))
                         .toArray(GitHubCommitResponse[]::new);
-                GitHubResponse valueForReturn = new GitHubResponse(new GitHubInfoResponse(lastActivityDateForLoadedForFirstTest),
+                GitHubResponse valueForReturn = new GitHubResponse(new GitHubInfoResponse(lastActivityDateForBoth),
                         branchResponses, commitResponses);
 
-                Set<GitHubBranch> branches = new HashSet<>();
-                branches.add(new GitHubBranch("hw1"));
-                branches.add(new GitHubBranch("hw2"));
-                branches.add(new GitHubBranch("hw3"));
-                Set<GitHubCommit> commits = new HashSet<>();
-                commits.add(new GitHubCommit("12345"));
-                commits.add(new GitHubCommit("67890"));
-                commits.add(new GitHubCommit("qwert"));
-                GitHubLinkInfo expectedLinkInfo = new GitHubLinkInfo("drownedtears", "forum");
+                Map<String, GitHubBranch> branches = Stream.of(
+                        new GitHubBranch("hw1"),
+                        new GitHubBranch("hw2"),
+                        new GitHubBranch("hw3")
+                ).collect(Collectors.toMap(i->i.getBranchName(), i->i));
+                Map<String, GitHubCommit> commits = Stream.of(
+                        new GitHubCommit("12345"),
+                        new GitHubCommit("67890"),
+                        new GitHubCommit("qwert")
+                ).collect(Collectors.toMap(i->i.getSha(), i->i));;
+                GitHubLinkInfo linkInfoForArgument = new GitHubLinkInfo("drownedtears", "forum");
                 GitHubInfo argumentGitHubInfo = new GitHubInfo(idWebSiteInfo, lastCheckUpdateDate,
-                        expectedLinkInfo, branches, commits, lastActivityDateForSavedForFirstTest);
+                        linkInfoForArgument, branches, commits, lastActivityDateForBoth);
 
-
-
-                Set<GitHubBranch> uniqueBranches = new HashSet<>();
-                uniqueBranches.add(new GitHubBranch("hw1"));
-                uniqueBranches.add(new GitHubBranch("hw2"));
-                Set<GitHubCommit> uniqueCommits = new HashSet<>();
-                uniqueCommits.add(new GitHubCommit("12345"));
+                GitHubBranch[] expectedDroppedBranches = Stream.of(
+                        new GitHubBranch("hw1"),
+                        new GitHubBranch("hw2")
+                ).toArray(GitHubBranch[]::new);
+                GitHubCommit[] expectedDroppedCommits = Stream.of(
+                        new GitHubCommit("12345")
+                ).toArray(GitHubCommit[]::new);
                 GitHubLinkInfo expectedLinkInfoInExpectedResult = new GitHubLinkInfo("drownedtears", "forum");
-                GitHubInfo expectedUniqueGitHubInfo = new GitHubInfo(idWebSiteInfo, lastCheckUpdateDate,
-                        expectedLinkInfoInExpectedResult, uniqueBranches, uniqueCommits, lastActivityDateForSavedForFirstTest);
-                GitHubBranchResponse[] uniqueBranchResponses = Stream.of(
+                GitHubBranchResponse[] expectedPushedBranches = Stream.of(
                         new GitHubBranchResponse("hw4"),
                         new GitHubBranchResponse("hw5")).toArray(GitHubBranchResponse[]::new);
-                GitHubCommitResponse[] uniqueCommitResponses = Stream.of(
+                GitHubCommitResponse[] expectedPushedCommit = Stream.of(
                                 new GitHubCommitResponse("asdfg", new GitHubNestedCommitResponse(new GitHubCommiterResponse(lastCheckUpdateDate))),
                                 new GitHubCommitResponse("zxcvb", new GitHubNestedCommitResponse(new GitHubCommiterResponse(lastCheckUpdateDate))))
                         .toArray(GitHubCommitResponse[]::new);
-                GitHubResponse expectedUniqueResponse = new GitHubResponse(new GitHubInfoResponse(lastActivityDateForLoadedForFirstTest),
-                        uniqueBranchResponses, uniqueCommitResponses);
-                ResultOfCompareWebsiteInfo<GitHubInfo, GitHubResponse> expectedResultOfCompare =
-                        new ResultOfCompareWebsiteInfo<>(true, expectedUniqueGitHubInfo, expectedUniqueResponse);
+                ResultOfCompareGitHubInfo expectedResultOfCompare =
+                        new ResultOfCompareGitHubInfo(true, expectedLinkInfoInExpectedResult, idWebSiteInfo, expectedDroppedCommits, expectedPushedCommit,
+                                expectedDroppedBranches, expectedPushedBranches, Optional.empty());
 
-                StringBuilder stringBuilderForDescription = new StringBuilder();
-                stringBuilderForDescription.append("Ссылка " + expectedLinkInfo.getPath() + " получила обновление:\n");
-                for(GitHubBranch branch : expectedResultOfCompare.uniqueSavedData.getBranches()){
-                    stringBuilderForDescription.append("Ветка " + branch.getBranchName() + " удалена\n");
-                }
-                for(GitHubCommit commit : expectedResultOfCompare.uniqueSavedData.getCommits()){
-                    stringBuilderForDescription.append("Коммит " + commit.getSha() + " удален\n");
-                }
-                for(GitHubBranchResponse branch : expectedResultOfCompare.uniqueLoadedData.getBranches()){
-                    stringBuilderForDescription.append("Ветка " + branch.getName() + " добавлена\n");
-                }
-                for(GitHubCommitResponse commit : expectedResultOfCompare.uniqueLoadedData.getCommits()){
-                    stringBuilderForDescription.append("Коммит " + commit.getSha() + " добавлен\n");
-                }
-                String description = stringBuilderForDescription.toString();
-                LinkUpdateRequest expectedResultRequest = new LinkUpdateRequest(0, URI.create(expectedLinkInfo.getPath()), description, chatIdsForFirstTest.clone());
+                LinkUpdateRequest expectedResultRequest = new GitHubBuilderLinkUpdateRequest().buildLinkUpdateRequest(expectedResultOfCompare,
+                        chatIdsForFirstTest);
 
                 firstArguments = Arguments.of(valueForReturn, argumentGitHubInfo, expectedResultRequest,
                         expectedResultOfCompare, chatIdsForFirstTest.clone());

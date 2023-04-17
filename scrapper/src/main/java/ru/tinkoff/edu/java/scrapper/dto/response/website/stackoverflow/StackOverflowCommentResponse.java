@@ -22,6 +22,6 @@ public class StackOverflowCommentResponse {
     @JsonProperty("comment_id")
     private  int idComment;
     public StackOverflowComment getStackOverflowComment(){
-        return new StackOverflowComment(idComment, owner.getName());
+        return new StackOverflowComment(idComment);
     }
 }

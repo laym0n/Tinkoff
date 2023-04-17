@@ -1,69 +1,73 @@
 package ru.tinkoff.edu.java.scrapper.usecases.impl.checkupdatelinks.handlersWebsiteInfo.impl.strategies.impl.github;
 
-import ru.tinkoff.edu.java.scrapper.dto.ResultOfCompareWebsiteInfo;
+import ru.tinkoff.edu.java.scrapper.dto.resultofcomparewebsiteinfo.ResultOfCompareGitHubInfo;
 import ru.tinkoff.edu.java.scrapper.dto.response.website.GitHubResponse;
 import ru.tinkoff.edu.java.scrapper.dto.response.website.github.GitHubBranchResponse;
 import ru.tinkoff.edu.java.scrapper.dto.response.website.github.GitHubCommitResponse;
-import ru.tinkoff.edu.java.scrapper.dto.response.website.github.GitHubInfoResponse;
 import ru.tinkoff.edu.java.scrapper.entities.websiteinfo.GitHubInfo;
 import ru.tinkoff.edu.java.scrapper.entities.websiteinfo.github.GitHubBranch;
 import ru.tinkoff.edu.java.scrapper.entities.websiteinfo.github.GitHubCommit;
 import ru.tinkoff.edu.java.scrapper.usecases.impl.checkupdatelinks.handlersWebsiteInfo.impl.strategies.CompareInfoStrategy;
-
 import java.time.OffsetDateTime;
 import java.util.Arrays;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-public class CompareGitHubInfoStrategy implements CompareInfoStrategy<GitHubInfo, GitHubResponse> {
+public class CompareGitHubInfoStrategy implements CompareInfoStrategy<GitHubInfo, GitHubResponse, ResultOfCompareGitHubInfo> {
     @Override
-    public ResultOfCompareWebsiteInfo<GitHubInfo, GitHubResponse> compare(GitHubInfo savedInfo, GitHubResponse loadedResponse) {
-        Set<GitHubBranch> uniqueBranches = findUniqueBranchesForSaved(savedInfo, loadedResponse);
-        Set<GitHubCommit> uniqueCommits = findUniqueCommitsForSaved(savedInfo, loadedResponse);
-        OffsetDateTime uniqueLastActiveTime =
-                (savedInfo.getLastActiveTime().equals(loadedResponse.getInfoResponse().getUpdatedAt())? null : savedInfo.getLastActiveTime());
-        GitHubInfo uniqueInfoForSaved = new GitHubInfo(savedInfo.getId(), savedInfo.getLastCheckUpdateDateTime(),
-                savedInfo.getLinkInfo(), uniqueBranches, uniqueCommits, uniqueLastActiveTime);
+    public ResultOfCompareGitHubInfo compare(GitHubInfo savedInfo, GitHubResponse loadedResponse) {
+        ResultOfCompareGitHubInfo result = new ResultOfCompareGitHubInfo(savedInfo.getId(), savedInfo.getLinkInfo());
 
-        OffsetDateTime uniqueCreatedAt = uniqueLastActiveTime == null? null : loadedResponse.getInfoResponse().getUpdatedAt();
-        GitHubInfoResponse uniqueInfoResponse = new GitHubInfoResponse(uniqueCreatedAt);
-        GitHubBranchResponse[] uniqueBranchesForResponse = findUniqueBranchesForLoaded(savedInfo, loadedResponse);
-        GitHubCommitResponse[] uniqueCommitsForResponse = findUniqueCommitsForLoaded(savedInfo, loadedResponse);
-        GitHubResponse uniqueInfoForResponse = new GitHubResponse(uniqueInfoResponse, uniqueBranchesForResponse,
-                uniqueCommitsForResponse);
-
-        boolean isDifferent = isDifferent(uniqueInfoForSaved, uniqueInfoForResponse);
-
-        ResultOfCompareWebsiteInfo<GitHubInfo, GitHubResponse> result = new ResultOfCompareWebsiteInfo<>(isDifferent,
-                uniqueInfoForSaved, uniqueInfoForResponse);
+        findDropedBranches(result, savedInfo, loadedResponse);
+        findDroppedCommits(result, savedInfo, loadedResponse);
+        findAddedBranches(result, savedInfo, loadedResponse);
+        findPushedCommits(result, savedInfo, loadedResponse);
+        Optional<OffsetDateTime> lastActiveTime = Optional.ofNullable(
+                (savedInfo.getLastActiveTime().equals(loadedResponse.getInfoResponse().getUpdatedAt()) ? null : loadedResponse.getInfoResponse().getUpdatedAt())
+        );
+        result.setLastActivityDate(lastActiveTime);
         return result;
     }
-    private Set<GitHubBranch> findUniqueBranchesForSaved(GitHubInfo savedInfo, GitHubResponse loadedResponse){
+    private void findDropedBranches(ResultOfCompareGitHubInfo result, GitHubInfo savedInfo,
+                                    GitHubResponse loadedResponse){
         Set<String> loadedBranches = Arrays.stream(loadedResponse.getBranches())
                 .map(branchResponse -> branchResponse.getName()).collect(Collectors.toSet());
-        Set<GitHubBranch> branches = savedInfo.getBranches().stream()
-                .filter(i->!loadedBranches.contains(i.getBranchName())).collect(Collectors.toSet());
-        return branches;
+        GitHubBranch[] droppedBranches = savedInfo.getBranches().values().stream()
+                .filter(i->!loadedBranches.contains(i.getBranchName()))
+                .toArray(GitHubBranch[]::new);
+        result.setDroppedBranches(droppedBranches);
+        if(droppedBranches.length > 0)
+            result.setDifferent(true);
     }
-    private Set<GitHubCommit> findUniqueCommitsForSaved(GitHubInfo savedInfo, GitHubResponse loadedResponse){
+    private void findDroppedCommits(ResultOfCompareGitHubInfo result, GitHubInfo savedInfo,
+                                    GitHubResponse loadedResponse){
         Set<String> loadedCommits = Arrays.stream(loadedResponse.getCommits())
                 .map(commitResponse->commitResponse.getSha()).collect(Collectors.toSet());
-        Set<GitHubCommit> uniqueCommits = savedInfo.getCommits().stream()
-                .filter(commit -> !loadedCommits.contains(commit.getSha())).collect(Collectors.toSet());
-        return uniqueCommits;
+        GitHubCommit[] droppedCommits = savedInfo.getCommits().values().stream()
+                .filter(commit -> !loadedCommits.contains(commit.getSha()))
+                .toArray(GitHubCommit[]::new);
+        result.setDroppedCommits(droppedCommits);
+        if(droppedCommits.length > 0)
+            result.setDifferent(true);
     }
-    private GitHubBranchResponse[] findUniqueBranchesForLoaded(GitHubInfo savedInfo, GitHubResponse loadedResponse){
-        GitHubBranchResponse[] result = Arrays.stream(loadedResponse.getBranches())
-                .filter(branchResponse -> !savedInfo.getBranches().contains(branchResponse.getGitHubBranch()))
+    private void findAddedBranches(ResultOfCompareGitHubInfo result, GitHubInfo savedInfo,
+                                   GitHubResponse loadedResponse){
+        GitHubBranchResponse[] addedBranches = Arrays.stream(loadedResponse.getBranches())
+                .filter(branchResponse -> !savedInfo.getBranches().containsKey(branchResponse.getName()))
                 .toArray(GitHubBranchResponse[]::new);
-        return result;
+        result.setAddedBranches(addedBranches);
+        if(addedBranches.length > 0)
+            result.setDifferent(true);
     }
-    private GitHubCommitResponse[] findUniqueCommitsForLoaded(GitHubInfo savedInfo, GitHubResponse loadedResponse){
-        GitHubCommitResponse[] result = Arrays.stream(loadedResponse.getCommits())
-                .filter(commitResponse -> !savedInfo.getCommits().contains(commitResponse.getGitHubCommit()))
+    private void findPushedCommits(ResultOfCompareGitHubInfo result, GitHubInfo savedInfo,
+                                   GitHubResponse loadedResponse){
+        GitHubCommitResponse[] pushedCommits = Arrays.stream(loadedResponse.getCommits())
+                .filter(commitResponse -> !savedInfo.getCommits().containsKey(commitResponse.getSha()))
                 .toArray(GitHubCommitResponse[]::new);
-        return result;
+        result.setPushedCommits(pushedCommits);
+        if(pushedCommits.length > 0)
+            result.setDifferent(true);
     }
 
     private boolean isDifferent(GitHubInfo uniqueInfo, GitHubResponse uniqueResponse){

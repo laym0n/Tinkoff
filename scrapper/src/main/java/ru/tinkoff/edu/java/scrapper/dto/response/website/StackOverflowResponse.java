@@ -8,6 +8,7 @@ import ru.tinkoff.edu.java.scrapper.entities.websiteinfo.stackoverflow.StackOver
 import ru.tinkoff.edu.java.scrapper.entities.websiteinfo.stackoverflow.StackOverflowComment;
 
 import java.util.Arrays;
+import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -20,11 +21,12 @@ public final class StackOverflowResponse implements WebsiteResponse{
     private StackOverflowAnswersResponse answers;
     private StackOverflowCommentsResponse comments;
     public StackOverflowInfo getStackOverflowInfo(StackOverflowLinkInfo linkInfo){
-        Set<StackOverflowAnswer> newAnswers = Arrays.stream(answers.getItems())
+        Map<Integer, StackOverflowAnswer> newAnswers = Arrays.stream(answers.getItems())
                 .map(StackOverflowAnswerResponse::getStackOverflowAnswer)
-                .collect(Collectors.toSet());
-        Set<StackOverflowComment> newComments = Arrays.stream(comments.getItems())
-                .map(StackOverflowCommentResponse::getStackOverflowComment).collect(Collectors.toSet());
+                .collect(Collectors.toMap(i->i.getIdAnswer(), i-> i));
+        Map<Integer, StackOverflowComment> newComments = Arrays.stream(comments.getItems())
+                .map(StackOverflowCommentResponse::getStackOverflowComment)
+                .collect(Collectors.toMap(i->i.getIdComment(), i->i));
         StackOverflowInfo result = new StackOverflowInfo(linkInfo, newComments, newAnswers);
         return result;
     }

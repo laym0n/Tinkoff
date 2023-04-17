@@ -27,4 +27,9 @@ public class StackOverflowAnswerResponse {
     public StackOverflowAnswer getStackOverflowAnswer(){
         return new StackOverflowAnswer(answerId, owner.getName(), (lastEditDate != null ? lastEditDate : creationDate));
     }
+    public OffsetDateTime getLastEditDate(){
+        if(lastEditDate == null)
+            lastEditDate = creationDate;
+        return lastEditDate;
+    }
 }

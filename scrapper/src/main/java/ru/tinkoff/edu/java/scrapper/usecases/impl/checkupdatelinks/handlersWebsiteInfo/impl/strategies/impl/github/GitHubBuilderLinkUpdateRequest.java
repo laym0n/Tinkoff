@@ -1,7 +1,8 @@
 package ru.tinkoff.edu.java.scrapper.usecases.impl.checkupdatelinks.handlersWebsiteInfo.impl.strategies.impl.github;
 
 import parserservice.dto.LinkInfo;
-import ru.tinkoff.edu.java.scrapper.dto.ResultOfCompareWebsiteInfo;
+import ru.tinkoff.edu.java.scrapper.dto.resultofcomparewebsiteinfo.ResultOfCompareGitHubInfo;
+import ru.tinkoff.edu.java.scrapper.dto.resultofcomparewebsiteinfo.ResultOfCompareWebsiteInfo;
 import ru.tinkoff.edu.java.scrapper.dto.request.LinkUpdateRequest;
 import ru.tinkoff.edu.java.scrapper.dto.response.website.GitHubResponse;
 import ru.tinkoff.edu.java.scrapper.dto.response.website.github.GitHubBranchResponse;
@@ -13,28 +14,31 @@ import ru.tinkoff.edu.java.scrapper.usecases.impl.checkupdatelinks.handlersWebsi
 
 import java.net.URI;
 
-public class GitHubBuilderLinkUpdateRequest implements BuilderLinkUpdateRequestStrategy<GitHubInfo, GitHubResponse> {
+public class GitHubBuilderLinkUpdateRequest implements BuilderLinkUpdateRequestStrategy<ResultOfCompareGitHubInfo> {
     @Override
-    public LinkUpdateRequest buildLinkUpdateRequest(ResultOfCompareWebsiteInfo<GitHubInfo, GitHubResponse> changes, int[] chatIds) {
-        LinkInfo linkInfo = changes.uniqueSavedData.getLinkInfo();
+    public LinkUpdateRequest buildLinkUpdateRequest(ResultOfCompareGitHubInfo changes, int[] chatIds) {
+        LinkInfo linkInfo = changes.getLinkInfo();
 
         StringBuilder descriptionUpdate = new StringBuilder();
         descriptionUpdate.append("Ссылка " + linkInfo.getPath() + " получила обновление:\n");
-        for(GitHubBranch branch : changes.uniqueSavedData.getBranches()){
+        for(GitHubBranch branch : changes.getDroppedBranches()){
             descriptionUpdate.append("Ветка " + branch.getBranchName() + " удалена\n");
         }
-        for(GitHubCommit commit : changes.uniqueSavedData.getCommits()){
+        for(GitHubCommit commit : changes.getDroppedCommits()){
             descriptionUpdate.append("Коммит с sha " + commit.getSha() + " удален\n");
         }
-        for(GitHubBranchResponse branch : changes.uniqueLoadedData.getBranches()){
+        for(GitHubBranchResponse branch : changes.getAddedBranches()){
             descriptionUpdate.append("Ветка " + branch.getName() + " добавлена\n");
         }
-        for(GitHubCommitResponse commit : changes.uniqueLoadedData.getCommits()){
-            descriptionUpdate.append("Коммит с sha " + commit.getSha() + " добавлен\n");
+        for(GitHubCommitResponse commit : changes.getPushedCommits()){
+            descriptionUpdate.append(commit.getCommit().getCommitter().getDate() + " - коммит с sha " +
+                    commit.getSha() + " добавлен\n");
         }
+        if(changes.getLastActivityDate().isPresent())
+            descriptionUpdate.append("Время последней активности " + changes.getLastActivityDate().get() + " получила обновление:\n");
 
         LinkUpdateRequest result =
-                new LinkUpdateRequest(changes.uniqueSavedData.getId(),
+                new LinkUpdateRequest(changes.getIdWebsiteInfo(),
                         URI.create(linkInfo.getPath()),
                         descriptionUpdate.toString(),
                         chatIds);
