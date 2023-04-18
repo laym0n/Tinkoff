@@ -1,24 +1,19 @@
 package ru.tinkoff.edu.java.scrapper.dataaccess.impl.jdbc.updatewebsiteinfo;
 
-import parserservice.dto.LinkInfo;
-import ru.tinkoff.edu.java.scrapper.dataaccess.UpdateWebsiteInfoDAService;
-import ru.tinkoff.edu.java.scrapper.dto.resultofcomparewebsiteinfo.ResultOfCompareWebsiteInfo;
-import ru.tinkoff.edu.java.scrapper.dto.response.website.GitHubResponse;
-import ru.tinkoff.edu.java.scrapper.entities.websiteinfo.GitHubInfo;
+import ru.tinkoff.edu.java.scrapper.dataaccess.impl.jdbc.dao.JDBCGitHubInfoDAO;
+import ru.tinkoff.edu.java.scrapper.dataaccess.impl.jdbc.dao.JDBCTrackedLinkDAO;
+import ru.tinkoff.edu.java.scrapper.dto.resultofcomparewebsiteinfo.ResultOfCompareGitHubInfo;
 
-public class JDBCUpdateGitHubInfoDAService /*implements UpdateWebsiteInfoDAService<GitHubInfo, GitHubResponse>*/ {
-//    @Override
-//    public void applyChanges(ResultOfCompareWebsiteInfo<GitHubInfo, GitHubResponse> changes) {
-//
-//    }
-//
-//    @Override
-//    public int[] getAllChatIdWithTrackedLinkInfo(LinkInfo linkInfo) {
-//        return new int[0];
-//    }
-//
-//    @Override
-//    public int[] getAllChatIdWithTrackedIdWebsiteInfo(int idWebsiteInfo) {
-//        return new int[0];
-//    }
+public class JDBCUpdateGitHubInfoDAService extends JDBCUpdateWebsiteInfo<ResultOfCompareGitHubInfo> {
+    private JDBCGitHubInfoDAO gitHubInfoDAO;
+
+    public JDBCUpdateGitHubInfoDAService(JDBCTrackedLinkDAO trackedLinkDAO, JDBCGitHubInfoDAO gitHubInfoDAO) {
+        super(trackedLinkDAO);
+        this.gitHubInfoDAO = gitHubInfoDAO;
+    }
+
+    @Override
+    public void applyChanges(ResultOfCompareGitHubInfo changes) {
+        gitHubInfoDAO.applyChanges(changes);
+    }
 }

@@ -15,6 +15,7 @@ import java.net.URI;
 public class TrackedLink {
     private int id;
     private int idChat;
+    private int idWebsiteInfo;
     private LinkInfo linkInfo;
     public String getPath(){
         return linkInfo.getPath();
@@ -23,8 +24,9 @@ public class TrackedLink {
         return URI.create(linkInfo.getPath());
     }
 
-    public TrackedLink(int idChat, LinkInfo linkInfo) {
+    public TrackedLink(int idChat, LinkInfo linkInfo, int idWebsiteInfo) {
         this.idChat = idChat;
         this.linkInfo = linkInfo;
+        this.idWebsiteInfo = idWebsiteInfo;
     }
 }

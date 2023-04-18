@@ -20,7 +20,6 @@ import ru.tinkoff.edu.java.scrapper.usecases.impl.checkupdatelinks.handlersWebsi
 import ru.tinkoff.edu.java.scrapper.usecases.impl.checkupdatelinks.handlersWebsiteInfo.impl.strategies.impl.github.GitHubBuilderLinkUpdateRequest;
 import ru.tinkoff.edu.java.scrapper.webclients.githubclient.GitHubClient;
 
-import java.net.URI;
 import java.time.OffsetDateTime;
 import java.util.*;
 import java.util.stream.Collectors;

@@ -19,18 +19,12 @@ public class ManageChatsUseCaseImpl implements ManageChatsUseCase {
 
     @Override
     public void registryChat(int idChat) {
-        if(chatDAService.containsChatWithId(idChat))
-            throw new InvalidParameterException("Chat with id " + idChat + " is already registered");
-
         Chat newChat = new Chat(idChat);
-        chatDAService.create(newChat);
+        chatDAService.createChat(newChat);
     }
 
     @Override
     public void removeChat(int idChat) {
-        if(!chatDAService.containsChatWithId(idChat))
-            throw new NotFoundException("Chat with id " + idChat + " is not registered");
-
-        chatDAService.delete(idChat);
+        chatDAService.deleteChat(idChat);
     }
 }

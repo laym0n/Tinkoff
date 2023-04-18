@@ -6,7 +6,7 @@ import lombok.*;
 @Getter
 @EqualsAndHashCode
 @ToString
-
+@NoArgsConstructor
 public class GitHubBranch {
     private String branchName;
 

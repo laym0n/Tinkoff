@@ -17,17 +17,17 @@ public class ManageChatsUseCaseTest {
     @Test
     public void testValidRegistryChat(){
         ChatDAService chatDAService = mock(ChatDAService.class);
-        when(chatDAService.containsChatWithId(anyInt())).thenReturn(false);
+//        when(chatDAService.containsChatWithId(anyInt())).thenReturn(false);
         ManageChatsUseCase sut = new ManageChatsUseCaseImpl(chatDAService);
 
         sut.registryChat(1);
 
-        verify(chatDAService).create(new Chat(1));
+        verify(chatDAService).createChat(new Chat(1));
     }
     @Test
     public void testRegistryAlreadyRegistredChat(){
         ChatDAService chatDAService = mock(ChatDAService.class);
-        when(chatDAService.containsChatWithId(anyInt())).thenReturn(true);
+//        when(chatDAService.containsChatWithId(anyInt())).thenReturn(true);
         ManageChatsUseCase sut = new ManageChatsUseCaseImpl(chatDAService);
 
         assertThrows(InvalidParameterException.class, () -> {
@@ -38,17 +38,17 @@ public class ManageChatsUseCaseTest {
     @Test
     public void testValidRemoveChat(){
         ChatDAService chatDAService = mock(ChatDAService.class);
-        when(chatDAService.containsChatWithId(anyInt())).thenReturn(true);
+//        when(chatDAService.containsChatWithId(anyInt())).thenReturn(true);
         ManageChatsUseCase sut = new ManageChatsUseCaseImpl(chatDAService);
 
         sut.removeChat(1);
 
-        verify(chatDAService).delete(1);
+        verify(chatDAService).deleteChat(1);
     }
     @Test
     public void testRemoveNotRegisteredChat(){
         ChatDAService chatDAService = mock(ChatDAService.class);
-        when(chatDAService.containsChatWithId(anyInt())).thenReturn(false);
+//        when(chatDAService.containsChatWithId(anyInt())).thenReturn(false);
         ManageChatsUseCase sut = new ManageChatsUseCaseImpl(chatDAService);
 
         assertThrows(NotFoundException.class, () -> {

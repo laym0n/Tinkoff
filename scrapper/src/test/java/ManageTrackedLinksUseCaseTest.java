@@ -39,16 +39,16 @@ public class ManageTrackedLinksUseCaseTest {
         final LinkInfo expectedLinkInfo = parserLinks.parse(path);
 
         TrackedLink expectedResultFromSUT =
-                new TrackedLink(expectedIdTrackedLink, idChat, expectedLinkInfo);
-        TrackedLink expectedArgumentForDAService = new TrackedLink(idChat, expectedLinkInfo);
+                new TrackedLink(expectedIdTrackedLink, idChat, expectedIdTrackedLink, expectedLinkInfo);
+        TrackedLink expectedArgumentForDAService = new TrackedLink(idChat, expectedLinkInfo, expectedIdTrackedLink);
 
         TrackedLinkDAService trackedLinkDAService = mock(TrackedLinkDAService.class);
         when(trackedLinkDAService.containsChatWithId(eq(idChat))).thenReturn(true);
         when(trackedLinkDAService
                 .containsTrackedLinkWithIdChatAndLinkInfo(eq(idChat), eq(expectedLinkInfo)))
         .thenReturn(false);
-        when(trackedLinkDAService.containsWebsiteInfoWithLinkInfo(eq(expectedLinkInfo)))
-                .thenReturn(true);
+//        when(trackedLinkDAService.containsWebsiteInfoWithLinkInfo(eq(expectedLinkInfo)))
+//                .thenReturn(true);
         when(trackedLinkDAService.createTrackedLink(any(TrackedLink.class))).thenAnswer(i-> {
             ((TrackedLink)i.getArgument(0)).setId(expectedIdTrackedLink);
             return i.getArgument(0);
@@ -87,8 +87,8 @@ public class ManageTrackedLinksUseCaseTest {
         final LinkInfo expectedLinkInfo = parserLinks.parse(path);
 
         TrackedLink expectedResultFromSUT =
-                new TrackedLink(expectedIdTrackedLink, idChat, expectedLinkInfo);
-        TrackedLink expectedArgumentForDAService = new TrackedLink(idChat, expectedLinkInfo);
+                new TrackedLink(expectedIdTrackedLink, idChat, expectedIdTrackedLink, expectedLinkInfo);
+        TrackedLink expectedArgumentForDAService = new TrackedLink(idChat, expectedLinkInfo, expectedIdTrackedLink);
 
         WebsiteInfo gitHubInfo = new GitHubInfo((GitHubLinkInfo) expectedLinkInfo, OffsetDateTime.now());
 
@@ -100,8 +100,8 @@ public class ManageTrackedLinksUseCaseTest {
         when(trackedLinkDAService
                 .containsTrackedLinkWithIdChatAndLinkInfo(eq(idChat), eq(expectedLinkInfo)))
                 .thenReturn(false);
-        when(trackedLinkDAService.containsWebsiteInfoWithLinkInfo(eq(expectedLinkInfo)))
-                .thenReturn(false);
+//        when(trackedLinkDAService.containsWebsiteInfoWithLinkInfo(eq(expectedLinkInfo)))
+//                .thenReturn(false);
         when(trackedLinkDAService.createTrackedLink(any(TrackedLink.class))).thenAnswer(i-> {
             ((TrackedLink)i.getArgument(0)).setId(expectedIdTrackedLink);
             return i.getArgument(0);
@@ -227,7 +227,7 @@ public class ManageTrackedLinksUseCaseTest {
         ParserLinks parserLinks = new ParserLinksFactoryImpl().getParserLinks();
         final LinkInfo expectedLinkInfo = parserLinks.parse(path);
 
-        final TrackedLink expectedResult = new TrackedLink(expectedIdLink, idChat, expectedLinkInfo);
+        final TrackedLink expectedResult = new TrackedLink(expectedIdLink, idChat, expectedIdLink, expectedLinkInfo);
 
         TrackedLinkDAService trackedLinkDAService = mock(TrackedLinkDAService.class);
         when(trackedLinkDAService.containsChatWithId(anyInt())).thenReturn(true);
@@ -322,20 +322,20 @@ public class ManageTrackedLinksUseCaseTest {
         OffsetDateTime expectedOffsetDateTime = OffsetDateTime.MAX;
 
         List<TrackedLink> expectedResult = new ArrayList<>();
-        expectedResult.add(new TrackedLink(1, idChat,
+        expectedResult.add(new TrackedLink(1, idChat,1,
                 new GitHubLinkInfo("user1", "repository1")));
-        expectedResult.add(new TrackedLink(2, idChat,
+        expectedResult.add(new TrackedLink(2, idChat,1,
                 new GitHubLinkInfo("user2", "repository2")));
-        expectedResult.add(new TrackedLink(3, idChat,
+        expectedResult.add(new TrackedLink(3, idChat,1,
                 new GitHubLinkInfo("user3", "repository3")));
 
 
         List<TrackedLink> resultFromDAService = new ArrayList<>();
-        resultFromDAService.add(new TrackedLink(1, idChat,
+        resultFromDAService.add(new TrackedLink(1, idChat,1,
                 new GitHubLinkInfo("user1", "repository1")));
-        resultFromDAService.add(new TrackedLink(2, idChat,
+        resultFromDAService.add(new TrackedLink(2, idChat,1,
                 new GitHubLinkInfo("user2", "repository2")));
-        resultFromDAService.add(new TrackedLink(3, idChat,
+        resultFromDAService.add(new TrackedLink(3, idChat,1,
                 new GitHubLinkInfo("user3", "repository3")));
 
         WebsiteInfoWebClient websiteInfoWebClient = mock(WebsiteInfoWebClient.class);

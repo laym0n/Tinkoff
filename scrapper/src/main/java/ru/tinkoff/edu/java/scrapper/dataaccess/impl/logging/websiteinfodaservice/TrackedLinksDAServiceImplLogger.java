@@ -25,8 +25,8 @@ public class TrackedLinksDAServiceImplLogger implements TrackedLinkDAService {
     }
 
     @Override
-    public boolean containsWebsiteInfoWithLinkInfo(LinkInfo linkInfo) {
-        return false;
+    public Optional<Integer> containsWebsiteInfoWithLinkInfo(LinkInfo linkInfo) {
+        return Optional.empty();
     }
 
     @Override

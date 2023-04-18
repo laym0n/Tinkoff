@@ -9,4 +9,6 @@
 
     <include file="01-schema-1.sql"/>
     <include file="02-schema-2.sql"/>
+    <include file="AddingAdditionalTablesOfSiteInformation.sql"/>
+    <include file="AddingColumnLastActivityTimeToGitHubInfo.sql"/>
 </databaseChangeLog>

@@ -6,5 +6,4 @@ import java.util.List;
 
 public interface CheckUpdateLinksDAService {
     List<WebsiteInfo> getListWebsiteInfoByLastCheckTime(int count);
-    WebsiteInfo getWebsiteInfoByLastCheckTime();
 }

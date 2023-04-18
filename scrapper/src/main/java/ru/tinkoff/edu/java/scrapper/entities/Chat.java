@@ -5,6 +5,7 @@ import lombok.*;
 @Getter
 @Setter
 @EqualsAndHashCode
+@NoArgsConstructor
 @AllArgsConstructor
 public class Chat {
     private int id;

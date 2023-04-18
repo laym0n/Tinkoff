@@ -10,7 +10,7 @@ import java.util.Optional;
 public interface TrackedLinkDAService {
     List<TrackedLink> getAllTrackedLinksByChatId(int idChat);
     boolean containsChatWithId(int chatId);
-    boolean containsWebsiteInfoWithLinkInfo(LinkInfo linkInfo);
+    Optional<Integer> containsWebsiteInfoWithLinkInfo(LinkInfo linkInfo);
     boolean containsTrackedLinkWithIdChatAndLinkInfo(int idChat, LinkInfo linkInfoForRemove);
     TrackedLink createTrackedLink(TrackedLink trackedLink);
     void createWebsiteInfo(WebsiteInfo websiteInfo);

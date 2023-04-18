@@ -51,14 +51,16 @@ public class ManageLinksUseCaseImpl implements ManageLinksUseCase {
             throw new InvalidParameterException("Link with path " + addLinkRequest.getLink() + " already " +
                     "tracked in chat with id " + idChat);
 
-        boolean isAlreadyWebsiteInfoSaved =
+        Optional<Integer> optionalIdAlreadySavedWebsiteInfo =
                 trackedLinkDAService.containsWebsiteInfoWithLinkInfo(linkInfoForAdd);
-        if(!isAlreadyWebsiteInfoSaved){
+        int idAlreadySavedWebsiteInfo = optionalIdAlreadySavedWebsiteInfo.orElse(0);
+        if(!optionalIdAlreadySavedWebsiteInfo.isEmpty()){
             WebsiteInfo newWebsiteInfo = websiteInfoWebClient.getWebSiteInfoByLinkInfo(linkInfoForAdd);
             trackedLinkDAService.createWebsiteInfo(newWebsiteInfo);
+            idAlreadySavedWebsiteInfo = newWebsiteInfo.getId();
         }
 
-        TrackedLink newTrackedLink = new TrackedLink(idChat, linkInfoForAdd);
+        TrackedLink newTrackedLink = new TrackedLink(idChat, linkInfoForAdd, idAlreadySavedWebsiteInfo);
         newTrackedLink = trackedLinkDAService.createTrackedLink(newTrackedLink);
 
         return newTrackedLink;
