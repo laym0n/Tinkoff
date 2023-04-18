@@ -4,6 +4,7 @@ import ru.tinkoff.edu.java.scrapper.entities.websiteinfo.stackoverflow.StackOver
 import ru.tinkoff.edu.java.scrapper.entities.websiteinfo.stackoverflow.StackOverflowComment;
 
 import javax.sql.DataSource;
+import java.time.OffsetDateTime;
 import java.util.Collection;
 import java.util.List;
 
@@ -25,5 +26,10 @@ public class JDBCStackOverflowCommentDAO extends JDBCDAO{
                 .map(i-> new Object[] {i.getIdComment(), idWebsiteInfo})
                 .toList();
         jdbcTemplate.batchUpdate(sql, batchArgs);
+    }
+    public Collection<StackOverflowComment> findAll(int idStackOverflowInfo){
+        return jdbcTemplate.query("select * from stack_overflow_comment where website_info_id = ?",
+                (rs, rowNum) -> new StackOverflowComment(rs.getInt("id")),
+                idStackOverflowInfo);
     }
 }

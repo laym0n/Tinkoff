@@ -9,6 +9,7 @@ import java.util.Objects;
 @AllArgsConstructor
 @NoArgsConstructor
 @EqualsAndHashCode
+@ToString
 @Getter
 @Setter
 public class StackOverflowAnswer {

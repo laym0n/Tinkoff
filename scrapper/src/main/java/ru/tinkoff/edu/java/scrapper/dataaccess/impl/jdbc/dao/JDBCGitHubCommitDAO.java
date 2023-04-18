@@ -2,6 +2,7 @@ package ru.tinkoff.edu.java.scrapper.dataaccess.impl.jdbc.dao;
 
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.RowMapper;
+import ru.tinkoff.edu.java.scrapper.entities.websiteinfo.github.GitHubBranch;
 import ru.tinkoff.edu.java.scrapper.entities.websiteinfo.github.GitHubCommit;
 import javax.sql.DataSource;
 import java.util.Collection;
@@ -27,7 +28,7 @@ public class JDBCGitHubCommitDAO extends JDBCDAO {
     }
     public Collection<GitHubCommit> findAll(int idGitHubInfo){
         return jdbcTemplate.query("select * from github_commit where website_info_id = ?",
-                new Object[]{idGitHubInfo},
-                new BeanPropertyRowMapper<GitHubCommit>());
+                (rs, rowNum) -> new GitHubCommit(rs.getString("sha")),
+                idGitHubInfo);
     }
 }

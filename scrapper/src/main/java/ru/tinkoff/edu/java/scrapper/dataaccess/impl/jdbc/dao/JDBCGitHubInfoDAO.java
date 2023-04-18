@@ -63,8 +63,9 @@ public class JDBCGitHubInfoDAO extends JDBCDAO {
         Map<String, GitHubCommit> commits = commitDAO.findAll(idGitHubInfo).stream()
                 .collect(Collectors.toMap(i->i.getSha(), i->i));
         GitHubInfo result = jdbcTemplate.queryForObject(
-                "select * from website_info where website_info_id = ? " +
-                " join github_info ON github_info.website_info_id = website_info.website_info_id ",
+                "select * from website_info " +
+                " join github_info ON github_info.website_info_id = website_info.id " +
+                        "where website_info.id = ? ",
                 new Object[]{idGitHubInfo},
                 (rs, rowNum) -> {
             int id = rs.getInt("website_info_id");

@@ -28,4 +28,8 @@ public final class StackOverflowInfo extends WebsiteInfo{
     public StackOverflowInfo(StackOverflowLinkInfo linkInfo) {
         this(linkInfo, new HashMap<>(), new HashMap<>());
     }
+
+    public StackOverflowInfo(int id, OffsetDateTime lastCheckUpdateDateTime, StackOverflowLinkInfo linkInfo) {
+        this(id, lastCheckUpdateDateTime, linkInfo, new HashMap<>(), new HashMap<>());
+    }
 }

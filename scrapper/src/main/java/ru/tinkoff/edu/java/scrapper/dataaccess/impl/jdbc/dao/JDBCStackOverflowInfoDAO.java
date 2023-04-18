@@ -1,14 +1,20 @@
 package ru.tinkoff.edu.java.scrapper.dataaccess.impl.jdbc.dao;
 
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
+import parserservice.dto.GitHubLinkInfo;
 import parserservice.dto.StackOverflowLinkInfo;
 import ru.tinkoff.edu.java.scrapper.dto.response.website.stackoverflow.StackOverflowAnswerResponse;
 import ru.tinkoff.edu.java.scrapper.dto.response.website.stackoverflow.StackOverflowCommentResponse;
 import ru.tinkoff.edu.java.scrapper.dto.resultofcomparewebsiteinfo.ResultOfCompareStackOverflowInfo;
+import ru.tinkoff.edu.java.scrapper.entities.websiteinfo.GitHubInfo;
 import ru.tinkoff.edu.java.scrapper.entities.websiteinfo.StackOverflowInfo;
+import ru.tinkoff.edu.java.scrapper.entities.websiteinfo.stackoverflow.StackOverflowAnswer;
+import ru.tinkoff.edu.java.scrapper.entities.websiteinfo.stackoverflow.StackOverflowComment;
+
 import javax.sql.DataSource;
 import java.time.OffsetDateTime;
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class JDBCStackOverflowInfoDAO extends JDBCDAO{
     private JDBCStackOverflowAnswerDAO answerDAO;
@@ -43,6 +49,7 @@ public class JDBCStackOverflowInfoDAO extends JDBCDAO{
                         "VALUES (:website_info_id, :answer_id);", paramMap);
         commentDAO.addAll(newStackOverflowInfo.getComments().values(), websiteInfoId);
         answerDAO.addAll(newStackOverflowInfo.getAnswers().values(), websiteInfoId);
+        newStackOverflowInfo.setId(websiteInfoId);
     }
     public void applyChanges(ResultOfCompareStackOverflowInfo changes){
         jdbcTemplate.update("UPDATE website_info SET last_update_date_time = ? WHERE id = ?",
@@ -53,5 +60,27 @@ public class JDBCStackOverflowInfoDAO extends JDBCDAO{
                 .map(StackOverflowCommentResponse::getStackOverflowComment).toList(), changes.getIdWebsiteInfo());
         answerDAO.addAll(Arrays.stream(changes.getAddedAnswers())
                 .map(StackOverflowAnswerResponse::getStackOverflowAnswer).toList(), changes.getIdWebsiteInfo());
+    }
+    public StackOverflowInfo getById(int idStackOverflowInfo){
+        StackOverflowInfo result = jdbcTemplate.queryForObject(
+                "select * from website_info " +
+                        " join stackoverflow_info ON stackoverflow_info.website_info_id = website_info.id " +
+                        "where website_info.id = ? ",
+                new Object[]{idStackOverflowInfo},
+                (rs, rowNum) -> {
+                    int id = rs.getInt("website_info_id");
+                    OffsetDateTime lastUpdateTime = rs.getObject("last_update_date_time", OffsetDateTime.class);
+                    int idQuestion = rs.getInt("answer_id");
+                    StackOverflowLinkInfo linkInfo = new StackOverflowLinkInfo(idQuestion);
+                    StackOverflowInfo resultOfMapRows = new StackOverflowInfo(id, lastUpdateTime, linkInfo);
+                    return resultOfMapRows;
+                });
+        Map<Integer, StackOverflowComment> comments = commentDAO.findAll(idStackOverflowInfo).stream()
+                .collect(Collectors.toMap(i->i.getIdComment(), i->i));
+        Map<Integer, StackOverflowAnswer> answers = answerDAO.findAll(idStackOverflowInfo).stream()
+                .collect(Collectors.toMap(i->i.getIdAnswer(), i->i));
+        result.setAnswers(answers);
+        result.setComments(comments);
+        return result;
     }
 }

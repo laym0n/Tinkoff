@@ -4,6 +4,7 @@ import ru.tinkoff.edu.java.scrapper.entities.websiteinfo.github.GitHubBranch;
 import ru.tinkoff.edu.java.scrapper.entities.websiteinfo.stackoverflow.StackOverflowAnswer;
 
 import javax.sql.DataSource;
+import java.time.OffsetDateTime;
 import java.util.Collection;
 import java.util.List;
 
@@ -25,5 +26,16 @@ public class JDBCStackOverflowAnswerDAO extends JDBCDAO{
                 .map(i-> new Object[] {i.getIdAnswer(), idWebsiteInfo})
                 .toList();
         jdbcTemplate.batchUpdate(sql, batchArgs);
+    }
+    public Collection<StackOverflowAnswer> findAll(int idStackOverflowInfo){
+        return jdbcTemplate.query("select * from stack_overflow_answer where website_info_id = ?",
+                (rs, rowNum) ->
+                {
+                    int id = rs.getInt("id");
+                    String userName = rs.getString("user_name");
+                    OffsetDateTime lastEditDateTime = rs.getObject("last_edit_date_time", OffsetDateTime.class);
+                    return new StackOverflowAnswer(id, userName, lastEditDateTime);
+                },
+                idStackOverflowInfo);
     }
 }

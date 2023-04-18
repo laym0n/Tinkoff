@@ -11,7 +11,10 @@ import ru.tinkoff.edu.java.scrapper.entities.websiteinfo.github.GitHubBranch;
 import ru.tinkoff.edu.java.scrapper.entities.websiteinfo.github.GitHubCommit;
 import javax.sql.DataSource;
 import java.time.OffsetDateTime;
+import java.time.ZoneOffset;
+import java.time.temporal.ChronoUnit;
 import java.util.Map;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class JDBCGitHubDAOTest extends IntegrationEnvironment{
     @Test
@@ -46,6 +49,29 @@ public class JDBCGitHubDAOTest extends IntegrationEnvironment{
         SUT.add(argumentForSUT);
 
         //Assert
-//        GitHubInfo resultOfLoad = SUT.getById(argumentForSUT.getId());
+        GitHubInfo resultOfLoad = SUT.getById(argumentForSUT.getId());
+
+        Map<String, GitHubBranch> expectedBranches = Map.of(
+                "hw1", new GitHubBranch("hw1"),
+                "hw2", new GitHubBranch("hw2")
+        );
+        assertEquals(expectedBranches, resultOfLoad.getBranches(), ()->"Expected branches is" + expectedBranches +
+                " but result is " + resultOfLoad.getBranches());
+
+        Map<String, GitHubCommit> expectedCommits = Map.of(
+                "12345", new GitHubCommit("12345"),
+                "12346", new GitHubCommit("12346")
+        );
+        assertEquals(expectedCommits, resultOfLoad.getCommits(), ()->"Expected commits is" + expectedCommits +
+                " but result is " + resultOfLoad.getCommits());
+
+        GitHubLinkInfo expectedLinkInfo = new GitHubLinkInfo("sanyarnd", "tinkoff-java-course-2022");
+        assertEquals(expectedLinkInfo, resultOfLoad.getLinkInfo(),
+                ()->"Expected link info is " + expectedLinkInfo + " but result is " + resultOfLoad.getLinkInfo());
+
+        assertEquals(lastActiveTime.toLocalDateTime().truncatedTo(ChronoUnit.SECONDS),
+                resultOfLoad.getLastActiveTime().toLocalDateTime().truncatedTo(ChronoUnit.SECONDS),
+                ()->"Expected result of last active time is " + lastActiveTime +
+                " but result is " + resultOfLoad.getLastActiveTime());
     }
 }
