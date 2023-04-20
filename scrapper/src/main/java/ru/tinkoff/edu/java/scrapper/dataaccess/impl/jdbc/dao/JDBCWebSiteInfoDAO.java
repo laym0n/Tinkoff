@@ -1,12 +1,28 @@
 package ru.tinkoff.edu.java.scrapper.dataaccess.impl.jdbc.dao;
 
-import parserservice.dto.LinkInfo;
+import lombok.AllArgsConstructor;
+import ru.tinkoff.edu.java.scrapper.dataaccess.impl.jdbc.dao.websiteinfochaindao.JDBCChainWebsiteInfoDAO;
 import ru.tinkoff.edu.java.scrapper.entities.websiteinfo.WebsiteInfo;
+import javax.sql.DataSource;
+import java.util.List;
 
-import java.util.Optional;
+public class JDBCWebsiteInfoDAO extends JDBCDAO{
+    private JDBCChainWebsiteInfoDAO chainWebsiteInfoDAO;
 
-public interface JDBCWebsiteInfoDAO {
-    String getQueryForFindIdByLinkInfo(LinkInfo linkInfo);
-    void create(WebsiteInfo newWebsiteInfo);
-    Optional<Integer> findIdByLinkInfo(LinkInfo linkInfo);
+    public JDBCWebsiteInfoDAO(DataSource dataSource, JDBCChainWebsiteInfoDAO chainWebsiteInfoDAO) {
+        super(dataSource);
+        this.chainWebsiteInfoDAO = chainWebsiteInfoDAO;
+    }
+
+    public List<WebsiteInfo> loadWebsiteInfoWithTheEarliestUpdateTime(int count){
+        return jdbcTemplate.query("SELECT wi.id, wit.name " +
+                        "FROM website_info wi " +
+                        "JOIN website_info_type wit ON wi.type_id = wit.id " +
+                        "ORDER BY wi.last_update_date_time ASC, wi.id ASC " +
+                        "LIMIT ?;",
+                (rs, rowNum) -> {
+                    return chainWebsiteInfoDAO.loadWebsiteInfo(rs.getString("name"), rs.getInt("id"));
+                },
+                count);
+    }
 }

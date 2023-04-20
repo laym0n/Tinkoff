@@ -7,12 +7,10 @@ import ru.tinkoff.edu.java.scrapper.entities.websiteinfo.stackoverflow.StackOver
 import java.time.OffsetDateTime;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
-@AllArgsConstructor
-@Getter
-@Setter
-@EqualsAndHashCode
-@ToString
+@Data
+@ToString(callSuper = true)
 public final class StackOverflowInfo extends WebsiteInfo{
     private StackOverflowLinkInfo linkInfo;
     private Map<Integer, StackOverflowComment> comments;
@@ -26,10 +24,19 @@ public final class StackOverflowInfo extends WebsiteInfo{
     }
 
     public StackOverflowInfo(StackOverflowLinkInfo linkInfo) {
-        this(linkInfo, new HashMap<>(), new HashMap<>());
+        this(0, OffsetDateTime.now(), linkInfo, new HashMap<>(), new HashMap<>());
     }
 
     public StackOverflowInfo(int id, OffsetDateTime lastCheckUpdateDateTime, StackOverflowLinkInfo linkInfo) {
         this(id, lastCheckUpdateDateTime, linkInfo, new HashMap<>(), new HashMap<>());
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
+        StackOverflowInfo that = (StackOverflowInfo) o;
+        return Objects.equals(getLinkInfo(), that.getLinkInfo()) && Objects.equals(getComments(), that.getComments()) && Objects.equals(getAnswers(), that.getAnswers());
     }
 }

@@ -54,7 +54,7 @@ public class ManageLinksUseCaseImpl implements ManageLinksUseCase {
         Optional<Integer> optionalIdAlreadySavedWebsiteInfo =
                 trackedLinkDAService.containsWebsiteInfoWithLinkInfo(linkInfoForAdd);
         int idAlreadySavedWebsiteInfo = optionalIdAlreadySavedWebsiteInfo.orElse(0);
-        if(!optionalIdAlreadySavedWebsiteInfo.isEmpty()){
+        if(optionalIdAlreadySavedWebsiteInfo.isEmpty()){
             WebsiteInfo newWebsiteInfo = websiteInfoWebClient.getWebSiteInfoByLinkInfo(linkInfoForAdd);
             trackedLinkDAService.createWebsiteInfo(newWebsiteInfo);
             idAlreadySavedWebsiteInfo = newWebsiteInfo.getId();

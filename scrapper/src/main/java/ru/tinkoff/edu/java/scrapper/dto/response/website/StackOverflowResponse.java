@@ -6,6 +6,8 @@ import ru.tinkoff.edu.java.scrapper.dto.response.website.stackoverflow.*;
 import ru.tinkoff.edu.java.scrapper.entities.websiteinfo.StackOverflowInfo;
 import ru.tinkoff.edu.java.scrapper.entities.websiteinfo.stackoverflow.StackOverflowAnswer;
 import ru.tinkoff.edu.java.scrapper.entities.websiteinfo.stackoverflow.StackOverflowComment;
+
+import java.time.OffsetDateTime;
 import java.util.Arrays;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -25,7 +27,7 @@ public final class StackOverflowResponse implements WebsiteResponse{
         Map<Integer, StackOverflowComment> newComments = Arrays.stream(comments.getItems())
                 .map(StackOverflowCommentResponse::getStackOverflowComment)
                 .collect(Collectors.toMap(i->i.getIdComment(), i->i));
-        StackOverflowInfo result = new StackOverflowInfo(linkInfo, newComments, newAnswers);
+        StackOverflowInfo result = new StackOverflowInfo(0, OffsetDateTime.now(), linkInfo, newComments, newAnswers);
         return result;
     }
 }

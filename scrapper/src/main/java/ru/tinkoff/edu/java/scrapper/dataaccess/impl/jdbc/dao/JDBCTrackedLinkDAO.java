@@ -5,6 +5,7 @@ import org.springframework.jdbc.core.PreparedStatementCreator;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import parserservice.dto.LinkInfo;
+import ru.tinkoff.edu.java.scrapper.dataaccess.impl.jdbc.dao.websiteinfochaindao.JDBCChainWebsiteInfoDAO;
 import ru.tinkoff.edu.java.scrapper.entities.TrackedLink;
 
 import javax.sql.DataSource;
@@ -13,7 +14,7 @@ import java.util.List;
 import java.util.Optional;
 
 public class JDBCTrackedLinkDAO extends JDBCDAO {
-    private JDBCWebsiteInfoDAO websiteInfoDAO;
+    private JDBCChainWebsiteInfoDAO websiteInfoDAO;
     public JDBCTrackedLinkDAO(DataSource dataSource) {
         super(dataSource);
     }

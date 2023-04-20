@@ -1,6 +1,7 @@
 package ru.tinkoff.edu.java.scrapper.entities.websiteinfo;
 
 import lombok.*;
+import org.apache.commons.lang3.builder.EqualsExclude;
 import parserservice.dto.GitHubLinkInfo;
 import ru.tinkoff.edu.java.scrapper.entities.websiteinfo.github.GitHubBranch;
 import ru.tinkoff.edu.java.scrapper.entities.websiteinfo.github.GitHubCommit;
@@ -9,15 +10,13 @@ import java.util.HashMap;
 import java.util.Map;
 
 
-@AllArgsConstructor
-@Getter
-@Setter
-@EqualsAndHashCode
-@ToString
+@Data
+@ToString(callSuper = true)
 public final class GitHubInfo extends WebsiteInfo{
     private GitHubLinkInfo linkInfo;
     private Map<String, GitHubBranch> branches;
     private Map<String, GitHubCommit> commits;
+    @EqualsExclude
     private OffsetDateTime lastActiveTime;
 
     public GitHubInfo(int id, OffsetDateTime lastCheckUpdateDateTime, GitHubLinkInfo linkInfo, OffsetDateTime lastActiveTime) {
@@ -37,6 +36,15 @@ public final class GitHubInfo extends WebsiteInfo{
     }
 
     public GitHubInfo(GitHubLinkInfo linkInfo, OffsetDateTime lastActiveTime) {
-        this(linkInfo, new HashMap<>(), new HashMap<>(), lastActiveTime);
+        this(0, OffsetDateTime.now(), linkInfo, new HashMap<>(), new HashMap<>(), lastActiveTime);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
+        GitHubInfo that = (GitHubInfo) o;
+        return getLinkInfo().equals(that.getLinkInfo()) && getBranches().equals(that.getBranches()) && getCommits().equals(that.getCommits());
     }
 }

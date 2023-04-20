@@ -1,7 +1,5 @@
 package ru.tinkoff.edu.java.scrapper.dataaccess.impl.jdbc.dao;
 
-import lombok.AllArgsConstructor;
-import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import parserservice.dto.GitHubLinkInfo;
 import ru.tinkoff.edu.java.scrapper.dto.response.website.github.GitHubBranchResponse;
@@ -12,8 +10,6 @@ import ru.tinkoff.edu.java.scrapper.entities.websiteinfo.github.GitHubBranch;
 import ru.tinkoff.edu.java.scrapper.entities.websiteinfo.github.GitHubCommit;
 
 import javax.sql.DataSource;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.time.OffsetDateTime;
 import java.util.*;
 import java.util.stream.Collectors;

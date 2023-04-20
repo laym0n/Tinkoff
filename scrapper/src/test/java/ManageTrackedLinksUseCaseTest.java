@@ -33,22 +33,23 @@ public class ManageTrackedLinksUseCaseTest {
         //Assign
         final int idChat = 1;
         final int expectedIdTrackedLink = 100;
+        final int expectedIfWebsiteInfo = 200;
         final String path = "https://github.com/sanyarnd/tinkoff-java-course-2022/";
 
         ParserLinks parserLinks = new ParserLinksFactoryImpl().getParserLinks();
         final LinkInfo expectedLinkInfo = parserLinks.parse(path);
 
         TrackedLink expectedResultFromSUT =
-                new TrackedLink(expectedIdTrackedLink, idChat, expectedIdTrackedLink, expectedLinkInfo);
-        TrackedLink expectedArgumentForDAService = new TrackedLink(idChat, expectedLinkInfo, expectedIdTrackedLink);
+                new TrackedLink(expectedIdTrackedLink, idChat, expectedIfWebsiteInfo, expectedLinkInfo);
+        TrackedLink expectedArgumentForDAService = new TrackedLink(expectedIdTrackedLink, idChat, expectedIfWebsiteInfo, expectedLinkInfo);
 
         TrackedLinkDAService trackedLinkDAService = mock(TrackedLinkDAService.class);
         when(trackedLinkDAService.containsChatWithId(eq(idChat))).thenReturn(true);
         when(trackedLinkDAService
                 .containsTrackedLinkWithIdChatAndLinkInfo(eq(idChat), eq(expectedLinkInfo)))
         .thenReturn(false);
-//        when(trackedLinkDAService.containsWebsiteInfoWithLinkInfo(eq(expectedLinkInfo)))
-//                .thenReturn(true);
+        when(trackedLinkDAService.containsWebsiteInfoWithLinkInfo(expectedLinkInfo))
+                .thenReturn(Optional.of(expectedIfWebsiteInfo));
         when(trackedLinkDAService.createTrackedLink(any(TrackedLink.class))).thenAnswer(i-> {
             ((TrackedLink)i.getArgument(0)).setId(expectedIdTrackedLink);
             return i.getArgument(0);
@@ -81,14 +82,15 @@ public class ManageTrackedLinksUseCaseTest {
         //Assign
         final int idChat = 1;
         final int expectedIdTrackedLink = 100;
+        final int expectedIdWebsiteInfo = 0;
         final String path = "https://github.com/sanyarnd/tinkoff-java-course-2022/";
 
         ParserLinks parserLinks = new ParserLinksFactoryImpl().getParserLinks();
         final LinkInfo expectedLinkInfo = parserLinks.parse(path);
 
         TrackedLink expectedResultFromSUT =
-                new TrackedLink(expectedIdTrackedLink, idChat, expectedIdTrackedLink, expectedLinkInfo);
-        TrackedLink expectedArgumentForDAService = new TrackedLink(idChat, expectedLinkInfo, expectedIdTrackedLink);
+                new TrackedLink(expectedIdTrackedLink, idChat, expectedIdWebsiteInfo, expectedLinkInfo);
+        TrackedLink expectedArgumentForDAService = new TrackedLink(expectedIdTrackedLink, idChat, expectedIdWebsiteInfo, expectedLinkInfo);
 
         WebsiteInfo gitHubInfo = new GitHubInfo((GitHubLinkInfo) expectedLinkInfo, OffsetDateTime.now());
 
@@ -100,8 +102,8 @@ public class ManageTrackedLinksUseCaseTest {
         when(trackedLinkDAService
                 .containsTrackedLinkWithIdChatAndLinkInfo(eq(idChat), eq(expectedLinkInfo)))
                 .thenReturn(false);
-//        when(trackedLinkDAService.containsWebsiteInfoWithLinkInfo(eq(expectedLinkInfo)))
-//                .thenReturn(false);
+        when(trackedLinkDAService.containsWebsiteInfoWithLinkInfo(eq(expectedLinkInfo)))
+                .thenReturn(Optional.empty());
         when(trackedLinkDAService.createTrackedLink(any(TrackedLink.class))).thenAnswer(i-> {
             ((TrackedLink)i.getArgument(0)).setId(expectedIdTrackedLink);
             return i.getArgument(0);
