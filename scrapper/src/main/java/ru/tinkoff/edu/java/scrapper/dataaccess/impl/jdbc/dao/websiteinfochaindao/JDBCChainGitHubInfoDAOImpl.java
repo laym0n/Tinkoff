@@ -13,12 +13,6 @@ import java.util.Optional;
 public class JDBCChainGitHubInfoDAOImpl implements JDBCChainWebsiteInfoDAO {
     private JDBCGitHubInfoDAO gitHubInfoDAO;
     private JDBCChainWebsiteInfoDAO nextChain;
-    @Override
-    public String getQueryForFindIdByLinkInfo(LinkInfo linkInfo) {
-        if(!(linkInfo instanceof GitHubLinkInfo))
-            return nextChain == null ? null : nextChain.getQueryForFindIdByLinkInfo(linkInfo);
-        return gitHubInfoDAO.getQueryForFindIdByLinkInfo((GitHubLinkInfo) linkInfo);
-    }
 
     @Override
     public void create(WebsiteInfo newWebsiteInfo) {
@@ -42,5 +36,13 @@ public class JDBCChainGitHubInfoDAOImpl implements JDBCChainWebsiteInfoDAO {
             return nextChain == null ? null : nextChain.loadWebsiteInfo(websiteInfoType, idWebsiteInfo);
         }
         return gitHubInfoDAO.getById(idWebsiteInfo);
+    }
+
+    @Override
+    public LinkInfo loadLinkInfoForWebsiteById(int idWebsiteInfo, String websiteType) {
+        if(!websiteType.equals("GitHub")){
+            return nextChain == null ? null : nextChain.loadLinkInfoForWebsiteById(idWebsiteInfo, websiteType);
+        }
+        return gitHubInfoDAO.getLinkInfoById(idWebsiteInfo);
     }
 }

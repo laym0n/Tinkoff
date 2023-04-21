@@ -13,12 +13,6 @@ import java.util.Optional;
 public class JDBCChainStackOverflowInfoDAOImpl implements JDBCChainWebsiteInfoDAO {
     private JDBCStackOverflowInfoDAO stackOverflowDAO;
     private JDBCChainWebsiteInfoDAO nextChain;
-    @Override
-    public String getQueryForFindIdByLinkInfo(LinkInfo linkInfo) {
-        if(!(linkInfo instanceof GitHubLinkInfo))
-            return nextChain == null ? null : nextChain.getQueryForFindIdByLinkInfo(linkInfo);
-        return stackOverflowDAO.getQueryForFindIdByLinkInfo((StackOverflowLinkInfo) linkInfo);
-    }
 
     @Override
     public void create(WebsiteInfo newWebsiteInfo) {
@@ -32,7 +26,7 @@ public class JDBCChainStackOverflowInfoDAOImpl implements JDBCChainWebsiteInfoDA
 
     @Override
     public Optional<Integer> findIdByLinkInfo(LinkInfo linkInfo) {
-        if(!(linkInfo instanceof GitHubLinkInfo))
+        if(!(linkInfo instanceof StackOverflowLinkInfo))
             return nextChain == null ? null : nextChain.findIdByLinkInfo(linkInfo);
         return stackOverflowDAO.findIdByLinkInfo((StackOverflowLinkInfo) linkInfo);
     }
@@ -43,5 +37,13 @@ public class JDBCChainStackOverflowInfoDAOImpl implements JDBCChainWebsiteInfoDA
             return nextChain == null ? null : nextChain.loadWebsiteInfo(websiteInfoType, idWebsiteInfo);
         }
         return stackOverflowDAO.getById(idWebsiteInfo);
+    }
+
+    @Override
+    public LinkInfo loadLinkInfoForWebsiteById(int idWebsiteInfo, String websiteType) {
+        if(!websiteType.equals("StackOverflow")){
+            return nextChain == null ? null : nextChain.loadLinkInfoForWebsiteById(idWebsiteInfo, websiteType);
+        }
+        return stackOverflowDAO.loadLinkInfo(idWebsiteInfo);
     }
 }

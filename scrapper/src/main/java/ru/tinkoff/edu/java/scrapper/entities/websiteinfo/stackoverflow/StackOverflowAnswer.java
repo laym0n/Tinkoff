@@ -5,6 +5,7 @@ import org.apache.commons.lang3.builder.EqualsExclude;
 import org.apache.commons.lang3.builder.HashCodeExclude;
 
 import java.time.OffsetDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.Objects;
 
 @AllArgsConstructor
@@ -23,7 +24,9 @@ public class StackOverflowAnswer {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         StackOverflowAnswer answer = (StackOverflowAnswer) o;
-        return getIdAnswer() == answer.getIdAnswer() && getUserName().equals(answer.getUserName());
+        return getIdAnswer() == answer.getIdAnswer() && getUserName().equals(answer.getUserName()) &&
+                lastEditDate.toLocalDateTime().truncatedTo(ChronoUnit.SECONDS)
+                        .equals(answer.getLastEditDate().toLocalDateTime().truncatedTo(ChronoUnit.SECONDS));
     }
 
     @Override

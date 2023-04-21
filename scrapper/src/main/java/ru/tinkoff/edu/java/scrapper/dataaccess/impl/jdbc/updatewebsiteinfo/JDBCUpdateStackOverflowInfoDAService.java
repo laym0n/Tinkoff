@@ -4,6 +4,7 @@ import ru.tinkoff.edu.java.scrapper.dataaccess.impl.jdbc.dao.JDBCStackOverflowIn
 import ru.tinkoff.edu.java.scrapper.dataaccess.impl.jdbc.dao.JDBCTrackedLinkDAO;
 import ru.tinkoff.edu.java.scrapper.dto.resultofcomparewebsiteinfo.ResultOfCompareStackOverflowInfo;
 
+
 public class JDBCUpdateStackOverflowInfoDAService extends JDBCUpdateWebsiteInfo<ResultOfCompareStackOverflowInfo> {
     private JDBCStackOverflowInfoDAO stackOverflowDAO;
 

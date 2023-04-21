@@ -5,6 +5,8 @@ import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.ArgumentsProvider;
 import org.junit.jupiter.params.provider.ArgumentsSource;
 import org.mockito.ArgumentCaptor;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.transaction.annotation.Transactional;
 import parserservice.dto.StackOverflowLinkInfo;
 import ru.tinkoff.edu.java.scrapper.dataaccess.UpdateWebsiteInfoDAService;
 import ru.tinkoff.edu.java.scrapper.dto.resultofcomparewebsiteinfo.ResultOfCompareStackOverflowInfo;
@@ -30,6 +32,8 @@ import java.util.stream.Stream;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
+@Transactional
+@ContextConfiguration
 public class HandlerUpdateStackOverflowInfoChainTest {
     @Test
     public void handleNotUpdatedLinkTest(){

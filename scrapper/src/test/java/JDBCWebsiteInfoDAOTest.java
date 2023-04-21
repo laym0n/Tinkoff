@@ -5,6 +5,7 @@ import org.junit.jupiter.params.provider.ArgumentsProvider;
 import org.junit.jupiter.params.provider.ArgumentsSource;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
 import org.springframework.test.annotation.Rollback;
+import org.springframework.test.context.ContextConfiguration;
 import org.springframework.transaction.annotation.Transactional;
 import parserservice.dto.GitHubLinkInfo;
 import parserservice.dto.StackOverflowLinkInfo;
@@ -26,6 +27,8 @@ import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+@Transactional
+@ContextConfiguration
 public class JDBCWebsiteInfoDAOTest extends IntegrationEnvironment{
     @ParameterizedTest
     @ArgumentsSource(ArgumentsProviderValidLoadTheEarliestWebsiteInfos.class)
@@ -53,31 +56,31 @@ public class JDBCWebsiteInfoDAOTest extends IntegrationEnvironment{
 
         //Assert
         assertEquals(expectedInfos.size(), resultFromSUT.size(), ()-> "Expected and loaded size of list must be equal");
-        for(int i = 0; i < expectedInfos.size(); i++) {
-            WebsiteInfo websiteInfo = expectedInfos.get(i);
-            if(websiteInfo instanceof GitHubInfo){
-                GitHubInfo expectedGitHubInfo = (GitHubInfo) expectedInfos.get(i);
-                GitHubInfo resultWebsiteInfoFromSUT = (GitHubInfo) resultFromSUT.get(i);
-                assertEquals(expectedGitHubInfo.getLinkInfo(), resultWebsiteInfoFromSUT.getLinkInfo());
-                assertEquals(expectedGitHubInfo.getCommits(), resultWebsiteInfoFromSUT.getCommits());
-                assertEquals(expectedGitHubInfo.getBranches(), resultWebsiteInfoFromSUT.getBranches());
-                assertEquals(expectedGitHubInfo.getId(), resultWebsiteInfoFromSUT.getId());
-                assertEquals(expectedGitHubInfo, resultWebsiteInfoFromSUT,
-                        ()->"Expected: " + expectedInfos +
-                        "\nLoaded: " + resultWebsiteInfoFromSUT);
-
-            }
-            else if(websiteInfo instanceof StackOverflowInfo){
-                StackOverflowInfo expectedSOInfo = (StackOverflowInfo) expectedInfos.get(i);
-                StackOverflowInfo resultSOInfo = (StackOverflowInfo) resultFromSUT.get(i);
-                assertEquals(expectedSOInfo.getComments(), resultSOInfo.getComments());
-                assertEquals(expectedSOInfo.getAnswers(), resultSOInfo.getAnswers());
-                assertEquals(expectedSOInfo.getLinkInfo(), resultSOInfo.getLinkInfo());
-                assertEquals(expectedSOInfo, resultSOInfo);
-            }
-            else
-                assertEquals(expectedInfos.get(i), resultFromSUT.get(i));
-        }
+//        for(int i = 0; i < expectedInfos.size(); i++) {
+//            WebsiteInfo websiteInfo = expectedInfos.get(i);
+//            if(websiteInfo instanceof GitHubInfo){
+//                GitHubInfo expectedGitHubInfo = (GitHubInfo) expectedInfos.get(i);
+//                GitHubInfo resultWebsiteInfoFromSUT = (GitHubInfo) resultFromSUT.get(i);
+//                assertEquals(expectedGitHubInfo.getLinkInfo(), resultWebsiteInfoFromSUT.getLinkInfo());
+//                assertEquals(expectedGitHubInfo.getCommits(), resultWebsiteInfoFromSUT.getCommits());
+//                assertEquals(expectedGitHubInfo.getBranches(), resultWebsiteInfoFromSUT.getBranches());
+//                assertEquals(expectedGitHubInfo.getId(), resultWebsiteInfoFromSUT.getId());
+//                assertEquals(expectedGitHubInfo, resultWebsiteInfoFromSUT,
+//                        ()->"Expected: " + expectedInfos +
+//                        "\nLoaded: " + resultWebsiteInfoFromSUT);
+//
+//            }
+//            else if(websiteInfo instanceof StackOverflowInfo){
+//                StackOverflowInfo expectedSOInfo = (StackOverflowInfo) expectedInfos.get(i);
+//                StackOverflowInfo resultSOInfo = (StackOverflowInfo) resultFromSUT.get(i);
+//                assertEquals(expectedSOInfo.getComments(), resultSOInfo.getComments());
+//                assertEquals(expectedSOInfo.getAnswers(), resultSOInfo.getAnswers());
+//                assertEquals(expectedSOInfo.getLinkInfo(), resultSOInfo.getLinkInfo());
+//                assertEquals(expectedSOInfo, resultSOInfo);
+//            }
+//            else
+//                assertEquals(expectedInfos.get(i), resultFromSUT.get(i));
+//        }
         assertEquals(expectedInfos, resultFromSUT,
                 ()->"Expected: " + expectedInfos +
                 "\nLoaded: " + resultFromSUT);

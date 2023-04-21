@@ -1,7 +1,10 @@
 package ru.tinkoff.edu.java.scrapper.dataaccess.impl.jdbc.dao;
 
+import org.springframework.dao.DataAccessException;
+import org.springframework.jdbc.core.ResultSetExtractor;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import parserservice.dto.GitHubLinkInfo;
+import parserservice.dto.LinkInfo;
 import parserservice.dto.StackOverflowLinkInfo;
 import ru.tinkoff.edu.java.scrapper.dto.response.website.stackoverflow.StackOverflowAnswerResponse;
 import ru.tinkoff.edu.java.scrapper.dto.response.website.stackoverflow.StackOverflowCommentResponse;
@@ -12,6 +15,8 @@ import ru.tinkoff.edu.java.scrapper.entities.websiteinfo.stackoverflow.StackOver
 import ru.tinkoff.edu.java.scrapper.entities.websiteinfo.stackoverflow.StackOverflowComment;
 
 import javax.sql.DataSource;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.time.OffsetDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -30,8 +35,14 @@ public class JDBCStackOverflowInfoDAO extends JDBCDAO{
         return "select website_info_id from stackoverflow_info where answer_id = " + linkInfo.idQuestion();
     }
     public Optional<Integer> findIdByLinkInfo(StackOverflowLinkInfo linkInfo){
-        Integer id = jdbcTemplate.queryForObject(getQueryForFindIdByLinkInfo(linkInfo), Integer.class);
-        return Optional.ofNullable(id);
+        Optional<Integer> resultId = jdbcTemplate.query("select website_info_id from stackoverflow_info where answer_id = ?",
+                rs -> {
+            if(!rs.next()){
+                return Optional.empty();
+            }
+            return Optional.of(rs.getInt("website_info_id"));
+                }, linkInfo.idQuestion());
+        return resultId;
     }
     public void add(StackOverflowInfo newStackOverflowInfo){
         Map<String, Object> paramMap = new HashMap<>();
@@ -60,6 +71,8 @@ public class JDBCStackOverflowInfoDAO extends JDBCDAO{
                 .map(StackOverflowCommentResponse::getStackOverflowComment).toList(), changes.getIdWebsiteInfo());
         answerDAO.addAll(Arrays.stream(changes.getAddedAnswers())
                 .map(StackOverflowAnswerResponse::getStackOverflowAnswer).toList(), changes.getIdWebsiteInfo());
+        answerDAO.updateLastEditForAll(Arrays.stream(changes.getEditedAnswers())
+                .map(StackOverflowAnswerResponse::getStackOverflowAnswer).toList(), changes.getIdWebsiteInfo());
     }
     public StackOverflowInfo getById(int idStackOverflowInfo){
         StackOverflowInfo result = jdbcTemplate.queryForObject(
@@ -82,5 +95,12 @@ public class JDBCStackOverflowInfoDAO extends JDBCDAO{
         result.setAnswers(answers);
         result.setComments(comments);
         return result;
+    }
+
+    public StackOverflowLinkInfo loadLinkInfo(int idWebsiteInfo) {
+        int idAnswer = jdbcTemplate.queryForObject("select soi.answer_id from stackoverflow_info soi " +
+                        "where soi.website_info_id = ?",
+                Integer.class, idWebsiteInfo);
+        return new StackOverflowLinkInfo(idAnswer);
     }
 }

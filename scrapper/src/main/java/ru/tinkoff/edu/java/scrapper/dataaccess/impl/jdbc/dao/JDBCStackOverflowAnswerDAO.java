@@ -1,6 +1,5 @@
 package ru.tinkoff.edu.java.scrapper.dataaccess.impl.jdbc.dao;
 
-import ru.tinkoff.edu.java.scrapper.entities.websiteinfo.github.GitHubBranch;
 import ru.tinkoff.edu.java.scrapper.entities.websiteinfo.stackoverflow.StackOverflowAnswer;
 
 import javax.sql.DataSource;
@@ -37,5 +36,12 @@ public class JDBCStackOverflowAnswerDAO extends JDBCDAO{
                     return new StackOverflowAnswer(id, userName, lastEditDateTime);
                 },
                 idStackOverflowInfo);
+    }
+    public void updateLastEditForAll(Collection<StackOverflowAnswer> answers, int idWebsiteInfo){
+        List<Object[]> batchArgs = answers.stream()
+                .map(i-> new Object[] {i.getLastEditDate(), idWebsiteInfo,i.getIdAnswer()})
+                .toList();
+        jdbcTemplate.batchUpdate("update stack_overflow_answer SET last_edit_date_time = ? where " +
+                "website_info_id = ? and id = ?", batchArgs);
     }
 }

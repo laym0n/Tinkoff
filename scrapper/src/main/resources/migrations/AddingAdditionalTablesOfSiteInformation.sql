@@ -6,7 +6,7 @@ sha VARCHAR(40) NOT NULL,
 website_info_id INT NOT NULL,
 PRIMARY KEY (sha, website_info_id),
 FOREIGN KEY (website_info_id)
-REFERENCES github_info (website_info_id)
+REFERENCES github_info (website_info_id) on delete cascade
 );
 
 --changeset nvoxland:11
@@ -15,7 +15,7 @@ name VARCHAR(40) NOT NULL,
 website_info_id INT NOT NULL,
 PRIMARY KEY (name, website_info_id),
 FOREIGN KEY (website_info_id)
-REFERENCES github_info (website_info_id)
+REFERENCES github_info (website_info_id) on delete cascade
 );
 
 --changeset nvoxland:12
@@ -24,7 +24,7 @@ id INT NOT NULL,
 website_info_id INT NOT NULL,
 PRIMARY KEY (id, website_info_id),
 FOREIGN KEY (website_info_id)
-REFERENCES stackoverflow_info (website_info_id)
+REFERENCES stackoverflow_info (website_info_id) on delete cascade
 );
 
 --changeset nvoxland:13
@@ -35,5 +35,5 @@ last_edit_date_time TIMESTAMP NOT NULL,
 website_info_id INT,
 PRIMARY KEY (id, website_info_id),
 FOREIGN KEY (website_info_id)
-REFERENCES stackoverflow_info (website_info_id)
+REFERENCES stackoverflow_info (website_info_id) on delete cascade
 );

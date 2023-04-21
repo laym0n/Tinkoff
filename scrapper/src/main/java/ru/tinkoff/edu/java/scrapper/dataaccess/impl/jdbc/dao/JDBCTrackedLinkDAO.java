@@ -3,64 +3,86 @@ package ru.tinkoff.edu.java.scrapper.dataaccess.impl.jdbc.dao;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.PreparedStatementCreator;
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import parserservice.dto.LinkInfo;
 import ru.tinkoff.edu.java.scrapper.dataaccess.impl.jdbc.dao.websiteinfochaindao.JDBCChainWebsiteInfoDAO;
 import ru.tinkoff.edu.java.scrapper.entities.TrackedLink;
 
 import javax.sql.DataSource;
+import java.security.InvalidParameterException;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.time.OffsetDateTime;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.stream.IntStream;
 
 public class JDBCTrackedLinkDAO extends JDBCDAO {
     private JDBCChainWebsiteInfoDAO websiteInfoDAO;
-    public JDBCTrackedLinkDAO(DataSource dataSource) {
+
+    public JDBCTrackedLinkDAO(DataSource dataSource, JDBCChainWebsiteInfoDAO websiteInfoDAO) {
         super(dataSource);
+        this.websiteInfoDAO = websiteInfoDAO;
     }
+
     public void add(TrackedLink newTrackedLink){
-        String sql = "INSERT INTO tracked_link (website_info_id, chat_id) VALUES (?, ?)";
+        Map<String, Object> paramMap = new HashMap<>();
+        paramMap.put("website_info_id", newTrackedLink.getIdWebsiteInfo());
+        paramMap.put("chat_id", newTrackedLink.getIdChat());
+        NamedParameterJdbcTemplate namedParameterJdbcTemplate = new NamedParameterJdbcTemplate(jdbcTemplate);
+        int idAddedTrackedLink = namedParameterJdbcTemplate.queryForObject(
+                "INSERT INTO tracked_link (website_info_id, chat_id) VALUES (:website_info_id, :chat_id) RETURNING id; ",
+                paramMap, Integer.class);
 
-        PreparedStatementCreator psc = connection -> {
-            PreparedStatement ps = connection.prepareStatement(sql, new String[] {"id"});
-            ps.setString(newTrackedLink.getIdWebsiteInfo(), "website_info_id");
-            ps.setString(newTrackedLink.getIdChat(), "chat_id");
-            return ps;
-        };
-
-        GeneratedKeyHolder keyHolder = new GeneratedKeyHolder();
-        jdbcTemplate.update(psc, keyHolder);
-
-        int id = (int) keyHolder.getKey();
-        newTrackedLink.setId(id);
+        newTrackedLink.setId(idAddedTrackedLink);
     }
     public Optional<TrackedLink> remove(LinkInfo trackedLink, int idChat){
-        String sqlQueryForFind = websiteInfoDAO.getQueryForFindIdByLinkInfo(trackedLink);
-        String sql = "delete from tracked_link where chat_id = ? and website_info_id IN(" + sqlQueryForFind + ");";
-        Object[] params = new Object[] { idChat };
+        Optional<Integer> idWebsiteInfo = websiteInfoDAO.findIdByLinkInfo(trackedLink);
+        if(idWebsiteInfo.isEmpty())
+            return Optional.empty();
+        String sql = "select id from tracked_link where chat_id = ? and website_info_id = ?;";
+        Object[] params = new Object[] { idChat, idWebsiteInfo.get() };
 
-        RowMapper<TrackedLink> rowMapper = new BeanPropertyRowMapper<>(TrackedLink.class);
-        List<TrackedLink> entities = jdbcTemplate.query(sql, params, rowMapper);
+        List<Integer> idsDeleted = jdbcTemplate.query(sql, (rs, rowNum) -> {
+            return rs.getInt("id");
+        }, params);
 
         TrackedLink deletedEntity = null;
-        if (!entities.isEmpty()) {
-            deletedEntity = entities.get(0);
+        if (!idsDeleted.isEmpty()) {
+            deletedEntity = new TrackedLink(idsDeleted.get(0), idChat, idWebsiteInfo.get(), trackedLink);
+            jdbcTemplate.update("delete from tracked_link where chat_id = ? and website_info_id = ?;", params);
         }
         return Optional.ofNullable(deletedEntity);
     }
     public boolean containsTrackedLinkWithChatIdAndLinkInfo(LinkInfo linkInfo, int idChat){
-        String sqlQueryForFind = websiteInfoDAO.getQueryForFindIdByLinkInfo(linkInfo);
-        String sql = "select count(*) from tracked_link where chat_id = ? and website_info_id IN(" + sqlQueryForFind + ");";
-        Object[] params = new Object[] { idChat };
-        int count = jdbcTemplate.queryForObject(sql, Integer.class);
+        Optional<Integer> idWebsiteInfo = websiteInfoDAO.findIdByLinkInfo(linkInfo);
+        if(idWebsiteInfo.isEmpty())
+            return false;
+        Object[] params = new Object[] { idChat, idWebsiteInfo.get() };
+        int count = jdbcTemplate.queryForObject("select count(*) from tracked_link " +
+                "where chat_id = ? and website_info_id = ?", Integer.class, params);
         return count > 0;
     }
     public int[] findAllChatsWithIdWebsiteInfo(int idWebsiteInfo){
-        return jdbcTemplate.queryForList("select chat_id from tracked_link where website_info_id = ?",
-                int[].class, idWebsiteInfo).get(0);
+        return jdbcTemplate.query("select chat_id from tracked_link where website_info_id = ?",
+                (RowMapper<Integer>) (rs, rowNum) -> rs.getInt("chat_id"), idWebsiteInfo).stream()
+                .flatMapToInt(integer -> IntStream.of(integer)).toArray();
+
     }
     public List<TrackedLink> findAllByChatId(int idChat){
-        return jdbcTemplate.queryForList("select chat_id from tracked_link where chat_id = ?",
-                TrackedLink.class, idChat);
+        return jdbcTemplate.query("select tl.*, wit.name from tracked_link tl " +
+                        "join website_info wi on tl.website_info_id = wi.id " +
+                        "join website_info_type wit on wi.type_id = wit.id  " +
+                        "where chat_id = ?",
+                (rs, rowNum) -> {
+                    int id = rs.getInt("id");
+                    int idWebsiteInfo = rs.getInt("website_info_id");
+                    LinkInfo linkInfo = websiteInfoDAO.loadLinkInfoForWebsiteById(idWebsiteInfo, rs.getString("name"));
+                    return new TrackedLink(id, idChat, idWebsiteInfo, linkInfo);
+                }, idChat);
     }
 }
