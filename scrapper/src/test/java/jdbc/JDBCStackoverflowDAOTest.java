@@ -1,6 +1,7 @@
-import org.junit.jupiter.api.BeforeAll;
+package jdbc;
+
 import org.junit.jupiter.api.Test;
-import org.springframework.jdbc.datasource.DriverManagerDataSource;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.transaction.annotation.Transactional;
@@ -14,30 +15,16 @@ import ru.tinkoff.edu.java.scrapper.entities.websiteinfo.StackOverflowInfo;
 import ru.tinkoff.edu.java.scrapper.entities.websiteinfo.stackoverflow.StackOverflowAnswer;
 import ru.tinkoff.edu.java.scrapper.entities.websiteinfo.stackoverflow.StackOverflowComment;
 import static org.junit.jupiter.api.Assertions.*;
-import javax.sql.DataSource;
 import java.time.OffsetDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.Map;
 
-@Transactional
-@ContextConfiguration
-public class JDBCStackoverflowDAOTest extends IntegrationEnvironment{
-    public static JDBCStackOverflowInfoDAO SUT;
-    public static DataSource dataSource;
-    @BeforeAll
-    public static void setDAO(){
-        String jdbcUrl = singletonPostgreSQLContainer.getJdbcUrl();
-        String username = singletonPostgreSQLContainer.getUsername();
-        String password = singletonPostgreSQLContainer.getPassword();
-        DataSource dataSource = new DriverManagerDataSource(jdbcUrl, username, password);
-
-        JDBCStackOverflowAnswerDAO answerDAO = new JDBCStackOverflowAnswerDAO(dataSource);
-        JDBCStackOverflowCommentDAO commentDAO = new JDBCStackOverflowCommentDAO(dataSource);
-
-        SUT = new JDBCStackOverflowInfoDAO(dataSource, answerDAO, commentDAO);
-    }
+public class JDBCStackoverflowDAOTest extends JDBCIntegrationEnvironment{
+    @Autowired
+    public JDBCStackOverflowInfoDAO SUT;
     @Test
     @Rollback
+    @Transactional
     public void validAddTest(){
         //Assign
         final OffsetDateTime lastEditDateOfAnswers = OffsetDateTime.now().minusDays(5);
@@ -90,9 +77,11 @@ public class JDBCStackoverflowDAOTest extends IntegrationEnvironment{
         }) && expectedAnswers.size() == loadedInfo.getAnswers().size(),
                 ()->"Expected answers: " + expectedAnswers +
                 "\n loaded answers: " + loadedInfo.getAnswers());
+        SUT.remove(argumentForSUT.getId());
     }
     @Test
     @Rollback
+    @Transactional
     public void applyChangesTest(){
         //Assign
         final OffsetDateTime lastEditDateOfAnswersForInitial = OffsetDateTime.now().minusDays(5);
@@ -184,11 +173,11 @@ public class JDBCStackoverflowDAOTest extends IntegrationEnvironment{
                 }) && expectedAnswers.size() == loadedInfo.getAnswers().size(),
                 ()->"Expected answers: " + expectedAnswers +
                         "\n loaded answers: " + loadedInfo.getAnswers());
+        SUT.remove(initialInfo.getId());
     }
-
-
     @Test
     @Rollback
+    @Transactional
     public void loadLinkInfoTest(){
         //Assign
         final OffsetDateTime lastEditDateOfAnswers = OffsetDateTime.now().minusDays(5);
@@ -211,5 +200,6 @@ public class JDBCStackoverflowDAOTest extends IntegrationEnvironment{
 
         //Assert
         assertEquals(resultFromSUT, argumentForSUT.getLinkInfo());
+        SUT.remove(argumentForSUT.getId());
     }
 }

@@ -20,9 +20,10 @@ public class JDBCWebsiteInfoDAO extends JDBCDAO{
                         "JOIN website_info_type wit ON wi.type_id = wit.id " +
                         "ORDER BY wi.last_update_date_time ASC, wi.id ASC " +
                         "LIMIT ?;",
-                (rs, rowNum) -> {
-                    return chainWebsiteInfoDAO.loadWebsiteInfo(rs.getString("name"), rs.getInt("id"));
-                },
+                (rs, rowNum) -> chainWebsiteInfoDAO.loadWebsiteInfo(rs.getString("name"), rs.getInt("id")),
                 count);
+    }
+    public void remove(int idWebsiteInfo){
+        jdbcTemplate.update("delete from website_info where id = ?", idWebsiteInfo);
     }
 }

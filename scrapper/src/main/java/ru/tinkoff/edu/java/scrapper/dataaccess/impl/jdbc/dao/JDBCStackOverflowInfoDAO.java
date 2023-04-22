@@ -103,4 +103,8 @@ public class JDBCStackOverflowInfoDAO extends JDBCDAO{
                 Integer.class, idWebsiteInfo);
         return new StackOverflowLinkInfo(idAnswer);
     }
+
+    public void remove(int idWebsiteInfo) {
+        jdbcTemplate.update("delete from website_info where id = ?", idWebsiteInfo);
+    }
 }

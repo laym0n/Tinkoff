@@ -1,10 +1,15 @@
 package ru.tinkoff.edu.java.scrapper.dataaccess.impl.jdbc.dao;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
+import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Repository;
 import ru.tinkoff.edu.java.scrapper.entities.Chat;
 import javax.sql.DataSource;
 
+@Component
 public class JDBCChatDAO extends JDBCDAO {
+    @Autowired
     public JDBCChatDAO(DataSource dataSource) {
         super(dataSource);
     }

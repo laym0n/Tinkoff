@@ -14,7 +14,6 @@ import ru.tinkoff.edu.java.scrapper.entities.websiteinfo.github.GitHubCommit;
 
 import javax.sql.DataSource;
 import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.time.OffsetDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -53,6 +52,9 @@ public class JDBCGitHubInfoDAO extends JDBCDAO {
         commitDAO.addAll(newGitHubInfo.getCommits().values(), websiteInfoId);
         branchesDAO.addAll(newGitHubInfo.getBranches().values(), websiteInfoId);
         newGitHubInfo.setId(websiteInfoId);
+    }
+    public void remove(int idWebsiteInfo){
+        jdbcTemplate.update("delete from website_info where id = ?", idWebsiteInfo);
     }
     public GitHubInfo getById(int idGitHubInfo){
         Map<String, GitHubBranch> branches = branchesDAO.findAll(idGitHubInfo).stream()

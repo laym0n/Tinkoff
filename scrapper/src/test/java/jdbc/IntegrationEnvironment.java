@@ -1,3 +1,5 @@
+package jdbc;
+
 import liquibase.Contexts;
 import liquibase.LabelExpression;
 import liquibase.Liquibase;
@@ -8,7 +10,12 @@ import liquibase.exception.DatabaseException;
 import liquibase.exception.LiquibaseException;
 import liquibase.resource.ClassLoaderResourceAccessor;
 import liquibase.resource.DirectoryResourceAccessor;
+import org.junit.ClassRule;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.DynamicPropertyRegistry;
+import org.springframework.test.context.DynamicPropertySource;
 import org.testcontainers.containers.PostgreSQLContainer;
+import org.testcontainers.junit.jupiter.Testcontainers;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -16,6 +23,7 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
+@Testcontainers
 public abstract class IntegrationEnvironment {
     static final PostgreSQLContainer singletonPostgreSQLContainer;
 
@@ -58,6 +66,13 @@ public abstract class IntegrationEnvironment {
         } catch (LiquibaseException e) {
             throw new RuntimeException(e);
         }
+    }
+    @DynamicPropertySource
+    static void jdbcProperties(DynamicPropertyRegistry registry){
+        registry.add("spring.datasource.url", singletonPostgreSQLContainer::getJdbcUrl);
+        registry.add("spring.datasource.username", singletonPostgreSQLContainer::getUsername);
+        registry.add("spring.datasource.password", singletonPostgreSQLContainer::getPassword);
+
     }
 }
 

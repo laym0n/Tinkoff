@@ -1,12 +1,10 @@
-import liquibase.changelog.OfflineChangeLogHistoryService;
+package jdbc;
+
 import org.junit.jupiter.api.Test;
-import org.springframework.jdbc.datasource.DriverManagerDataSource;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.annotation.Rollback;
-import org.springframework.test.context.ContextConfiguration;
 import org.springframework.transaction.annotation.Transactional;
 import parserservice.dto.GitHubLinkInfo;
-import ru.tinkoff.edu.java.scrapper.dataaccess.impl.jdbc.dao.JDBCGitHubBranchesDAO;
-import ru.tinkoff.edu.java.scrapper.dataaccess.impl.jdbc.dao.JDBCGitHubCommitDAO;
 import ru.tinkoff.edu.java.scrapper.dataaccess.impl.jdbc.dao.JDBCGitHubInfoDAO;
 import ru.tinkoff.edu.java.scrapper.dto.response.website.github.GitHubBranchResponse;
 import ru.tinkoff.edu.java.scrapper.dto.response.website.github.GitHubCommitResponse;
@@ -16,20 +14,19 @@ import ru.tinkoff.edu.java.scrapper.dto.resultofcomparewebsiteinfo.ResultOfCompa
 import ru.tinkoff.edu.java.scrapper.entities.websiteinfo.GitHubInfo;
 import ru.tinkoff.edu.java.scrapper.entities.websiteinfo.github.GitHubBranch;
 import ru.tinkoff.edu.java.scrapper.entities.websiteinfo.github.GitHubCommit;
-import javax.sql.DataSource;
 import java.time.OffsetDateTime;
-import java.time.ZoneOffset;
 import java.time.temporal.ChronoUnit;
 import java.util.Map;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-@ContextConfiguration
-@Transactional
-public class JDBCGitHubDAOTest extends IntegrationEnvironment{
+public class JDBCGitHubDAOTest extends JDBCIntegrationEnvironment {
+    @Autowired
+    public JDBCGitHubInfoDAO SUT;
     @Test
     @Rollback
+    @Transactional
     public void validAddTest(){
         //Assign
         final OffsetDateTime lastActiveTime = OffsetDateTime.now().minusDays(5);
@@ -44,16 +41,6 @@ public class JDBCGitHubDAOTest extends IntegrationEnvironment{
                         "12345", new GitHubCommit("12345"),
                         "12346", new GitHubCommit("12346")
         ), lastActiveTime);
-
-        String jdbcUrl = singletonPostgreSQLContainer.getJdbcUrl();
-        String username = singletonPostgreSQLContainer.getUsername();
-        String password = singletonPostgreSQLContainer.getPassword();
-        DataSource dataSource = new DriverManagerDataSource(jdbcUrl, username, password);
-
-        JDBCGitHubCommitDAO commitDAO = new JDBCGitHubCommitDAO(dataSource);
-        JDBCGitHubBranchesDAO branchesDAO = new JDBCGitHubBranchesDAO(dataSource);
-
-        JDBCGitHubInfoDAO SUT = new JDBCGitHubInfoDAO(dataSource, commitDAO, branchesDAO);
 
         //Action
         SUT.add(argumentForSUT);
@@ -83,9 +70,11 @@ public class JDBCGitHubDAOTest extends IntegrationEnvironment{
                 resultOfLoad.getLastActiveTime().toLocalDateTime().truncatedTo(ChronoUnit.SECONDS),
                 ()->"Expected result of last active time is " + lastActiveTime +
                 " but result is " + resultOfLoad.getLastActiveTime());
+
     }
     @Test
     @Rollback
+    @Transactional
     public void applyChangesTest(){
         //Assign
         final OffsetDateTime lastActiveTimeForInitial = OffsetDateTime.now().minusDays(5);
@@ -104,16 +93,6 @@ public class JDBCGitHubDAOTest extends IntegrationEnvironment{
                         "abcde", new GitHubCommit("abcde")
                 ), lastActiveTimeForInitial);
 
-
-        String jdbcUrl = singletonPostgreSQLContainer.getJdbcUrl();
-        String username = singletonPostgreSQLContainer.getUsername();
-        String password = singletonPostgreSQLContainer.getPassword();
-        DataSource dataSource = new DriverManagerDataSource(jdbcUrl, username, password);
-
-        JDBCGitHubCommitDAO commitDAO = new JDBCGitHubCommitDAO(dataSource);
-        JDBCGitHubBranchesDAO branchesDAO = new JDBCGitHubBranchesDAO(dataSource);
-
-        JDBCGitHubInfoDAO SUT = new JDBCGitHubInfoDAO(dataSource, commitDAO, branchesDAO);
         SUT.add(initialInfo);
 
         ResultOfCompareGitHubInfo argumentForSUT = new ResultOfCompareGitHubInfo(true,
@@ -160,6 +139,7 @@ public class JDBCGitHubDAOTest extends IntegrationEnvironment{
     }
     @Test
     @Rollback
+    @Transactional
     public void loadLinkInfoBuChatIdTest(){
         //Assign
         final OffsetDateTime lastActiveTime = OffsetDateTime.now().minusDays(5);
@@ -175,15 +155,6 @@ public class JDBCGitHubDAOTest extends IntegrationEnvironment{
                         "12346", new GitHubCommit("12346")
                 ), lastActiveTime);
 
-        String jdbcUrl = singletonPostgreSQLContainer.getJdbcUrl();
-        String username = singletonPostgreSQLContainer.getUsername();
-        String password = singletonPostgreSQLContainer.getPassword();
-        DataSource dataSource = new DriverManagerDataSource(jdbcUrl, username, password);
-
-        JDBCGitHubCommitDAO commitDAO = new JDBCGitHubCommitDAO(dataSource);
-        JDBCGitHubBranchesDAO branchesDAO = new JDBCGitHubBranchesDAO(dataSource);
-
-        JDBCGitHubInfoDAO SUT = new JDBCGitHubInfoDAO(dataSource, commitDAO, branchesDAO);
         SUT.add(argumentForSUT);
 
         //Action
@@ -191,6 +162,5 @@ public class JDBCGitHubDAOTest extends IntegrationEnvironment{
 
         //Assert
         assertEquals(argumentForSUT.getLinkInfo(), resultFromSUT);
-
     }
 }

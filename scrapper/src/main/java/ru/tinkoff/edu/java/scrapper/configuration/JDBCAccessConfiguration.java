@@ -81,4 +81,7 @@ public class JDBCAccessConfiguration {
     public JDBCUpdateGitHubInfoDAService jdbcUpdateGitHubInfoDAService(JDBCTrackedLinkDAO trackedLink, JDBCGitHubInfoDAO gitHubInfoDAO){
         return new JDBCUpdateGitHubInfoDAService(trackedLink, gitHubInfoDAO);
     }
+    @Bean JDBCWebsiteInfoDAO jdbcWebsiteInfoDAO(DataSource dataSource, JDBCChainWebsiteInfoDAO jdbcChainWebsiteInfoDAO){
+        return new JDBCWebsiteInfoDAO(dataSource, jdbcChainWebsiteInfoDAO);
+    }
 }
