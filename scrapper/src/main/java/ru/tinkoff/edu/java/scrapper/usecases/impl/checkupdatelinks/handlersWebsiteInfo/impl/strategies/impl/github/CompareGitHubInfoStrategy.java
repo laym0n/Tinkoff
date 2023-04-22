@@ -1,5 +1,6 @@
 package ru.tinkoff.edu.java.scrapper.usecases.impl.checkupdatelinks.handlersWebsiteInfo.impl.strategies.impl.github;
 
+import org.springframework.stereotype.Component;
 import ru.tinkoff.edu.java.scrapper.dto.resultofcomparewebsiteinfo.ResultOfCompareGitHubInfo;
 import ru.tinkoff.edu.java.scrapper.dto.response.website.GitHubResponse;
 import ru.tinkoff.edu.java.scrapper.dto.response.website.github.GitHubBranchResponse;
@@ -14,6 +15,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+@Component
 public class CompareGitHubInfoStrategy implements CompareInfoStrategy<GitHubInfo, GitHubResponse, ResultOfCompareGitHubInfo> {
     @Override
     public ResultOfCompareGitHubInfo compare(GitHubInfo savedInfo, GitHubResponse loadedResponse) {

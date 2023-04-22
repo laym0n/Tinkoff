@@ -1,5 +1,6 @@
 package ru.tinkoff.edu.java.scrapper.usecases.impl.checkupdatelinks.handlersWebsiteInfo.impl.strategies.impl.stackoverflow;
 
+import org.springframework.stereotype.Component;
 import parserservice.dto.LinkInfo;
 import ru.tinkoff.edu.java.scrapper.dto.resultofcomparewebsiteinfo.ResultOfCompareStackOverflowInfo;
 import ru.tinkoff.edu.java.scrapper.dto.resultofcomparewebsiteinfo.ResultOfCompareWebsiteInfo;
@@ -12,6 +13,7 @@ import ru.tinkoff.edu.java.scrapper.usecases.impl.checkupdatelinks.handlersWebsi
 
 import java.net.URI;
 
+@Component
 public class StackOverflowBuilderLinkUpdateRequest implements BuilderLinkUpdateRequestStrategy<ResultOfCompareStackOverflowInfo> {
     @Override
     public LinkUpdateRequest buildLinkUpdateRequest(ResultOfCompareStackOverflowInfo changes, int[] chatIds) {

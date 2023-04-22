@@ -1,5 +1,6 @@
 package ru.tinkoff.edu.java.scrapper.usecases.impl.checkupdatelinks.handlersWebsiteInfo.impl.strategies.impl.github;
 
+import org.springframework.stereotype.Component;
 import parserservice.dto.LinkInfo;
 import ru.tinkoff.edu.java.scrapper.dto.resultofcomparewebsiteinfo.ResultOfCompareGitHubInfo;
 import ru.tinkoff.edu.java.scrapper.dto.resultofcomparewebsiteinfo.ResultOfCompareWebsiteInfo;
@@ -14,6 +15,8 @@ import ru.tinkoff.edu.java.scrapper.usecases.impl.checkupdatelinks.handlersWebsi
 
 import java.net.URI;
 
+
+@Component
 public class GitHubBuilderLinkUpdateRequest implements BuilderLinkUpdateRequestStrategy<ResultOfCompareGitHubInfo> {
     @Override
     public LinkUpdateRequest buildLinkUpdateRequest(ResultOfCompareGitHubInfo changes, int[] chatIds) {

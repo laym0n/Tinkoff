@@ -1,5 +1,6 @@
 package ru.tinkoff.edu.java.scrapper.usecases.impl.checkupdatelinks.handlersWebsiteInfo.impl.strategies.impl.stackoverflow;
 
+import org.springframework.stereotype.Component;
 import ru.tinkoff.edu.java.scrapper.dto.resultofcomparewebsiteinfo.ResultOfCompareStackOverflowInfo;
 import ru.tinkoff.edu.java.scrapper.dto.response.website.StackOverflowResponse;
 import ru.tinkoff.edu.java.scrapper.dto.response.website.stackoverflow.StackOverflowAnswerResponse;
@@ -15,6 +16,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+@Component
 public class CompareStackOverflowInfoStrategy implements CompareInfoStrategy<StackOverflowInfo, StackOverflowResponse, ResultOfCompareStackOverflowInfo> {
     @Override
     public ResultOfCompareStackOverflowInfo compare(StackOverflowInfo savedInfo, StackOverflowResponse loadedResponse) {
