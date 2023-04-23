@@ -12,7 +12,7 @@ import parserservice.factories.factoryimpl.ParserLinksFactoryImpl;
 import java.time.Duration;
 
 @Validated
-@ConfigurationProperties(prefix = "app", ignoreUnknownFields = false)
+@ConfigurationProperties(prefix = "app", ignoreUnknownFields = true)
 public record ApplicationConfig(@NotNull String test, @Bean Scheduler scheduler, @Bean BotInfo botInfo) {
     record Scheduler(Duration interval){
 

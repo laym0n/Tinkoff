@@ -10,7 +10,6 @@ import ru.tinkoff.edu.java.scrapper.webclients.websiteinfowebclient.impl.chainre
 import ru.tinkoff.edu.java.scrapper.webclients.githubclient.GitHubClient;
 import ru.tinkoff.edu.java.scrapper.webclients.stackoverflowclient.StackOverflowClient;
 
-@Component
 public class WebsiteInfoWebClientFactoryImpl implements WebsiteInfoWebClientFactory {
     private GitHubClient gitHubClient;
     private StackOverflowClient stackOverflowClient;

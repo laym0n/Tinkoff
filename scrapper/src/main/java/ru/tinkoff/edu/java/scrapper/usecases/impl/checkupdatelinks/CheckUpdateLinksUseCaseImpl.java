@@ -1,6 +1,7 @@
 package ru.tinkoff.edu.java.scrapper.usecases.impl.checkupdatelinks;
 
 import lombok.AllArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import ru.tinkoff.edu.java.scrapper.dataaccess.CheckUpdateLinksDAService;
 import ru.tinkoff.edu.java.scrapper.dto.request.LinkUpdateRequest;
@@ -13,11 +14,18 @@ import java.util.List;
 import java.util.Optional;
 
 @Component
-@AllArgsConstructor
+
 public class CheckUpdateLinksUseCaseImpl implements CheckUpdateLinksUseCase {
+    @Value("${checker-update.count-sites-for-check-per-iteration}")
     private int countSites;
     private CheckUpdateLinksDAService checkUpdateLinksDAService;
     private HandlerUpdateWebsiteInfo handlerUpdateWebsiteInfo;
+
+    public CheckUpdateLinksUseCaseImpl(CheckUpdateLinksDAService checkUpdateLinksDAService, HandlerUpdateWebsiteInfo handlerUpdateWebsiteInfo) {
+        this.checkUpdateLinksDAService = checkUpdateLinksDAService;
+        this.handlerUpdateWebsiteInfo = handlerUpdateWebsiteInfo;
+    }
+
     @Override
     public List<LinkUpdateRequest> checkUpdateLinks() {
         List<LinkUpdateRequest> result = new ArrayList<>();

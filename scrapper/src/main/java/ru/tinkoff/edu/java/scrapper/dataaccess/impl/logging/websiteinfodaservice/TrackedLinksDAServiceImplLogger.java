@@ -1,6 +1,5 @@
 package ru.tinkoff.edu.java.scrapper.dataaccess.impl.logging.websiteinfodaservice;
 
-import org.springframework.stereotype.Repository;
 import parserservice.dto.LinkInfo;
 import ru.tinkoff.edu.java.scrapper.dataaccess.TrackedLinkDAService;
 import ru.tinkoff.edu.java.scrapper.entities.TrackedLink;
@@ -10,7 +9,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.logging.Logger;
 
-@Repository
 public class TrackedLinksDAServiceImplLogger implements TrackedLinkDAService {
     private static Logger log = Logger.getLogger(TrackedLinksDAServiceImplLogger.class.getName());
 

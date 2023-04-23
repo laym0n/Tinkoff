@@ -7,7 +7,6 @@ import ru.tinkoff.edu.java.scrapper.entities.Chat;
 import java.util.Optional;
 import java.util.logging.Logger;
 
-@Repository
 public class ChatDAServiceImplLogger implements ChatDAService {
     private static Logger log = Logger.getLogger(ChatDAServiceImplLogger.class.getName());
     @Override
