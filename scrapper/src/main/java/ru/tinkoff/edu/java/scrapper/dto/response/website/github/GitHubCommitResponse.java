@@ -4,11 +4,9 @@ import lombok.*;
 import org.apache.commons.lang3.builder.HashCodeExclude;
 import ru.tinkoff.edu.java.scrapper.entities.websiteinfo.github.GitHubCommit;
 
-@AllArgsConstructor
+@Data
 @ToString
 @EqualsAndHashCode
-@Getter
-@Setter
 public class GitHubCommitResponse {
     private String sha;
     @HashCodeExclude

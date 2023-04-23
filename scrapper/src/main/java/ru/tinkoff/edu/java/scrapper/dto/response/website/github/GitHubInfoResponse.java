@@ -7,11 +7,9 @@ import java.time.OffsetDateTime;
 import java.util.Objects;
 
 
-@AllArgsConstructor
+@Data
 @ToString
 @EqualsAndHashCode
-@Getter
-@Setter
 public class GitHubInfoResponse {
     @JsonProperty("created_at")
     private OffsetDateTime updatedAt;

@@ -31,8 +31,8 @@ public class StackOverflowClientImpl implements StackOverflowClient {
     }
     @Override
     public StackOverflowResponse getStackOverflowResponse(StackOverflowLinkInfo linkInfo) {
-        StackOverflowAnswersResponse answers = getStackOverflowAnswersResponse(linkInfo);
         StackOverflowCommentsResponse comments = getStackOverflowCommentsResponse(linkInfo);
+        StackOverflowAnswersResponse answers = getStackOverflowAnswersResponse(linkInfo);
 
         StackOverflowResponse result = new StackOverflowResponse(answers, comments);
 
@@ -51,7 +51,7 @@ public class StackOverflowClientImpl implements StackOverflowClient {
     private StackOverflowAnswersResponse getStackOverflowAnswersResponse(StackOverflowLinkInfo linkInfo){
         StackOverflowAnswersResponse answersResponse = webClient
                 .get()
-                .uri("/2.3/questions/{idAnswer}/answers?order=desc&sort=activity&site=stackoverflow",
+                .uri("/2.3/questions/{ids}/answers?order=desc&sort=activity&site=stackoverflow",
                         linkInfo.idQuestion())
                 .accept(MediaType.APPLICATION_JSON)
                 .retrieve()
@@ -61,7 +61,7 @@ public class StackOverflowClientImpl implements StackOverflowClient {
     private StackOverflowCommentsResponse getStackOverflowCommentsResponse(StackOverflowLinkInfo linkInfo){
         StackOverflowCommentsResponse commentsResponse = webClient
                 .get()
-                .uri("/2.3/questions/{idAnswer}/comments?order=desc&sort=activity&site=stackoverflow",
+                .uri("/2.3/questions/{idAnswer}/comments?order=desc&sort=creation&site=stackoverflow",
                         linkInfo.idQuestion())
                 .accept(MediaType.APPLICATION_JSON)
                 .retrieve()

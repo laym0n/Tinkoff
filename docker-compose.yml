@@ -18,7 +18,7 @@ services:
     pgadmin:
         image : dpage/pgadmin4:6
         ports : 
-            - 8080:80
+            - 8081:80
         environment:
             PGADMIN_DEFAULT_EMAIL: victor_k02@mail.ru
             PGADMIN_DEFAULT_PASSWORD: password

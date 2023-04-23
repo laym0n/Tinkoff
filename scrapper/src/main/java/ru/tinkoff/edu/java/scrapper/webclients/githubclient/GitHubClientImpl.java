@@ -51,7 +51,7 @@ public class GitHubClientImpl implements GitHubClient {
 
     private GitHubCommitResponse[] getArrayOfGitHubCommitResponses(GitHubLinkInfo gitHubInfo){
         GitHubCommitResponse[] gitHubCommitResponses = webClient
-                .get().uri("/repos/{owner}/{repo}/branches", gitHubInfo.userName(), gitHubInfo.repositoryName())
+                .get().uri("/repos/{owner}/{repo}/commits", gitHubInfo.userName(), gitHubInfo.repositoryName())
                 .accept(MediaType.APPLICATION_JSON)
                 .retrieve()
                 .onStatus(HttpStatusCode::is4xxClientError, clientResponse -> Mono.empty())

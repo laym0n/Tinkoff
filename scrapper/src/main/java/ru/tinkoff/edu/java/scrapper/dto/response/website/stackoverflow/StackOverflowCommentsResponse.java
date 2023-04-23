@@ -2,11 +2,9 @@ package ru.tinkoff.edu.java.scrapper.dto.response.website.stackoverflow;
 
 import lombok.*;
 
-@AllArgsConstructor
+@Data
 @ToString
 @EqualsAndHashCode
-@Getter
-@Setter
 
 public class StackOverflowCommentsResponse {
     private StackOverflowCommentResponse[] items;

@@ -8,13 +8,12 @@ import ru.tinkoff.edu.java.scrapper.entities.websiteinfo.stackoverflow.StackOver
 import java.time.OffsetDateTime;
 import java.util.Objects;
 
-@AllArgsConstructor
+@Data
 @ToString
 @EqualsAndHashCode
-@Getter
-@Setter
 public class StackOverflowAnswerResponse {
     @HashCodeExclude
+    @JsonProperty("owner")
     private StackOverflowUserResponse owner;
     @JsonProperty("creation_date")
     @HashCodeExclude
