@@ -18,6 +18,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import java.time.OffsetDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.Map;
+import java.util.Optional;
 
 public class JDBCStackoverflowDAOTest extends JDBCIntegrationEnvironment{
     @Autowired
@@ -201,5 +202,42 @@ public class JDBCStackoverflowDAOTest extends JDBCIntegrationEnvironment{
         //Assert
         assertEquals(resultFromSUT, argumentForSUT.getLinkInfo());
         SUT.remove(argumentForSUT.getId());
+    }
+    @Test
+    @Rollback
+    @Transactional
+    public void findIdWithLinkInfoForSavedTest(){
+        //Assign
+        final OffsetDateTime lastEditDateOfAnswers = OffsetDateTime.now().minusDays(5);
+        StackOverflowLinkInfo linkInfoForArgument = new StackOverflowLinkInfo(1412);
+
+        StackOverflowInfo argumentForSUT = new StackOverflowInfo(linkInfoForArgument);
+
+        SUT.add(argumentForSUT);
+
+        //Action
+        Optional<Integer> optionalResultFromSUT = SUT.findIdByLinkInfo(linkInfoForArgument);
+
+        //Assert
+        assertTrue(optionalResultFromSUT.isPresent(),
+                () -> "Method findIdByLinkInfo must return not optional result from SUT for saved info");
+        assertEquals(argumentForSUT.getId(), optionalResultFromSUT.get(),
+                ()->"Saved info have id " + argumentForSUT.getId() +
+                        " but loaded id is " + optionalResultFromSUT.get());
+    }
+    @Test
+    @Rollback
+    @Transactional
+    public void findIdWithLinkInfoForNotSavedTest(){
+        //Assign
+        final OffsetDateTime lastEditDateOfAnswers = OffsetDateTime.now().minusDays(5);
+        StackOverflowLinkInfo linkInfoForArgument = new StackOverflowLinkInfo(1412);
+
+        //Action
+        Optional<Integer> optionalResultFromSUT = SUT.findIdByLinkInfo(linkInfoForArgument);
+
+        //Assert
+        assertTrue(optionalResultFromSUT.isEmpty(),
+                () -> "Method findIdByLinkInfo must return optional result from SUT for not saved info");
     }
 }

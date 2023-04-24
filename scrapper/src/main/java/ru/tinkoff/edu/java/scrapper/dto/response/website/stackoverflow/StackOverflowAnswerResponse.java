@@ -9,6 +9,8 @@ import java.time.OffsetDateTime;
 import java.util.Objects;
 
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 @ToString
 @EqualsAndHashCode
 public class StackOverflowAnswerResponse {

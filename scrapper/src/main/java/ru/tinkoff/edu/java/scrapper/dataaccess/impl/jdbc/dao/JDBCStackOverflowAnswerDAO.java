@@ -39,7 +39,7 @@ public class JDBCStackOverflowAnswerDAO extends JDBCDAO{
     }
     public void updateLastEditForAll(Collection<StackOverflowAnswer> answers, int idWebsiteInfo){
         List<Object[]> batchArgs = answers.stream()
-                .map(i-> new Object[] {i.getLastEditDate(), idWebsiteInfo,i.getIdAnswer()})
+                .map(i-> new Object[] {i.getLastEditDate().toLocalDateTime(), idWebsiteInfo,i.getIdAnswer()})
                 .toList();
         jdbcTemplate.batchUpdate("update stack_overflow_answer SET last_edit_date_time = ? where " +
                 "website_info_id = ? and id = ?", batchArgs);

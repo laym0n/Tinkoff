@@ -10,6 +10,8 @@ import ru.tinkoff.edu.java.scrapper.entities.websiteinfo.stackoverflow.StackOver
 import ru.tinkoff.edu.java.scrapper.entities.websiteinfo.stackoverflow.StackOverflowComment;
 import ru.tinkoff.edu.java.scrapper.usecases.impl.checkupdatelinks.handlersWebsiteInfo.impl.strategies.CompareInfoStrategy;
 
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -59,9 +61,12 @@ public class CompareStackOverflowInfoStrategy implements CompareInfoStrategy<Sta
         Arrays.stream(loadedResponse.getAnswers().getItems())
                 .forEach(answerResponse ->{
                     StackOverflowAnswer savedAnswer = savedInfo.getAnswers().get(answerResponse.getAnswerId());
+                    LocalDateTime dateTime = savedAnswer.getLastEditDate().toLocalDateTime().truncatedTo(ChronoUnit.SECONDS);
+                    LocalDateTime dateTime1 =answerResponse.getLastEditDate().toLocalDateTime().truncatedTo(ChronoUnit.SECONDS);
                     if(savedAnswer == null){
                         addedAnswers.add(answerResponse);
-                    } else if(!savedAnswer.getLastEditDate().equals(answerResponse.getLastEditDate())){
+                    } else if(!savedAnswer.getLastEditDate().toLocalDateTime().truncatedTo(ChronoUnit.SECONDS)
+                            .equals(answerResponse.getLastEditDate().toLocalDateTime().truncatedTo(ChronoUnit.SECONDS))){
                         editedAnswers.add(answerResponse);
                     }
                 });

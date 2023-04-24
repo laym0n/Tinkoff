@@ -4,6 +4,8 @@ import lombok.*;
 
 
 @ToString
+@AllArgsConstructor
+@NoArgsConstructor
 @EqualsAndHashCode
 @Data
 public class StackOverflowAnswersResponse {

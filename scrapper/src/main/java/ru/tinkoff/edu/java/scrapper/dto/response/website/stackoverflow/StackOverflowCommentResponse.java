@@ -9,10 +9,13 @@ import java.time.OffsetDateTime;
 import java.util.Objects;
 
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
 @ToString
 @EqualsAndHashCode
 public class StackOverflowCommentResponse {
     @HashCodeExclude
+    @JsonProperty("owner")
     private StackOverflowUserResponse owner;
     @JsonProperty("creation_date")
     @HashCodeExclude

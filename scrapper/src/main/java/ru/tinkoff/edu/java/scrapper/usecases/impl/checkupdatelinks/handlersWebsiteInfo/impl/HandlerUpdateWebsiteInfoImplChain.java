@@ -35,9 +35,9 @@ public abstract class HandlerUpdateWebsiteInfoImplChain<W extends WebsiteInfo, R
         C resultOfCompare = compareInfoStrategy
                 .compare(savedConcreteWebsiteInfo, websiteResponse);
 
-        daService.applyChanges(resultOfCompare);
         LinkUpdateRequest linkUpdateRequest = null;
         if(resultOfCompare.isDifferent()){
+            daService.applyChanges(resultOfCompare);
             int[] chatIds = daService.getAllChatIdWithTrackedIdWebsiteInfo(savedWebsiteInfo.getId());
             linkUpdateRequest = builderLinkUpdateRequestStrategy
                     .buildLinkUpdateRequest(resultOfCompare, chatIds);

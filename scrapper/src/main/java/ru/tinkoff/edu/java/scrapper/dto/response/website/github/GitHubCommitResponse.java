@@ -5,6 +5,8 @@ import org.apache.commons.lang3.builder.HashCodeExclude;
 import ru.tinkoff.edu.java.scrapper.entities.websiteinfo.github.GitHubCommit;
 
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 @ToString
 @EqualsAndHashCode
 public class GitHubCommitResponse {

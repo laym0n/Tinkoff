@@ -35,14 +35,9 @@ public class JDBCStackOverflowInfoDAO extends JDBCDAO{
         return "select website_info_id from stackoverflow_info where answer_id = " + linkInfo.idQuestion();
     }
     public Optional<Integer> findIdByLinkInfo(StackOverflowLinkInfo linkInfo){
-        Optional<Integer> resultId = jdbcTemplate.query("select website_info_id from stackoverflow_info where answer_id = ?",
-                rs -> {
-            if(!rs.next()){
-                return Optional.empty();
-            }
-            return Optional.of(rs.getInt("website_info_id"));
-                }, linkInfo.idQuestion());
-        return resultId;
+        List<Integer> ids = jdbcTemplate.queryForList("select website_info_id from stackoverflow_info where answer_id = ?",
+                Integer.class, linkInfo.idQuestion());
+        return Optional.ofNullable((ids.size() == 0 ? null : ids.get(0)));
     }
     public void add(StackOverflowInfo newStackOverflowInfo){
         Map<String, Object> paramMap = new HashMap<>();

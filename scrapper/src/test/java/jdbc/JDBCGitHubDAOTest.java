@@ -163,4 +163,41 @@ public class JDBCGitHubDAOTest extends JDBCIntegrationEnvironment {
         //Assert
         assertEquals(argumentForSUT.getLinkInfo(), resultFromSUT);
     }
+    @Test
+    @Rollback
+    @Transactional
+    public void findIdByLinkInfoForSavedInfoTest(){
+        //Assign
+        final OffsetDateTime lastActiveTime = OffsetDateTime.now().minusDays(5);
+        GitHubLinkInfo linkInfoForArgument = new GitHubLinkInfo("sanyarnd", "tinkoff-java-course-2022");
+
+        GitHubInfo argumentForSUT = new GitHubInfo(linkInfoForArgument, lastActiveTime);
+
+        SUT.add(argumentForSUT);
+
+        //Action
+        Optional<Integer> optionalResultFromSUT = SUT.findIdByLinkInfo(linkInfoForArgument);
+
+        //Assert
+        assertTrue(optionalResultFromSUT.isPresent(),
+                () -> "Method findIdByLinkInfo must return not optional result from SUT for saved info");
+        assertEquals(argumentForSUT.getId(), optionalResultFromSUT.get(),
+                ()->"Saved info have id " + argumentForSUT.getId() +
+                " but loaded id is " + optionalResultFromSUT.get());
+    }
+    @Test
+    @Rollback
+    @Transactional
+    public void findIdByLinkInfoForNotSavedInfoTest(){
+        //Assign
+        final OffsetDateTime lastActiveTime = OffsetDateTime.now().minusDays(5);
+        GitHubLinkInfo linkInfoForArgument = new GitHubLinkInfo("sanyarnd", "tinkoff-java-course-2022");
+
+        //Action
+        Optional<Integer> optionalResultFromSUT = SUT.findIdByLinkInfo(linkInfoForArgument);
+
+        //Assert
+        assertTrue(optionalResultFromSUT.isEmpty(),
+                () -> "Method findIdByLinkInfo must return optional result from SUT for not saved Info");
+    }
 }

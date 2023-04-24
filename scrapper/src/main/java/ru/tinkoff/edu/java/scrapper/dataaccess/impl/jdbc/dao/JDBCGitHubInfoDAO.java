@@ -30,9 +30,10 @@ public class JDBCGitHubInfoDAO extends JDBCDAO {
     }
 
     public Optional<Integer> findIdByLinkInfo(GitHubLinkInfo linkInfo){
-        return Optional.ofNullable(jdbcTemplate.queryForObject("select website_info_id from github_info " +
-                "where user_name = ? and repository_name = ?", new Object[]{linkInfo.userName(), linkInfo.repositoryName()},
-                Integer.class));
+        List<Integer> ids = jdbcTemplate.queryForList("select website_info_id from github_info " +
+                        "where user_name = ? and repository_name = ?", new Object[]{linkInfo.userName(), linkInfo.repositoryName()},
+                Integer.class);
+        return Optional.ofNullable((ids.size()) == 0? null : ids.get(0));
     }
     public void add(GitHubInfo newGitHubInfo){
         Map<String, Object> paramMap = new HashMap<>();

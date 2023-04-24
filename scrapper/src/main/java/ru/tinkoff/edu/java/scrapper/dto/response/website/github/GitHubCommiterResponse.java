@@ -5,7 +5,10 @@ import org.apache.commons.lang3.builder.EqualsExclude;
 
 import java.time.OffsetDateTime;
 
-@Data
+@AllArgsConstructor
+@NoArgsConstructor
+@Getter
+@Setter
 @ToString
 @EqualsAndHashCode
 public class GitHubCommiterResponse {

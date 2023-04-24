@@ -15,8 +15,7 @@ import java.util.stream.Collectors;
 @AllArgsConstructor
 @ToString
 @EqualsAndHashCode
-@Getter
-@Setter
+@Data
 public final class StackOverflowResponse implements WebsiteResponse{
     private StackOverflowAnswersResponse answers;
     private StackOverflowCommentsResponse comments;

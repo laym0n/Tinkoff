@@ -71,7 +71,7 @@ public class JDBCAccessConfiguration {
         return new JDBCTrackedLinkDAService(trackedLinkDAO, websiteInfoDAO, chatDAO);
     }
     @Bean
-    public JDBCCheckUpdateLinksDAServiceImpl jdbcCheckUpdateLinksDAService(JDBCChainWebsiteInfoDAO websiteInfoDAO){
+    public JDBCCheckUpdateLinksDAServiceImpl jdbcCheckUpdateLinksDAService(JDBCWebsiteInfoDAO websiteInfoDAO){
         return new JDBCCheckUpdateLinksDAServiceImpl(websiteInfoDAO);
     }
     @Bean

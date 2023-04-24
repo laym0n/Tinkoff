@@ -8,6 +8,8 @@ import java.util.Objects;
 
 
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 @ToString
 @EqualsAndHashCode
 public class GitHubInfoResponse {

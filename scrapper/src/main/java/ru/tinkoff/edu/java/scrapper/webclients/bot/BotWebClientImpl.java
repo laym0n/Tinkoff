@@ -11,7 +11,7 @@ import ru.tinkoff.edu.java.scrapper.dto.request.LinkUpdateRequest;
 public class BotWebClientImpl implements BotWebClient {
     private  WebClient webClient;
     public BotWebClientImpl(){
-        this("https://api.github.com");
+        this("http://localhost:8080");
     }
     @Autowired
     public BotWebClientImpl(@Value("#{botInfo.path}") String baseURL){
@@ -23,7 +23,7 @@ public class BotWebClientImpl implements BotWebClient {
         webClient.post()
                 .uri("/updates")
                 .body(Mono.just(request), LinkUpdateRequest.class)
-                .exchangeToMono(clientResponse -> Mono.empty());
+                .exchangeToMono(clientResponse -> Mono.empty()).block();
     }
 
 }

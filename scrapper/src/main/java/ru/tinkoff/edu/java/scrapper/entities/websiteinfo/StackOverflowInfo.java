@@ -33,8 +33,6 @@ public final class StackOverflowInfo extends WebsiteInfo{
     public StackOverflowInfo(int id, StackOverflowLinkInfo linkInfo) {
         this(id, OffsetDateTime.now(), linkInfo, new HashMap<>(), new HashMap<>());
     }
-
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

@@ -3,7 +3,10 @@ package ru.tinkoff.edu.java.scrapper.dto.response.website.github;
 import lombok.*;
 import ru.tinkoff.edu.java.scrapper.entities.websiteinfo.github.GitHubBranch;
 
-@Data
+@AllArgsConstructor
+@NoArgsConstructor
+@Getter
+@Setter
 @ToString
 @EqualsAndHashCode
 public class GitHubBranchResponse {

@@ -14,7 +14,7 @@ import java.time.Duration;
 @Validated
 @ConfigurationProperties(prefix = "app", ignoreUnknownFields = true)
 public record ApplicationConfig(@NotNull String test, @Bean Scheduler scheduler, @Bean BotInfo botInfo) {
-    record Scheduler(Duration interval){
+    public record Scheduler(Duration interval){
 
     }
     record BotInfo(String path){
