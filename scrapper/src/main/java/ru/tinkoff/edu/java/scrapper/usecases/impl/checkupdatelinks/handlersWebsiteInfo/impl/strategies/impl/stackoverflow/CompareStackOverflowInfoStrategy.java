@@ -61,8 +61,6 @@ public class CompareStackOverflowInfoStrategy implements CompareInfoStrategy<Sta
         Arrays.stream(loadedResponse.getAnswers().getItems())
                 .forEach(answerResponse ->{
                     StackOverflowAnswer savedAnswer = savedInfo.getAnswers().get(answerResponse.getAnswerId());
-                    LocalDateTime dateTime = savedAnswer.getLastEditDate().toLocalDateTime().truncatedTo(ChronoUnit.SECONDS);
-                    LocalDateTime dateTime1 =answerResponse.getLastEditDate().toLocalDateTime().truncatedTo(ChronoUnit.SECONDS);
                     if(savedAnswer == null){
                         addedAnswers.add(answerResponse);
                     } else if(!savedAnswer.getLastEditDate().toLocalDateTime().truncatedTo(ChronoUnit.SECONDS)

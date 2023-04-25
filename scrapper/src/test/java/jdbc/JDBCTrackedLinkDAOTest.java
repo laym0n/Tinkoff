@@ -13,6 +13,8 @@ import ru.tinkoff.edu.java.scrapper.entities.websiteinfo.StackOverflowInfo;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 public class JDBCTrackedLinkDAOTest extends JDBCIntegrationEnvironment{
@@ -130,19 +132,25 @@ public class JDBCTrackedLinkDAOTest extends JDBCIntegrationEnvironment{
         final int idChat = 100;
         chatDAO.add(new Chat(idChat));
 
-        infoDAO.add(new StackOverflowInfo(new StackOverflowLinkInfo(1)));
-        infoDAO.add(new StackOverflowInfo(new StackOverflowLinkInfo(2)));
-        infoDAO.add(new StackOverflowInfo(new StackOverflowLinkInfo(3)));
-        infoDAO.add(new StackOverflowInfo(new StackOverflowLinkInfo(4)));
-        infoDAO.add(new StackOverflowInfo(new StackOverflowLinkInfo(5)));
-        infoDAO.add(new StackOverflowInfo(new StackOverflowLinkInfo(6)));
-        infoDAO.add(new StackOverflowInfo(new StackOverflowLinkInfo(7)));
+        List<StackOverflowInfo> soInfos = List.of(
+                new StackOverflowInfo(new StackOverflowLinkInfo(1)),
+                new StackOverflowInfo(new StackOverflowLinkInfo(2)),
+                new StackOverflowInfo(new StackOverflowLinkInfo(3)),
+                new StackOverflowInfo(new StackOverflowLinkInfo(4)),
+                new StackOverflowInfo(new StackOverflowLinkInfo(5)),
+                new StackOverflowInfo(new StackOverflowLinkInfo(6)),
+                new StackOverflowInfo(new StackOverflowLinkInfo(7))
+        );
+
+        for(var info : soInfos){
+            infoDAO.add(info);
+        }
 
         List<TrackedLink> argumentsForSUT = List.of(
-                new TrackedLink(idChat, new StackOverflowLinkInfo(1), 1),
-                new TrackedLink(idChat, new StackOverflowLinkInfo(2), 2),
-                new TrackedLink(idChat, new StackOverflowLinkInfo(3), 3),
-                new TrackedLink(idChat, new StackOverflowLinkInfo(4), 4)
+                new TrackedLink(idChat, new StackOverflowLinkInfo(1), soInfos.get(0).getId()),
+                new TrackedLink(idChat, new StackOverflowLinkInfo(2), soInfos.get(1).getId()),
+                new TrackedLink(idChat, new StackOverflowLinkInfo(3), soInfos.get(2).getId()),
+                new TrackedLink(idChat, new StackOverflowLinkInfo(4), soInfos.get(3).getId())
         );
         for(TrackedLink trackedLink : argumentsForSUT)
             SUT.add(trackedLink);
@@ -184,16 +192,16 @@ public class JDBCTrackedLinkDAOTest extends JDBCIntegrationEnvironment{
         }
 
         List<TrackedLink> argumentsForSUT = List.of(
-                new TrackedLink(1, new StackOverflowLinkInfo(1), 1),
-                new TrackedLink(2, new StackOverflowLinkInfo(2), 2),
-                new TrackedLink(3, new StackOverflowLinkInfo(3), 3),
-                new TrackedLink(4, new StackOverflowLinkInfo(4), 4)
+                new TrackedLink(1, new StackOverflowLinkInfo(1), soInfos.get(0).getId()),
+                new TrackedLink(2, new StackOverflowLinkInfo(2), soInfos.get(1).getId()),
+                new TrackedLink(3, new StackOverflowLinkInfo(3), soInfos.get(2).getId()),
+                new TrackedLink(4, new StackOverflowLinkInfo(4), soInfos.get(3).getId())
         );
         List<TrackedLink> expectedResult = List.of(
-                new TrackedLink(5,  new StackOverflowLinkInfo(5), 5),
-                new TrackedLink(4,  new StackOverflowLinkInfo(5), 5),
-                new TrackedLink(3,  new StackOverflowLinkInfo(5), 5),
-                new TrackedLink(2,  new StackOverflowLinkInfo(5), 5)
+                new TrackedLink(5,  new StackOverflowLinkInfo(5), soInfos.get(4).getId()),
+                new TrackedLink(4,  new StackOverflowLinkInfo(5), soInfos.get(4).getId()),
+                new TrackedLink(3,  new StackOverflowLinkInfo(5), soInfos.get(4).getId()),
+                new TrackedLink(2,  new StackOverflowLinkInfo(5), soInfos.get(4).getId())
         );
         for(TrackedLink trackedLink : expectedResult)
             SUT.add(trackedLink);
@@ -201,11 +209,13 @@ public class JDBCTrackedLinkDAOTest extends JDBCIntegrationEnvironment{
             SUT.add(trackedLink);
 
         //Action
-        int[] resultFromSUT = SUT.findAllChatsWithIdWebsiteInfo(5);
+        int[] resultFromSUT = SUT.findAllChatsWithIdWebsiteInfo(soInfos.get(4).getId());
 
         //Assert
-        assertTrue(Arrays.equals(expectedResult.stream().flatMapToInt(i-> IntStream.of(i.getIdChat())).toArray(), resultFromSUT),
-                ()->"Expected: " + expectedResult.stream().flatMapToInt(i-> IntStream.of(i.getId())).toArray().toString() +
-                "\nLoaded: " + resultFromSUT);
+        Set<Integer> expectedIds = expectedResult.stream().map(i-> i.getIdChat()).collect(Collectors.toSet());
+        Set<Integer> loadedIds = Arrays.stream(resultFromSUT).mapToObj(i->i).collect(Collectors.toSet());
+        assertEquals(expectedIds, loadedIds,
+                ()->"Expected: " + expectedIds +
+                "\nLoaded: " + loadedIds);
     }
 }

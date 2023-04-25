@@ -48,8 +48,8 @@ constraint link_info_git_hub_info unique (user_name, repository_name)
 --changeset nvoxland:7
 CREATE TABLE stackoverflow_info (
 website_info_id INT PRIMARY KEY,
-answer_id INT NOT NULL,
+question_id INT NOT NULL,
 FOREIGN KEY (website_info_id) REFERENCES website_info(id) on delete cascade,
-constraint link_info_stack_overflow_info unique (answer_id)
+constraint link_info_stack_overflow_info unique (question_id)
 );
 --rollback drop table stackoverflow_info;

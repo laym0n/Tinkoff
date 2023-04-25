@@ -1,3 +1,5 @@
+package jdbc;
+
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtensionContext;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -90,11 +92,7 @@ public class HandlerUpdateStackOverflowInfoChainTest {
         //Assert
         assertFalse(optionalResultFromSUT.isPresent(), ()->"LinkUpdateRequest must be null. Description of LinkUpdateRequest is " +
                 optionalResultFromSUT.get().getDescription());
-        ArgumentCaptor<ResultOfCompareStackOverflowInfo> argumentOfApplyChanges =
-                ArgumentCaptor.forClass(ResultOfCompareStackOverflowInfo.class);
-        verify(mockDAService).applyChanges(argumentOfApplyChanges.capture());
-        ResultOfCompareStackOverflowInfo compareResult = argumentOfApplyChanges.getValue();
-        assertFalse(compareResult.isDifferent(), ()->"Input data is equal for load data but compareResult.isDifferent is True");
+        verify(mockDAService,never()).applyChanges(any());
     }
     @ParameterizedTest
     @ArgumentsSource(DataArgumentsProvider.class)
