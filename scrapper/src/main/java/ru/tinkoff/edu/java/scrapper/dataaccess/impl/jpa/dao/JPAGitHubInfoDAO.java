@@ -15,12 +15,11 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 
-public class JDBCGitHubInfoDAO extends JDBCDAO {
-    private JDBCGitHubCommitDAO commitDAO;
-    private JDBCGitHubBranchesDAO branchesDAO;
+public class JPAGitHubInfoDAO extends JPADAO {
+    private JPAGitHubCommitDAO commitDAO;
+    private JPAGitHubBranchesDAO branchesDAO;
 
-    public JDBCGitHubInfoDAO(DataSource dataSource, JDBCGitHubCommitDAO commitDAO, JDBCGitHubBranchesDAO branchesDAO) {
-        super(dataSource);
+    public JPAGitHubInfoDAO(JPAGitHubCommitDAO commitDAO, JPAGitHubBranchesDAO branchesDAO) {
         this.commitDAO = commitDAO;
         this.branchesDAO = branchesDAO;
     }

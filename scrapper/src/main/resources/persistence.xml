@@ -1,0 +1,20 @@
+<persistence xmlns="https://xmlns.jcp.org/xml/ns/persistence"
+             xmlns:xsi="https://www.w3.org/2001/XMLSchema-instance"
+             xsi:schemaLocation="https://xmlns.jcp.org/xml/ns/persistence
+             https://xmlns.jcp.org/xml/ns/persistence/persistence_2_1.xsd"
+             version="2.1">
+
+    <persistence-unit name="persistence">
+        <provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
+
+        <properties>
+            <property name="javax.persistence.jdbc.driver" value="org.postgresql.Driver" />
+            <property name="javax.persistence.jdbc.url" value="jdbc:postgresql://localhost:5433/scrapper" />
+            <property name="javax.persistence.jdbc.user" value="user" />
+            <property name="javax.persistence.jdbc.password" value="pass" />
+            <property name="hibernate.show_sql" value="false" />
+        </properties>
+
+    </persistence-unit>
+
+</persistence>

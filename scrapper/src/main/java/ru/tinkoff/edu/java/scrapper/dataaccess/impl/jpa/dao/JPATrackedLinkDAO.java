@@ -3,7 +3,7 @@ package ru.tinkoff.edu.java.scrapper.dataaccess.impl.jpa.dao;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import parserservice.dto.LinkInfo;
-import ru.tinkoff.edu.java.scrapper.dataaccess.impl.jpa.dao.websiteinfochaindao.JDBCChainWebsiteInfoDAO;
+import ru.tinkoff.edu.java.scrapper.dataaccess.impl.jpa.dao.websiteinfochaindao.JPAChainWebsiteInfoDAO;
 import ru.tinkoff.edu.java.scrapper.entities.TrackedLink;
 
 import javax.sql.DataSource;
@@ -13,11 +13,10 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.IntStream;
 
-public class JDBCTrackedLinkDAO extends JDBCDAO {
-    private JDBCChainWebsiteInfoDAO websiteInfoDAO;
+public class JPATrackedLinkDAO extends JPADAO {
+    private JPAChainWebsiteInfoDAO websiteInfoDAO;
 
-    public JDBCTrackedLinkDAO(DataSource dataSource, JDBCChainWebsiteInfoDAO websiteInfoDAO) {
-        super(dataSource);
+    public JPATrackedLinkDAO(JPAChainWebsiteInfoDAO websiteInfoDAO) {
         this.websiteInfoDAO = websiteInfoDAO;
     }
 

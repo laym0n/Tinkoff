@@ -1,4 +1,4 @@
-package jdbc;
+package jpa;
 
 import liquibase.Contexts;
 import liquibase.LabelExpression;
@@ -8,15 +8,11 @@ import liquibase.database.DatabaseFactory;
 import liquibase.database.jvm.JdbcConnection;
 import liquibase.exception.DatabaseException;
 import liquibase.exception.LiquibaseException;
-import liquibase.resource.ClassLoaderResourceAccessor;
 import liquibase.resource.DirectoryResourceAccessor;
-import org.junit.ClassRule;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
 import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.junit.jupiter.Testcontainers;
-import ru.tinkoff.edu.java.scrapper.configuration.JDBCAccessConfiguration;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -59,7 +55,7 @@ public abstract class IntegrationEnvironment {
         } catch (FileNotFoundException e) {
             throw new RuntimeException(e);
         }
-        Liquibase liquibase = new liquibase.Liquibase(
+        Liquibase liquibase = new Liquibase(
                 "master.xml",
                 directoryResourceAccessor, database);
         try {
@@ -73,7 +69,7 @@ public abstract class IntegrationEnvironment {
         registry.add("spring.datasource.url", singletonPostgreSQLContainer::getJdbcUrl);
         registry.add("spring.datasource.username", singletonPostgreSQLContainer::getUsername);
         registry.add("spring.datasource.password", singletonPostgreSQLContainer::getPassword);
-
+        registry.add("spring.datasource.driverClassName", singletonPostgreSQLContainer::getDriverClassName);
     }
 }
 

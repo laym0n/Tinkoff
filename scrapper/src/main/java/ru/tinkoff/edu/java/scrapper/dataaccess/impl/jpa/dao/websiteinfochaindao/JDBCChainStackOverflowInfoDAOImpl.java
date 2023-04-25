@@ -3,16 +3,16 @@ package ru.tinkoff.edu.java.scrapper.dataaccess.impl.jpa.dao.websiteinfochaindao
 import lombok.AllArgsConstructor;
 import parserservice.dto.LinkInfo;
 import parserservice.dto.StackOverflowLinkInfo;
-import ru.tinkoff.edu.java.scrapper.dataaccess.impl.jpa.dao.JDBCStackOverflowInfoDAO;
+import ru.tinkoff.edu.java.scrapper.dataaccess.impl.jpa.dao.JPAStackOverflowInfoDAO;
 import ru.tinkoff.edu.java.scrapper.entities.websiteinfo.StackOverflowInfo;
 import ru.tinkoff.edu.java.scrapper.entities.websiteinfo.WebsiteInfo;
 
 import java.util.Optional;
 
 @AllArgsConstructor
-public class JDBCChainStackOverflowInfoDAOImpl implements JDBCChainWebsiteInfoDAO {
-    private JDBCStackOverflowInfoDAO stackOverflowDAO;
-    private JDBCChainWebsiteInfoDAO nextChain;
+public class JDBCChainStackOverflowInfoDAOImpl implements JPAChainWebsiteInfoDAO {
+    private JPAStackOverflowInfoDAO stackOverflowDAO;
+    private JPAChainWebsiteInfoDAO nextChain;
 
     @Override
     public void create(WebsiteInfo newWebsiteInfo) {

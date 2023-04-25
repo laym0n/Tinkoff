@@ -6,10 +6,7 @@ import javax.sql.DataSource;
 import java.util.Collection;
 import java.util.List;
 
-public class JDBCStackOverflowCommentDAO extends JDBCDAO {
-    public JDBCStackOverflowCommentDAO(DataSource dataSource) {
-        super(dataSource);
-    }
+public class JPACStackOverflowCommentDAO extends JPADAO {
     public void addAll(Collection<StackOverflowComment> newComments, int idWebsiteInfo){
         String sql = "INSERT INTO stack_overflow_comment (id,  website_info_id) "+
                 "VALUES (?, ?)";

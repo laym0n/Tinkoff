@@ -6,10 +6,7 @@ import javax.sql.DataSource;
 import java.util.Collection;
 import java.util.List;
 
-public class JDBCGitHubBranchesDAO extends JDBCDAO {
-    public JDBCGitHubBranchesDAO(DataSource dataSource) {
-        super(dataSource);
-    }
+public class JPAGitHubBranchesDAO extends JPADAO {
     public void addAll(Collection<GitHubBranch> newBranches, int idWebsiteInfo){
         String sql = "INSERT INTO github_branch (name, website_info_id) VALUES (?, ?)";
         List<Object[]> batchArgs = newBranches.stream()

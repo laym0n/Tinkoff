@@ -3,16 +3,16 @@ package ru.tinkoff.edu.java.scrapper.dataaccess.impl.jpa.dao.websiteinfochaindao
 import lombok.AllArgsConstructor;
 import parserservice.dto.GitHubLinkInfo;
 import parserservice.dto.LinkInfo;
-import ru.tinkoff.edu.java.scrapper.dataaccess.impl.jpa.dao.JDBCGitHubInfoDAO;
+import ru.tinkoff.edu.java.scrapper.dataaccess.impl.jpa.dao.JPAGitHubInfoDAO;
 import ru.tinkoff.edu.java.scrapper.entities.websiteinfo.GitHubInfo;
 import ru.tinkoff.edu.java.scrapper.entities.websiteinfo.WebsiteInfo;
 
 import java.util.Optional;
 
 @AllArgsConstructor
-public class JDBCChainGitHubInfoDAOImpl implements JDBCChainWebsiteInfoDAO {
-    private JDBCGitHubInfoDAO gitHubInfoDAO;
-    private JDBCChainWebsiteInfoDAO nextChain;
+public class JDBCChainGitHubInfoDAOImpl implements JPAChainWebsiteInfoDAO {
+    private JPAGitHubInfoDAO gitHubInfoDAO;
+    private JPAChainWebsiteInfoDAO nextChain;
 
     @Override
     public void create(WebsiteInfo newWebsiteInfo) {

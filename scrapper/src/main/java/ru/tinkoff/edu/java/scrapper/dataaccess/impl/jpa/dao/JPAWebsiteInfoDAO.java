@@ -1,16 +1,15 @@
 package ru.tinkoff.edu.java.scrapper.dataaccess.impl.jpa.dao;
 
-import ru.tinkoff.edu.java.scrapper.dataaccess.impl.jpa.dao.websiteinfochaindao.JDBCChainWebsiteInfoDAO;
+import ru.tinkoff.edu.java.scrapper.dataaccess.impl.jpa.dao.websiteinfochaindao.JPAChainWebsiteInfoDAO;
 import ru.tinkoff.edu.java.scrapper.entities.websiteinfo.WebsiteInfo;
 
 import javax.sql.DataSource;
 import java.util.List;
 
-public class JDBCWebsiteInfoDAO extends JDBCDAO {
-    private JDBCChainWebsiteInfoDAO chainWebsiteInfoDAO;
+public class JPAWebsiteInfoDAO extends JPADAO {
+    private JPAChainWebsiteInfoDAO chainWebsiteInfoDAO;
 
-    public JDBCWebsiteInfoDAO(DataSource dataSource, JDBCChainWebsiteInfoDAO chainWebsiteInfoDAO) {
-        super(dataSource);
+    public JPAWebsiteInfoDAO(JPAChainWebsiteInfoDAO chainWebsiteInfoDAO) {
         this.chainWebsiteInfoDAO = chainWebsiteInfoDAO;
     }
 

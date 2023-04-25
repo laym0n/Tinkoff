@@ -14,12 +14,11 @@ import java.time.OffsetDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
-public class JDBCStackOverflowInfoDAO extends JDBCDAO {
-    private JDBCStackOverflowAnswerDAO answerDAO;
-    private JDBCStackOverflowCommentDAO commentDAO;
+public class JPAStackOverflowInfoDAO extends JPADAO {
+    private JPAStackOverflowAnswerDAO answerDAO;
+    private JPACStackOverflowCommentDAO commentDAO;
 
-    public JDBCStackOverflowInfoDAO(DataSource dataSource, JDBCStackOverflowAnswerDAO answerDAO, JDBCStackOverflowCommentDAO commentDAO) {
-        super(dataSource);
+    public JPAStackOverflowInfoDAO(JPAStackOverflowAnswerDAO answerDAO, JPACStackOverflowCommentDAO commentDAO) {
         this.answerDAO = answerDAO;
         this.commentDAO = commentDAO;
     }

@@ -3,9 +3,9 @@ package ru.tinkoff.edu.java.scrapper.dataaccess.impl.jpa.trackedlinkdaservice;
 import lombok.AllArgsConstructor;
 import parserservice.dto.LinkInfo;
 import ru.tinkoff.edu.java.scrapper.dataaccess.TrackedLinkDAService;
-import ru.tinkoff.edu.java.scrapper.dataaccess.impl.jpa.dao.JDBCChatDAO;
-import ru.tinkoff.edu.java.scrapper.dataaccess.impl.jpa.dao.JDBCTrackedLinkDAO;
-import ru.tinkoff.edu.java.scrapper.dataaccess.impl.jpa.dao.websiteinfochaindao.JDBCChainWebsiteInfoDAO;
+import ru.tinkoff.edu.java.scrapper.dataaccess.impl.jpa.dao.JPAChatDAO;
+import ru.tinkoff.edu.java.scrapper.dataaccess.impl.jpa.dao.JPATrackedLinkDAO;
+import ru.tinkoff.edu.java.scrapper.dataaccess.impl.jpa.dao.websiteinfochaindao.JPAChainWebsiteInfoDAO;
 import ru.tinkoff.edu.java.scrapper.entities.TrackedLink;
 import ru.tinkoff.edu.java.scrapper.entities.websiteinfo.WebsiteInfo;
 
@@ -14,9 +14,9 @@ import java.util.Optional;
 
 @AllArgsConstructor
 public class JDBCTrackedLinkDAService implements TrackedLinkDAService {
-    private JDBCTrackedLinkDAO trackedLinkDAO;
-    private JDBCChainWebsiteInfoDAO webSiteInfoDAO;
-    private JDBCChatDAO chatDAO;
+    private JPATrackedLinkDAO trackedLinkDAO;
+    private JPAChainWebsiteInfoDAO webSiteInfoDAO;
+    private JPAChatDAO chatDAO;
     @Override
     public List<TrackedLink> getAllTrackedLinksByChatId(int idChat) {
         return trackedLinkDAO.findAllByChatId(idChat);

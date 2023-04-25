@@ -6,10 +6,7 @@ import javax.sql.DataSource;
 import java.util.Collection;
 import java.util.List;
 
-public class JDBCGitHubCommitDAO extends JDBCDAO {
-    public JDBCGitHubCommitDAO(DataSource dataSource) {
-        super(dataSource);
-    }
+public class JPAGitHubCommitDAO extends JPADAO {
     public void addAll(Collection<GitHubCommit> newCommits, int idWebsiteInfo){
         String sql = "INSERT INTO github_commit (sha, website_info_id) VALUES (?, ?)";
         List<Object[]> batchArgs = newCommits.stream()

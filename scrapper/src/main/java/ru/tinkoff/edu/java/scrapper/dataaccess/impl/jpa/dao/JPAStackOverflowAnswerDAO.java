@@ -7,10 +7,7 @@ import java.time.OffsetDateTime;
 import java.util.Collection;
 import java.util.List;
 
-public class JDBCStackOverflowAnswerDAO extends JDBCDAO {
-    public JDBCStackOverflowAnswerDAO(DataSource dataSource) {
-        super(dataSource);
-    }
+public class JPAStackOverflowAnswerDAO extends JPADAO {
     public void addAll(Collection<StackOverflowAnswer> newAnswers, int idWebsiteInfo){
         String sql = "INSERT INTO stack_overflow_answer (id, user_name, last_edit_date_time,  website_info_id) "+
                 "VALUES (?, ?, ?, ?)";
