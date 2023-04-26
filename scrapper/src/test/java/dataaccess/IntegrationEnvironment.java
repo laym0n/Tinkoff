@@ -1,4 +1,4 @@
-package jpa;
+package dataaccess;
 
 import liquibase.Contexts;
 import liquibase.LabelExpression;
@@ -9,8 +9,6 @@ import liquibase.database.jvm.JdbcConnection;
 import liquibase.exception.DatabaseException;
 import liquibase.exception.LiquibaseException;
 import liquibase.resource.DirectoryResourceAccessor;
-import org.springframework.test.context.DynamicPropertyRegistry;
-import org.springframework.test.context.DynamicPropertySource;
 import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
@@ -22,7 +20,7 @@ import java.sql.SQLException;
 
 @Testcontainers
 public abstract class IntegrationEnvironment {
-    static final PostgreSQLContainer singletonPostgreSQLContainer;
+    protected static final PostgreSQLContainer singletonPostgreSQLContainer;
 
     static {
         singletonPostgreSQLContainer = new PostgreSQLContainer();
@@ -64,12 +62,12 @@ public abstract class IntegrationEnvironment {
             throw new RuntimeException(e);
         }
     }
-    @DynamicPropertySource
-    static void jdbcProperties(DynamicPropertyRegistry registry){
-        registry.add("spring.datasource.url", singletonPostgreSQLContainer::getJdbcUrl);
-        registry.add("spring.datasource.username", singletonPostgreSQLContainer::getUsername);
-        registry.add("spring.datasource.password", singletonPostgreSQLContainer::getPassword);
-        registry.add("spring.datasource.driverClassName", singletonPostgreSQLContainer::getDriverClassName);
-    }
+//    @DynamicPropertySource
+//    static void jdbcProperties(DynamicPropertyRegistry registry){
+//        registry.add("spring.datasource.url", singletonPostgreSQLContainer::getJdbcUrl);
+//        registry.add("spring.datasource.username", singletonPostgreSQLContainer::getUsername);
+//        registry.add("spring.datasource.password", singletonPostgreSQLContainer::getPassword);
+//
+//    }
 }
 

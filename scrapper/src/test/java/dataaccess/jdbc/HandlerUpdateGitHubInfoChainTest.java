@@ -1,4 +1,4 @@
-package jdbc;
+package dataaccess.jdbc;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtensionContext;
@@ -11,11 +11,10 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.transaction.annotation.Transactional;
 import parserservice.dto.GitHubLinkInfo;
 import ru.tinkoff.edu.java.scrapper.dataaccess.UpdateWebsiteInfoDAService;
-import ru.tinkoff.edu.java.scrapper.dto.resultofcomparewebsiteinfo.ResultOfCompareGitHubInfo;
-import ru.tinkoff.edu.java.scrapper.dto.resultofcomparewebsiteinfo.ResultOfCompareWebsiteInfo;
 import ru.tinkoff.edu.java.scrapper.dto.request.LinkUpdateRequest;
 import ru.tinkoff.edu.java.scrapper.dto.response.website.GitHubResponse;
 import ru.tinkoff.edu.java.scrapper.dto.response.website.github.*;
+import ru.tinkoff.edu.java.scrapper.dto.resultofcomparewebsiteinfo.ResultOfCompareGitHubInfo;
 import ru.tinkoff.edu.java.scrapper.entities.websiteinfo.GitHubInfo;
 import ru.tinkoff.edu.java.scrapper.entities.websiteinfo.github.GitHubBranch;
 import ru.tinkoff.edu.java.scrapper.entities.websiteinfo.github.GitHubCommit;
@@ -25,13 +24,15 @@ import ru.tinkoff.edu.java.scrapper.usecases.impl.checkupdatelinks.handlersWebsi
 import ru.tinkoff.edu.java.scrapper.webclients.githubclient.GitHubClient;
 
 import java.time.OffsetDateTime;
-import java.util.*;
+import java.util.Arrays;
+import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
-import static org.mockito.Mockito.*;
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
 
 @Transactional
 @ContextConfiguration

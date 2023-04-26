@@ -1,11 +1,15 @@
 package ru.tinkoff.edu.java.scrapper.dataaccess.impl.jdbc.dao;
 
 import lombok.AllArgsConstructor;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.stereotype.Component;
 import ru.tinkoff.edu.java.scrapper.dataaccess.impl.jdbc.dao.websiteinfochaindao.JDBCChainWebsiteInfoDAO;
 import ru.tinkoff.edu.java.scrapper.entities.websiteinfo.WebsiteInfo;
 import javax.sql.DataSource;
 import java.util.List;
 
+@Component
+@ConditionalOnProperty(prefix = "app", name = "database-access-type", havingValue = "jdbc")
 public class JDBCWebsiteInfoDAO extends JDBCDAO{
     private JDBCChainWebsiteInfoDAO chainWebsiteInfoDAO;
 

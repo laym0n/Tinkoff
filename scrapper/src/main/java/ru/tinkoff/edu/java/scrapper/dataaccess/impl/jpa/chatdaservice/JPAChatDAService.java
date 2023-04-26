@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.dao.DuplicateKeyException;
 import ru.tinkoff.edu.java.scrapper.dataaccess.ChatDAService;
 import ru.tinkoff.edu.java.scrapper.dataaccess.impl.jpa.dao.JPAChatDAO;
+import ru.tinkoff.edu.java.scrapper.dataaccess.impl.jpa.entities.ChatEntity;
 import ru.tinkoff.edu.java.scrapper.entities.Chat;
 
 import java.security.InvalidParameterException;
@@ -13,13 +14,14 @@ public class JPAChatDAService implements ChatDAService {
     private JPAChatDAO chatDAO;
 
     @Override
-    public void createChat(Chat entity) {
+    public void createChat(Chat chat) {
+        ChatEntity chatEntity = new ChatEntity(chat);
         try {
-            chatDAO.add(entity);
+            chatDAO.add(chatEntity);
         }
         catch (DuplicateKeyException ex){
             throw new InvalidParameterException("Chat with id" +
-                    entity.getId() + " already registered");
+                    chat.getId() + " already registered");
         }
     }
     @Override

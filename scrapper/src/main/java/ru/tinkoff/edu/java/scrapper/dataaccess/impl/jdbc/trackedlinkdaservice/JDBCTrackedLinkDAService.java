@@ -1,6 +1,8 @@
 package ru.tinkoff.edu.java.scrapper.dataaccess.impl.jdbc.trackedlinkdaservice;
 
 import lombok.AllArgsConstructor;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.stereotype.Component;
 import parserservice.dto.LinkInfo;
 import ru.tinkoff.edu.java.scrapper.dataaccess.TrackedLinkDAService;
 import ru.tinkoff.edu.java.scrapper.dataaccess.impl.jdbc.dao.JDBCChatDAO;
@@ -12,6 +14,8 @@ import java.util.List;
 import java.util.Optional;
 
 @AllArgsConstructor
+@Component
+@ConditionalOnProperty(prefix = "app", name = "database-access-type", havingValue = "jdbc")
 public class JDBCTrackedLinkDAService implements TrackedLinkDAService {
     private JDBCTrackedLinkDAO trackedLinkDAO;
     private JDBCChainWebsiteInfoDAO webSiteInfoDAO;

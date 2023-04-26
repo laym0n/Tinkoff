@@ -1,4 +1,4 @@
-package jdbc;
+package dataaccess.jdbc;
 
 import org.junit.jupiter.api.extension.ExtensionContext;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -10,7 +10,7 @@ import org.springframework.test.annotation.Rollback;
 import org.springframework.transaction.annotation.Transactional;
 import parserservice.dto.GitHubLinkInfo;
 import parserservice.dto.StackOverflowLinkInfo;
-import ru.tinkoff.edu.java.scrapper.dataaccess.impl.jdbc.dao.*;
+import ru.tinkoff.edu.java.scrapper.dataaccess.impl.jdbc.dao.JDBCWebsiteInfoDAO;
 import ru.tinkoff.edu.java.scrapper.dataaccess.impl.jdbc.dao.websiteinfochaindao.JDBCChainWebsiteInfoDAO;
 import ru.tinkoff.edu.java.scrapper.entities.websiteinfo.GitHubInfo;
 import ru.tinkoff.edu.java.scrapper.entities.websiteinfo.StackOverflowInfo;
@@ -19,14 +19,15 @@ import ru.tinkoff.edu.java.scrapper.entities.websiteinfo.github.GitHubBranch;
 import ru.tinkoff.edu.java.scrapper.entities.websiteinfo.github.GitHubCommit;
 import ru.tinkoff.edu.java.scrapper.entities.websiteinfo.stackoverflow.StackOverflowAnswer;
 import ru.tinkoff.edu.java.scrapper.entities.websiteinfo.stackoverflow.StackOverflowComment;
+
 import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Stream;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class JDBCWebsiteInfoDAOTest extends JDBCIntegrationEnvironment{
+public class JDBCWebsiteInfoDAOTest extends JDBCIntegrationEnvironment {
     @Autowired
     private JDBCWebsiteInfoDAO SUT;
     @Autowired

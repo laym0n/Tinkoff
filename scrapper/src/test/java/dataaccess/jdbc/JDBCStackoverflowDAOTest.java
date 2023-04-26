@@ -1,12 +1,11 @@
-package jdbc;
+package dataaccess.jdbc;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.annotation.Rollback;
-import org.springframework.test.context.ContextConfiguration;
 import org.springframework.transaction.annotation.Transactional;
 import parserservice.dto.StackOverflowLinkInfo;
-import ru.tinkoff.edu.java.scrapper.dataaccess.impl.jdbc.dao.*;
+import ru.tinkoff.edu.java.scrapper.dataaccess.impl.jdbc.dao.JDBCStackOverflowInfoDAO;
 import ru.tinkoff.edu.java.scrapper.dto.response.website.stackoverflow.StackOverflowAnswerResponse;
 import ru.tinkoff.edu.java.scrapper.dto.response.website.stackoverflow.StackOverflowCommentResponse;
 import ru.tinkoff.edu.java.scrapper.dto.response.website.stackoverflow.StackOverflowUserResponse;
@@ -14,13 +13,16 @@ import ru.tinkoff.edu.java.scrapper.dto.resultofcomparewebsiteinfo.ResultOfCompa
 import ru.tinkoff.edu.java.scrapper.entities.websiteinfo.StackOverflowInfo;
 import ru.tinkoff.edu.java.scrapper.entities.websiteinfo.stackoverflow.StackOverflowAnswer;
 import ru.tinkoff.edu.java.scrapper.entities.websiteinfo.stackoverflow.StackOverflowComment;
-import static org.junit.jupiter.api.Assertions.*;
+
 import java.time.OffsetDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.Map;
 import java.util.Optional;
 
-public class JDBCStackoverflowDAOTest extends JDBCIntegrationEnvironment{
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+public class JDBCStackoverflowDAOTest extends JDBCIntegrationEnvironment {
     @Autowired
     public JDBCStackOverflowInfoDAO SUT;
     @Test

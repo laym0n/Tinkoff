@@ -1,4 +1,4 @@
-package jpa;
+package dataaccess.jdbc;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,7 +23,7 @@ import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class JPAGitHubDAOTest extends JPAIntegrationEnvironment {
+public class JDBCGitHubDAOTest extends JDBCIntegrationEnvironment {
     @Autowired
     public JDBCGitHubInfoDAO SUT;
     @Test

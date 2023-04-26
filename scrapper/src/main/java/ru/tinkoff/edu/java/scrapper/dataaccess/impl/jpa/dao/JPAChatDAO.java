@@ -9,21 +9,19 @@ import ru.tinkoff.edu.java.scrapper.entities.Chat;
 import javax.sql.DataSource;
 
 public class JPAChatDAO extends JPADAO {
-    public void add(Chat newChat){
+    public void add(ChatEntity newChat){
         entityManager.persist(newChat);
     }
     public void remove(int idChat){
-        entityManager.createQuery("delete from chat where chat.id = idChat");
+        entityManager.createQuery("delete from ChatEntity ch where ch.id = ?").executeUpdate();
     }
     public boolean containsChatWithId(int chatId){
-        int countRows = jdbcTemplate.queryForObject("SELECT COUNT(*) FROM chat WHERE id = ?", int.class, chatId);
+        int countRows = entityManager.createQuery("SELECT COUNT(*) FROM chat WHERE id = ?").getFirstResult();
         return countRows != 0;
     }
-    public Chat findByID(int id){
-        return jdbcTemplate.queryForObject(
-                "SELECT * FROM chat WHERE id = ?",
-                new Object[] {id},
-                new BeanPropertyRowMapper<>(Chat.class)
-        );
+    public ChatEntity findByID(int id){
+        return entityManager.createQuery(
+                "SELECT * FROM ChatEntity ch WHERE ch.id = ?", ChatEntity.class
+        ).getSingleResult();
     }
 }

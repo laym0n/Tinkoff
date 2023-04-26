@@ -1,8 +1,10 @@
 package ru.tinkoff.edu.java.scrapper.dataaccess.impl.jdbc.dao;
 
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.ResultSetExtractor;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
+import org.springframework.stereotype.Component;
 import parserservice.dto.GitHubLinkInfo;
 import parserservice.dto.LinkInfo;
 import parserservice.dto.StackOverflowLinkInfo;
@@ -21,6 +23,8 @@ import java.time.OffsetDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
+@Component
+@ConditionalOnProperty(prefix = "app", name = "database-access-type", havingValue = "jdbc")
 public class JDBCStackOverflowInfoDAO extends JDBCDAO{
     private JDBCStackOverflowAnswerDAO answerDAO;
     private JDBCStackOverflowCommentDAO commentDAO;
@@ -29,10 +33,6 @@ public class JDBCStackOverflowInfoDAO extends JDBCDAO{
         super(dataSource);
         this.answerDAO = answerDAO;
         this.commentDAO = commentDAO;
-    }
-
-    public String getQueryForFindIdByLinkInfo(StackOverflowLinkInfo linkInfo) {
-        return "select website_info_id from stackoverflow_info where question_id = " + linkInfo.idQuestion();
     }
     public Optional<Integer> findIdByLinkInfo(StackOverflowLinkInfo linkInfo){
         List<Integer> ids = jdbcTemplate.queryForList("select website_info_id from stackoverflow_info where question_id = ?",

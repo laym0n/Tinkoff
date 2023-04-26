@@ -1,4 +1,4 @@
-package jdbc;
+package dataaccess.jdbc;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtensionContext;
@@ -11,11 +11,10 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.transaction.annotation.Transactional;
 import parserservice.dto.StackOverflowLinkInfo;
 import ru.tinkoff.edu.java.scrapper.dataaccess.UpdateWebsiteInfoDAService;
-import ru.tinkoff.edu.java.scrapper.dto.resultofcomparewebsiteinfo.ResultOfCompareStackOverflowInfo;
-import ru.tinkoff.edu.java.scrapper.dto.resultofcomparewebsiteinfo.ResultOfCompareWebsiteInfo;
 import ru.tinkoff.edu.java.scrapper.dto.request.LinkUpdateRequest;
 import ru.tinkoff.edu.java.scrapper.dto.response.website.StackOverflowResponse;
 import ru.tinkoff.edu.java.scrapper.dto.response.website.stackoverflow.*;
+import ru.tinkoff.edu.java.scrapper.dto.resultofcomparewebsiteinfo.ResultOfCompareStackOverflowInfo;
 import ru.tinkoff.edu.java.scrapper.entities.websiteinfo.StackOverflowInfo;
 import ru.tinkoff.edu.java.scrapper.entities.websiteinfo.stackoverflow.StackOverflowAnswer;
 import ru.tinkoff.edu.java.scrapper.entities.websiteinfo.stackoverflow.StackOverflowComment;
@@ -24,9 +23,10 @@ import ru.tinkoff.edu.java.scrapper.usecases.impl.checkupdatelinks.handlersWebsi
 import ru.tinkoff.edu.java.scrapper.usecases.impl.checkupdatelinks.handlersWebsiteInfo.impl.strategies.impl.stackoverflow.StackOverflowBuilderLinkUpdateRequest;
 import ru.tinkoff.edu.java.scrapper.webclients.stackoverflowclient.StackOverflowClient;
 
-import java.net.URI;
 import java.time.OffsetDateTime;
-import java.util.*;
+import java.util.Arrays;
+import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;

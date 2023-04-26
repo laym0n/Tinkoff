@@ -1,10 +1,12 @@
 package ru.tinkoff.edu.java.scrapper.dataaccess.impl.jdbc.dao;
 
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.PreparedStatementCreator;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
+import org.springframework.stereotype.Component;
 import parserservice.dto.LinkInfo;
 import ru.tinkoff.edu.java.scrapper.dataaccess.impl.jdbc.dao.websiteinfochaindao.JDBCChainWebsiteInfoDAO;
 import ru.tinkoff.edu.java.scrapper.entities.TrackedLink;
@@ -21,6 +23,8 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.IntStream;
 
+@Component
+@ConditionalOnProperty(prefix = "app", name = "database-access-type", havingValue = "jdbc")
 public class JDBCTrackedLinkDAO extends JDBCDAO {
     private JDBCChainWebsiteInfoDAO websiteInfoDAO;
 

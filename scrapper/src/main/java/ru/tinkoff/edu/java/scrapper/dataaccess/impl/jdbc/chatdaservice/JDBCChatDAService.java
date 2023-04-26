@@ -1,7 +1,9 @@
 package ru.tinkoff.edu.java.scrapper.dataaccess.impl.jdbc.chatdaservice;
 
 import lombok.AllArgsConstructor;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.dao.DuplicateKeyException;
+import org.springframework.stereotype.Component;
 import ru.tinkoff.edu.java.scrapper.dataaccess.ChatDAService;
 import ru.tinkoff.edu.java.scrapper.dataaccess.impl.jdbc.dao.JDBCChatDAO;
 import ru.tinkoff.edu.java.scrapper.entities.Chat;
@@ -9,6 +11,8 @@ import ru.tinkoff.edu.java.scrapper.entities.Chat;
 import java.security.InvalidParameterException;
 
 @AllArgsConstructor
+@Component
+@ConditionalOnProperty(prefix = "app", name = "database-access-type", havingValue = "jdbc")
 public class JDBCChatDAService implements ChatDAService {
     private JDBCChatDAO chatDAO;
 

@@ -1,22 +1,26 @@
-package jdbc;
+package dataaccess.jdbc;
 
-import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.transaction.annotation.Transactional;
 import parserservice.dto.StackOverflowLinkInfo;
-import ru.tinkoff.edu.java.scrapper.dataaccess.impl.jdbc.dao.*;
+import ru.tinkoff.edu.java.scrapper.dataaccess.impl.jdbc.dao.JDBCChatDAO;
+import ru.tinkoff.edu.java.scrapper.dataaccess.impl.jdbc.dao.JDBCStackOverflowInfoDAO;
+import ru.tinkoff.edu.java.scrapper.dataaccess.impl.jdbc.dao.JDBCTrackedLinkDAO;
 import ru.tinkoff.edu.java.scrapper.entities.Chat;
 import ru.tinkoff.edu.java.scrapper.entities.TrackedLink;
 import ru.tinkoff.edu.java.scrapper.entities.websiteinfo.StackOverflowInfo;
+
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-public class JDBCTrackedLinkDAOTest extends JDBCIntegrationEnvironment{
+import static org.junit.jupiter.api.Assertions.*;
+
+public class JDBCTrackedLinkDAOTest extends JDBCIntegrationEnvironment {
     @Autowired
     private JDBCTrackedLinkDAO SUT;
     @Autowired

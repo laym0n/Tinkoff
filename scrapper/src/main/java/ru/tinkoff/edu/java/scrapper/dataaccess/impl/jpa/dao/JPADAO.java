@@ -12,8 +12,8 @@ import javax.sql.DataSource;
 
 public abstract class JPADAO {
     protected EntityManager entityManager;
+    protected JdbcTemplate jdbcTemplate;
     public void setEntityManager(EntityManager entityManager){
         this.entityManager = entityManager;
     }
-    protected JdbcTemplate jdbcTemplate;
 }

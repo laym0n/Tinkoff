@@ -1,8 +1,10 @@
 package ru.tinkoff.edu.java.scrapper.dataaccess.impl.jdbc.dao;
 
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.ResultSetExtractor;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
+import org.springframework.stereotype.Component;
 import parserservice.dto.GitHubLinkInfo;
 import parserservice.dto.LinkInfo;
 import ru.tinkoff.edu.java.scrapper.dto.response.website.github.GitHubBranchResponse;
@@ -19,6 +21,8 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 
+@Component
+@ConditionalOnProperty(prefix = "app", name = "database-access-type", havingValue = "jdbc")
 public class JDBCGitHubInfoDAO extends JDBCDAO {
     private JDBCGitHubCommitDAO commitDAO;
     private JDBCGitHubBranchesDAO branchesDAO;

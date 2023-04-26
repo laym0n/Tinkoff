@@ -1,6 +1,8 @@
 package ru.tinkoff.edu.java.scrapper.dataaccess.impl.jdbc.dao.websiteinfochaindao;
 
 import lombok.AllArgsConstructor;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.stereotype.Component;
 import parserservice.dto.GitHubLinkInfo;
 import parserservice.dto.LinkInfo;
 import parserservice.dto.StackOverflowLinkInfo;
