@@ -1,16 +1,14 @@
-package ru.tinkoff.edu.java.bot.telegrambotimpl.buildersendmessage.buildersendmessageimpl.buildersforeachcommand;
+package ru.tinkoff.edu.java.bot.telegrambotimpl.builder.send.message.impl.buildersforeachcommand;
 
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import ru.tinkoff.edu.java.bot.dto.response.ListLinksResponse;
-import ru.tinkoff.edu.java.bot.telegrambotimpl.buildersendmessage.BuilderSendMessage;
+import ru.tinkoff.edu.java.bot.telegrambotimpl.builder.send.message.BuilderSendMessage;
 import ru.tinkoff.edu.java.bot.telegrambotimpl.Command;
 import ru.tinkoff.edu.java.bot.telegrambotimpl.ParsedCommand;
 import ru.tinkoff.edu.java.bot.webclients.ScrapperClient;
 
-import java.lang.reflect.InaccessibleObjectException;
-import java.security.InvalidParameterException;
 import java.util.Arrays;
 
 @Component

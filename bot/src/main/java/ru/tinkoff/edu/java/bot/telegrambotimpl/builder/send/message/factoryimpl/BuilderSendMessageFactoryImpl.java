@@ -1,11 +1,11 @@
-package ru.tinkoff.edu.java.bot.telegrambotimpl.buildersendmessage.factoryimpl;
+package ru.tinkoff.edu.java.bot.telegrambotimpl.builder.send.message.factoryimpl;
 
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
-import ru.tinkoff.edu.java.bot.telegrambotimpl.buildersendmessage.BuilderSendMessage;
-import ru.tinkoff.edu.java.bot.telegrambotimpl.buildersendmessage.BuilderSendMessageFactory;
-import ru.tinkoff.edu.java.bot.telegrambotimpl.buildersendmessage.buildersendmessageimpl.buildersforeachcommand.*;
-import ru.tinkoff.edu.java.bot.telegrambotimpl.buildersendmessage.buildersendmessageimpl.chainbuilder.ChainBuilderSendMessage;
+import ru.tinkoff.edu.java.bot.telegrambotimpl.builder.send.message.BuilderSendMessage;
+import ru.tinkoff.edu.java.bot.telegrambotimpl.builder.send.message.BuilderSendMessageFactory;
+import ru.tinkoff.edu.java.bot.telegrambotimpl.builder.send.message.impl.buildersforeachcommand.*;
+import ru.tinkoff.edu.java.bot.telegrambotimpl.builder.send.message.impl.chainbuilder.ChainBuilderSendMessage;
 
 @Component
 @AllArgsConstructor

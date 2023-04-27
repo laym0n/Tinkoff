@@ -1,22 +1,23 @@
 package ru.tinkoff.edu.java.scrapper.dataaccess.impl.jpa.dao.websiteinfochaindao;
 
-import lombok.AllArgsConstructor;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.stereotype.Component;
 import ru.tinkoff.edu.java.scrapper.dataaccess.impl.jpa.dao.*;
 
-import javax.sql.DataSource;
-
-public class JDBCChainWebsiteInfoDAOFactoryImpl implements JDBCChainWebsiteInfoDAOFactory {
+@Component
+@ConditionalOnProperty(prefix = "app", name = "database-access-type", havingValue = "jpa")
+public class JPAChainWebsiteInfoDAOFactoryImpl implements JPAChainWebsiteInfoDAOFactory {
     @Override
-    public JPAChainWebsiteInfoDAO getJDBCWebsiteInfoInfoDAO() {
+    public JPAChainWebsiteInfoDAO getJPAWebsiteInfoInfoDAO() {
         JPAGitHubBranchesDAO branchesDAO = new JPAGitHubBranchesDAO();
         JPAGitHubCommitDAO commitsDAO = new JPAGitHubCommitDAO();
         JPAGitHubInfoDAO gitHubInfoDAO = new JPAGitHubInfoDAO(commitsDAO, branchesDAO);
-        JDBCChainGitHubInfoDAOImpl chainGitHubInfoDAO = new JDBCChainGitHubInfoDAOImpl(gitHubInfoDAO, null);
+        JPAChainGitHubInfoDAOImpl chainGitHubInfoDAO = new JPAChainGitHubInfoDAOImpl(gitHubInfoDAO, null);
 
         JPACStackOverflowCommentDAO commentDAO = new JPACStackOverflowCommentDAO();
         JPAStackOverflowAnswerDAO answerDAO = new JPAStackOverflowAnswerDAO();
         JPAStackOverflowInfoDAO stackOverflowInfoDAO = new JPAStackOverflowInfoDAO(answerDAO, commentDAO);
-        JDBCChainStackOverflowInfoDAOImpl chainStackOverflowInfoDAO = new JDBCChainStackOverflowInfoDAOImpl(stackOverflowInfoDAO,
+        JPAChainStackOverflowInfoDAOImpl chainStackOverflowInfoDAO = new JPAChainStackOverflowInfoDAOImpl(stackOverflowInfoDAO,
                 chainGitHubInfoDAO);
         return chainStackOverflowInfoDAO;
     }

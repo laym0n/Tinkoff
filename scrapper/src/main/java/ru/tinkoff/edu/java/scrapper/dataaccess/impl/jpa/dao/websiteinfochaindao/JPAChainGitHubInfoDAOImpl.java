@@ -10,7 +10,7 @@ import ru.tinkoff.edu.java.scrapper.entities.websiteinfo.WebsiteInfo;
 import java.util.Optional;
 
 @AllArgsConstructor
-public class JDBCChainGitHubInfoDAOImpl implements JPAChainWebsiteInfoDAO {
+public class JPAChainGitHubInfoDAOImpl implements JPAChainWebsiteInfoDAO {
     private JPAGitHubInfoDAO gitHubInfoDAO;
     private JPAChainWebsiteInfoDAO nextChain;
 

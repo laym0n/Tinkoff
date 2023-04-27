@@ -4,7 +4,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Repository;
 import ru.tinkoff.edu.java.scrapper.entities.Chat;
 import javax.sql.DataSource;
 

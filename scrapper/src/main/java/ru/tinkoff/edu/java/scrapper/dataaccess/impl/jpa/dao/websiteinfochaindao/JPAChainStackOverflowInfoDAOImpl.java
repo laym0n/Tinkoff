@@ -10,7 +10,7 @@ import ru.tinkoff.edu.java.scrapper.entities.websiteinfo.WebsiteInfo;
 import java.util.Optional;
 
 @AllArgsConstructor
-public class JDBCChainStackOverflowInfoDAOImpl implements JPAChainWebsiteInfoDAO {
+public class JPAChainStackOverflowInfoDAOImpl implements JPAChainWebsiteInfoDAO {
     private JPAStackOverflowInfoDAO stackOverflowDAO;
     private JPAChainWebsiteInfoDAO nextChain;
 

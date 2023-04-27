@@ -4,7 +4,7 @@ import ru.tinkoff.edu.java.bot.dto.response.LinkResponse;
 import ru.tinkoff.edu.java.bot.dto.response.ListLinksResponse;
 import ru.tinkoff.edu.java.bot.telegrambotimpl.Command;
 import ru.tinkoff.edu.java.bot.telegrambotimpl.ParsedCommand;
-import ru.tinkoff.edu.java.bot.telegrambotimpl.buildersendmessage.buildersendmessageimpl.buildersforeachcommand.ListBuilderSendMessage;
+import ru.tinkoff.edu.java.bot.telegrambotimpl.builder.send.message.impl.buildersforeachcommand.ListBuilderSendMessage;
 import ru.tinkoff.edu.java.bot.webclients.ScrapperClient;
 
 import static org.junit.jupiter.api.Assertions.*;

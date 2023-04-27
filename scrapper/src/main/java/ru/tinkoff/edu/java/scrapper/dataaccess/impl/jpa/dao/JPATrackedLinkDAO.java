@@ -1,5 +1,7 @@
 package ru.tinkoff.edu.java.scrapper.dataaccess.impl.jpa.dao;
 
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.stereotype.Component;
 import parserservice.dto.LinkInfo;
 import ru.tinkoff.edu.java.scrapper.dataaccess.impl.jpa.dao.websiteinfochaindao.JPAChainWebsiteInfoDAO;
 import ru.tinkoff.edu.java.scrapper.dataaccess.impl.jpa.entities.TrackedLinkEntity;
@@ -8,6 +10,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.IntStream;
 
+@Component
+@ConditionalOnProperty(prefix = "app", name = "database-access-type", havingValue = "jpa")
 public class JPATrackedLinkDAO extends JPADAO {
     private JPAChainWebsiteInfoDAO websiteInfoDAO;
 
