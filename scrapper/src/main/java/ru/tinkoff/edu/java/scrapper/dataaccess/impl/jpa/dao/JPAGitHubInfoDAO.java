@@ -1,9 +1,14 @@
 package ru.tinkoff.edu.java.scrapper.dataaccess.impl.jpa.dao;
 
+import jakarta.persistence.Query;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
-import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 import parserservice.dto.GitHubLinkInfo;
+import ru.tinkoff.edu.java.scrapper.dataaccess.impl.jpa.entities.GitHubBranchEntity;
+import ru.tinkoff.edu.java.scrapper.dataaccess.impl.jpa.entities.GitHubCommitEntity;
+import ru.tinkoff.edu.java.scrapper.dataaccess.impl.jpa.entities.GitHubInfoEntity;
+import ru.tinkoff.edu.java.scrapper.dataaccess.impl.jpa.entities.WebsiteInfoTypeEntity;
 import ru.tinkoff.edu.java.scrapper.dto.response.website.github.GitHubBranchResponse;
 import ru.tinkoff.edu.java.scrapper.dto.response.website.github.GitHubCommitResponse;
 import ru.tinkoff.edu.java.scrapper.dto.resultofcomparewebsiteinfo.ResultOfCompareGitHubInfo;
@@ -11,10 +16,9 @@ import ru.tinkoff.edu.java.scrapper.entities.websiteinfo.GitHubInfo;
 import ru.tinkoff.edu.java.scrapper.entities.websiteinfo.github.GitHubBranch;
 import ru.tinkoff.edu.java.scrapper.entities.websiteinfo.github.GitHubCommit;
 
-import javax.sql.DataSource;
+import java.sql.Timestamp;
 import java.time.OffsetDateTime;
 import java.util.*;
-import java.util.stream.Collectors;
 
 
 @Component
@@ -28,81 +32,84 @@ public class JPAGitHubInfoDAO extends JPADAO {
         this.branchesDAO = branchesDAO;
     }
 
-    public Optional<Integer> findIdByLinkInfo(GitHubLinkInfo linkInfo){
-        return Optional.empty();
-//        List<Integer> ids = jdbcTemplate.queryForList("select website_info_id from github_info " +
-//                        "where user_name = ? and repository_name = ?", new Object[]{linkInfo.userName(), linkInfo.repositoryName()},
-//                Integer.class);
-//        return Optional.ofNullable((ids.size()) == 0? null : ids.get(0));
+    public Optional<Integer> findIdByUserNameAndRepositoryName(String userName, String repositoryName){
+        Query query = entityManager.createQuery("select ghi.id from GitHubInfoEntity ghi " +
+                "where ghi.repositoryName = :repositoryName and ghi.userName = :userName");
+        query.setParameter("repositoryName", repositoryName);
+        query.setParameter("userName", userName);
+        List<Integer> ids = query.getResultList();
+        return Optional.ofNullable((ids.size()) == 0? null : ids.get(0));
     }
-    public void add(GitHubInfo newGitHubInfo){
-//        Map<String, Object> paramMap = new HashMap<>();
-//        paramMap.put("last_update_date_time", OffsetDateTime.now());
-//        paramMap.put("user_name", newGitHubInfo.getLinkInfo().userName());
-//        paramMap.put("repository_name", newGitHubInfo.getLinkInfo().repositoryName());
-//        paramMap.put("last_activity_date_time", newGitHubInfo.getLastActiveTime());
-//        NamedParameterJdbcTemplate namedParameterJdbcTemplate = new NamedParameterJdbcTemplate(jdbcTemplate);
-//        int websiteInfoId = namedParameterJdbcTemplate.queryForObject(
-//                "INSERT INTO website_info (type_id, last_update_date_time) " +
-//                "VALUES ((select id from website_info_type where name = 'GitHub'), :last_update_date_time) RETURNING id; ",
-//                paramMap, Integer.class);
-//        paramMap.put("website_info_id", websiteInfoId);
-//        namedParameterJdbcTemplate.update(
-//                "INSERT INTO github_info (website_info_id, user_name, repository_name, last_activity_date_time) " +
-//                "VALUES (:website_info_id, :user_name, :repository_name, :last_activity_date_time);", paramMap);
-//        commitDAO.addAll(newGitHubInfo.getCommits().values(), websiteInfoId);
-//        branchesDAO.addAll(newGitHubInfo.getBranches().values(), websiteInfoId);
-//        newGitHubInfo.setId(websiteInfoId);
+    @Transactional
+    public void add(GitHubInfoEntity newGitHubInfo){
+        WebsiteInfoTypeEntity type = entityManager.createQuery("select wsit from WebsiteInfoTypeEntity wsit " +
+                "where wsit.name = 'GitHub'", WebsiteInfoTypeEntity.class).getSingleResult();
+        newGitHubInfo.setTypeOfWebsite(type);
+        entityManager.persist(newGitHubInfo);
+        for(GitHubCommitEntity commit : newGitHubInfo.getCommits()){
+            entityManager.persist(commit);
+        }
+        for(GitHubBranchEntity branch : newGitHubInfo.getBranches()){
+            entityManager.persist(branch);
+        }
     }
     public void remove(int idWebsiteInfo){
-//        jdbcTemplate.update("delete from website_info where id = ?", idWebsiteInfo);
+        entityManager.createQuery("delete from GitHubInfoEntity ghi where ghi.id = :id")
+                        .setParameter("id", idWebsiteInfo).executeUpdate();
     }
-    public GitHubInfo getById(int idGitHubInfo){
-        return null;
-//        Map<String, GitHubBranch> branches = branchesDAO.findAll(idGitHubInfo).stream()
-//                .collect(Collectors.toMap(i->i.getBranchName(), i->i));
-//        Map<String, GitHubCommit> commits = commitDAO.findAll(idGitHubInfo).stream()
-//                .collect(Collectors.toMap(i->i.getSha(), i->i));
-//        GitHubInfo result = jdbcTemplate.queryForObject(
-//                "select * from website_info " +
-//                " join github_info ON github_info.website_info_id = website_info.id " +
-//                        "where website_info.id = ? ",
-//                new Object[]{idGitHubInfo},
-//                (rs, rowNum) -> {
-//            int id = rs.getInt("website_info_id");
-//            OffsetDateTime lastActiveTime = rs.getObject("last_activity_date_time", OffsetDateTime.class);
-//            OffsetDateTime lastUpdateTime = rs.getObject("last_update_date_time", OffsetDateTime.class);
-//            String userName = rs.getString("user_name");
-//            String repositoryName = rs.getString("repository_name");
-//            GitHubLinkInfo linkInfo = new GitHubLinkInfo(userName, repositoryName);
-//            GitHubInfo resultOfMapRows = new GitHubInfo(id, lastUpdateTime, linkInfo, lastActiveTime);
-//            return resultOfMapRows;
-//                });
-//        result.setBranches(branches);
-//        result.setCommits(commits);
-//        return result;
+    public GitHubInfoEntity getById(int idGitHubInfo){
+        return entityManager.createQuery("select ghi from GitHubInfoEntity ghi where ghi.id = :id", GitHubInfoEntity.class)
+                .setParameter("id", idGitHubInfo).getSingleResult();
     }
+    @Transactional
     public void applyChanges(ResultOfCompareGitHubInfo changes){
-//        jdbcTemplate.update("UPDATE website_info SET last_update_date_time = ? WHERE id = ?;" +
-//                        (changes.getLastActivityDate().isEmpty() ? "" :
-//                                "UPDATE github_info SET last_activity_date_time = ? WHERE website_info_id = ?"),
-//                new Object[] {OffsetDateTime.now(), changes.getIdWebsiteInfo(),
-//                        changes.getLastActivityDate().get(), changes.getIdWebsiteInfo()});
-//        commitDAO.removeAll(Arrays.asList(changes.getDroppedCommits()), changes.getIdWebsiteInfo());
-//        branchesDAO.removeAll(Arrays.asList(changes.getDroppedBranches()), changes.getIdWebsiteInfo());
-//        commitDAO.addAll(Arrays.stream(changes.getPushedCommits())
-//                .map(GitHubCommitResponse::getGitHubCommit).toList(), changes.getIdWebsiteInfo());
-//        branchesDAO.addAll(Arrays.stream(changes.getAddedBranches())
-//                .map(GitHubBranchResponse::getGitHubBranch).toList(), changes.getIdWebsiteInfo());
+        Query queryForRemoveBranches = entityManager.createQuery("delete from GitHubBranchEntity ghb " +
+                "where ghb.primaryKey.gitHubSiteId = :id " +
+                "and ghb.primaryKey.name = :branchName");
+        for(GitHubBranch branchForRemove : changes.getDroppedBranches()){
+            queryForRemoveBranches.setParameter("id", changes.getIdWebsiteInfo());
+            queryForRemoveBranches.setParameter("branchName", branchForRemove.getBranchName());
+            queryForRemoveBranches.executeUpdate();
+        }
+
+        Query queryForRemoveCommits = entityManager.createQuery("delete from GitHubCommitEntity ghc " +
+                "where ghc.primaryKey.gitHubInfoId = :id " +
+                "and ghc.primaryKey.sha = :sha");
+        for(GitHubCommit commitForRemove : changes.getDroppedCommits()){
+            queryForRemoveBranches.setParameter("id", changes.getIdWebsiteInfo());
+            queryForRemoveBranches.setParameter("sha", commitForRemove.getSha());
+            queryForRemoveBranches.executeUpdate();
+        }
+
+        Arrays.stream(changes.getAddedBranches()).map(GitHubBranchResponse::getGitHubBranch)
+                .forEach(i-> entityManager.persist(new GitHubBranchEntity(i, changes.getIdWebsiteInfo())));
+
+        Arrays.stream(changes.getPushedCommits()).map(GitHubCommitResponse::getGitHubCommit)
+                .forEach(i->entityManager.persist(new GitHubCommitEntity(i, changes.getIdWebsiteInfo())));
+
+        Query queryForUpdateGitHubInfo;
+        if(changes.getLastActivityDate().isPresent()){
+            queryForUpdateGitHubInfo = entityManager
+                    .createQuery("update GitHubInfoEntity ghi set ghi.lastActiveTime = :lastActiveTime, " +
+                            "ghi.lastCheckUpdate = :lastCheckUpdate " +
+                            "where ghi.id = :id")
+                    .setParameter("lastActiveTime", Timestamp.valueOf(changes.getLastActivityDate().get().toLocalDateTime()));
+        }
+        else{
+            queryForUpdateGitHubInfo = entityManager.createQuery("update WebsiteInfoEntity wi " +
+                    "set wi.lastCheckUpdate = :lastCheckUpdate " +
+                    "where wi.id = :id");
+        }
+        queryForUpdateGitHubInfo
+                .setParameter("id", changes.getIdWebsiteInfo())
+                .setParameter("lastCheckUpdate", Timestamp.valueOf(OffsetDateTime.now().toLocalDateTime()))
+                .executeUpdate();
     }
 
     public GitHubLinkInfo getLinkInfoById(int idWebsiteInfo) {
-        return null;
-//        return jdbcTemplate.query("select ghi.user_name, ghi.repository_name from github_info ghi " +
-//                        "where ghi.website_info_id = ?",
-//                rs -> {
-//            rs.next();
-//                    return new GitHubLinkInfo(rs.getString("user_name"), rs.getString("repository_name"));
-//                }, idWebsiteInfo);
+        Object[] results = entityManager.createQuery("select ghi.userName, ghi.repositoryName from GitHubInfoEntity ghi " +
+                "where ghi.id = :id", Object[].class).setParameter("id", idWebsiteInfo)
+                .getSingleResult();
+        return new GitHubLinkInfo((String) results[0], (String)results[1]);
     }
 }
