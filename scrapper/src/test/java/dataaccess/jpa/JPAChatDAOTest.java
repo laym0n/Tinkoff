@@ -11,14 +11,14 @@ import ru.tinkoff.edu.java.scrapper.entities.Chat;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class JPAChatDAOTest extends JPAIntegrationEnvironment {
+class JPAChatDAOTest extends JPAIntegrationEnvironment {
     @Autowired
     public JPAChatDAO SUT;
 
     @Test
     @Transactional
     @Rollback
-    public void validAddTest(){
+    void validAddTest(){
         //Assign
         final int idChat = 100;
         ChatEntity argumentForSUT = new ChatEntity();
@@ -34,7 +34,7 @@ public class JPAChatDAOTest extends JPAIntegrationEnvironment {
     @Test
     @Transactional
     @Rollback
-    public void containsChatTest(){
+    void containsChatTest(){
         //Assign
         final int idChat = 100;
         ChatEntity argumentForSUT = new ChatEntity(idChat);
@@ -47,7 +47,7 @@ public class JPAChatDAOTest extends JPAIntegrationEnvironment {
         assertTrue(contains, ()->"DB must contain chat with id " + idChat);
     }
     @Test
-    public void notContainsChatTest(){
+    void notContainsChatTest(){
         //Assign
         final int idOfChat = 100;
 
@@ -60,7 +60,7 @@ public class JPAChatDAOTest extends JPAIntegrationEnvironment {
     @Test
     @Transactional
     @Rollback
-    public void validRemoveChatTest(){
+    void validRemoveChatTest(){
         //Assign
         final int idOfChat = 100;
         ChatEntity addedChat = new ChatEntity(idOfChat);

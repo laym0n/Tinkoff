@@ -9,11 +9,11 @@ import ru.tinkoff.edu.java.bot.telegrambotimpl.ParserCommands;
 import static org.junit.jupiter.api.Assertions.*;
 import java.util.stream.Stream;
 
-public class ParserLinksCommandsTest {
+class ParserLinksCommandsTest {
 
     @ParameterizedTest
     @ArgumentsSource(ValidCommandsArgumentsProvider.class)
-    public void testParseValidCommandsFromUser(String inputText, ParsedCommand expectedResultParsedCommand){
+    void testParseValidCommandsFromUser(String inputText, ParsedCommand expectedResultParsedCommand){
         ParserCommands parserCommands = new ParserCommands();
 
         ParsedCommand resultParsedCommand = parserCommands.getParsedCommand(inputText);
@@ -23,7 +23,7 @@ public class ParserLinksCommandsTest {
     }
     @ParameterizedTest
     @ArgumentsSource(InvalidCommandsArgumentsProvider.class)
-    public void testParseInvalidCommandsFromUser(String inputText, ParsedCommand expectedResultParsedCommand){
+    void testParseInvalidCommandsFromUser(String inputText, ParsedCommand expectedResultParsedCommand){
         ParserCommands parserCommands = new ParserCommands();
 
         ParsedCommand resultParsedCommand = parserCommands.getParsedCommand(inputText);

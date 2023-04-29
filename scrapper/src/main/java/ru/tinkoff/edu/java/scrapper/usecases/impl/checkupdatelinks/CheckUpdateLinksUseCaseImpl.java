@@ -1,13 +1,12 @@
 package ru.tinkoff.edu.java.scrapper.usecases.impl.checkupdatelinks;
 
-import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import ru.tinkoff.edu.java.scrapper.dataaccess.CheckUpdateLinksDAService;
 import ru.tinkoff.edu.java.scrapper.dto.request.LinkUpdateRequest;
 import ru.tinkoff.edu.java.scrapper.entities.websiteinfo.WebsiteInfo;
 import ru.tinkoff.edu.java.scrapper.usecases.CheckUpdateLinksUseCase;
-import ru.tinkoff.edu.java.scrapper.usecases.impl.checkupdatelinks.handlersWebsiteInfo.HandlerUpdateWebsiteInfo;
+import ru.tinkoff.edu.java.scrapper.usecases.impl.checkupdatelinks.handlerswebsiteinfo.HandlerUpdateWebsiteInfo;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -22,8 +22,7 @@ public class ParserLinksImpl implements ParserLinks {
         if(!parserStrategy.canParse(path)){
             return (nextParserLinks != null? nextParserLinks.parse(path) : null);
         }
-        LinkInfo result = parserStrategy.parse(path);
-        return result;
+        return parserStrategy.parse(path);
     }
     public void setNextParser(ParserLinks nextParserLinks) {
         this.nextParserLinks = nextParserLinks;

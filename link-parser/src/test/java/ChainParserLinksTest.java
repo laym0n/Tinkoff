@@ -11,10 +11,10 @@ import parserservice.factories.factoryimpl.ParserLinksFactoryImpl;
 import static org.junit.jupiter.api.Assertions.*;
 import java.util.stream.Stream;
 
-public class ChainParserLinksTest {
+class ChainParserLinksTest {
     @ParameterizedTest
     @ArgumentsSource(ValidLinksArgumentsProvider.class)
-    public void parseValidLinksTest(String path, LinkInfo expectedResultLinkInfo){
+    void parseValidLinksTest(String path, LinkInfo expectedResultLinkInfo){
         ParserLinks parserLinks = new ParserLinksFactoryImpl().getParserLinks();
 
         LinkInfo linkInfoFromParser = parserLinks.parse(path);
@@ -25,7 +25,7 @@ public class ChainParserLinksTest {
     }
     @ParameterizedTest
     @ArgumentsSource(InvalidLinksArgumentsProvider.class)
-    public void parseInvalidLinksTest(String path){
+    void parseInvalidLinksTest(String path){
         ParserLinks parserLinks = new ParserLinksFactoryImpl().getParserLinks();
 
         LinkInfo linkInfoFromParser = parserLinks.parse(path);

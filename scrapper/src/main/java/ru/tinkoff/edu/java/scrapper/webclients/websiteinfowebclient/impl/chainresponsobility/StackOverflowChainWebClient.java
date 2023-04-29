@@ -28,7 +28,6 @@ public class StackOverflowChainWebClient extends WebsiteInfoWebClientChainImpl{
     protected WebsiteInfo loadWebsiteInfo(LinkInfo linkInfo) {
         StackOverflowLinkInfo stackOverflowLinkInfo = (StackOverflowLinkInfo) linkInfo;
         StackOverflowResponse response = stackOverflowClient.getStackOverflowResponse(stackOverflowLinkInfo);
-        StackOverflowInfo result = response.getStackOverflowInfo(stackOverflowLinkInfo);
-        return result;
+        return response.getStackOverflowInfo(stackOverflowLinkInfo);
     }
 }

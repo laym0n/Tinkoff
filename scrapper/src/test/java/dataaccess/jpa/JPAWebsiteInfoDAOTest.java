@@ -32,7 +32,7 @@ import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class JPAWebsiteInfoDAOTest extends JPAIntegrationEnvironment {
+class JPAWebsiteInfoDAOTest extends JPAIntegrationEnvironment {
     @Autowired
     private JPAWebsiteInfoDAO SUT;
     @Autowired
@@ -41,7 +41,7 @@ public class JPAWebsiteInfoDAOTest extends JPAIntegrationEnvironment {
     @ArgumentsSource(ArgumentsProviderValidLoadTheEarliestWebsiteInfos.class)
     @Transactional
     @Rollback
-    public void validLoadTheEarliestWebsiteInfosTest(List<WebsiteInfo> websiteInfosForLoad, List<WebsiteInfoEntity> expectedInfos){
+    void validLoadTheEarliestWebsiteInfosTest(List<WebsiteInfo> websiteInfosForLoad, List<WebsiteInfoEntity> expectedInfos){
         //Assign
         for(int i = 0;i < websiteInfosForLoad.size();i++){
             chainWebsiteInfoDAO.create(websiteInfosForLoad.get(i));

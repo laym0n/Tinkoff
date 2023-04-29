@@ -16,9 +16,9 @@ import ru.tinkoff.edu.java.scrapper.dto.resultofcomparewebsiteinfo.ResultOfCompa
 import ru.tinkoff.edu.java.scrapper.entities.websiteinfo.StackOverflowInfo;
 import ru.tinkoff.edu.java.scrapper.entities.websiteinfo.stackoverflow.StackOverflowAnswer;
 import ru.tinkoff.edu.java.scrapper.entities.websiteinfo.stackoverflow.StackOverflowComment;
-import ru.tinkoff.edu.java.scrapper.usecases.impl.checkupdatelinks.handlersWebsiteInfo.impl.HandlerUpdateStackOverflowInfoChain;
-import ru.tinkoff.edu.java.scrapper.usecases.impl.checkupdatelinks.handlersWebsiteInfo.impl.strategies.impl.stackoverflow.CompareStackOverflowInfoStrategy;
-import ru.tinkoff.edu.java.scrapper.usecases.impl.checkupdatelinks.handlersWebsiteInfo.impl.strategies.impl.stackoverflow.StackOverflowBuilderLinkUpdateRequest;
+import ru.tinkoff.edu.java.scrapper.usecases.impl.checkupdatelinks.handlerswebsiteinfo.impl.HandlerUpdateStackOverflowInfoChain;
+import ru.tinkoff.edu.java.scrapper.usecases.impl.checkupdatelinks.handlerswebsiteinfo.impl.strategies.impl.stackoverflow.CompareStackOverflowInfoStrategy;
+import ru.tinkoff.edu.java.scrapper.usecases.impl.checkupdatelinks.handlerswebsiteinfo.impl.strategies.impl.stackoverflow.StackOverflowBuilderLinkUpdateRequest;
 import ru.tinkoff.edu.java.scrapper.webclients.stackoverflowclient.StackOverflowClient;
 
 import java.time.OffsetDateTime;
@@ -34,9 +34,9 @@ import static org.mockito.Mockito.*;
 
 @Transactional
 @ContextConfiguration
-public class HandlerUpdateStackOverflowInfoChainTest {
+class HandlerUpdateStackOverflowInfoChainTest {
     @Test
-    public void handleNotUpdatedLinkTest(){
+    void handleNotUpdatedLinkTest(){
         //Assign
         final int idWebSiteInfo = 100;
         int[] chatIds = IntStream.of(1, 2, 3, 4).toArray();
@@ -94,7 +94,7 @@ public class HandlerUpdateStackOverflowInfoChainTest {
     }
     @ParameterizedTest
     @ArgumentsSource(DataArgumentsProvider.class)
-    public void handleUpdatedLinkTest(StackOverflowResponse responseForReturnFromWebClient,
+    void handleUpdatedLinkTest(StackOverflowResponse responseForReturnFromWebClient,
                                       StackOverflowInfo argumentForSUT,
                                       LinkUpdateRequest expectedResultRequest,
                                       ResultOfCompareStackOverflowInfo expectedResultOfCompare,

@@ -23,7 +23,7 @@ public class HelpBuilderSendMessage implements BuilderSendMessage {
             return null;
 
         SendMessage result = new SendMessage();
-        result.setChatId(Long.valueOf(parsedCommand.getChatId()).toString());
+        result.setChatId(Long.toString(parsedCommand.getChatId()));
         result.setText(description);
 
         return result;

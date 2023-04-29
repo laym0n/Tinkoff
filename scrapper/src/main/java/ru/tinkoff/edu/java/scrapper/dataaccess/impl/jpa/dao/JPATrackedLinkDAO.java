@@ -5,7 +5,6 @@ import org.springframework.stereotype.Component;
 import parserservice.dto.LinkInfo;
 import ru.tinkoff.edu.java.scrapper.dataaccess.impl.jpa.dao.websiteinfochaindao.JPAChainWebsiteInfoDAO;
 import ru.tinkoff.edu.java.scrapper.dataaccess.impl.jpa.entities.TrackedLinkEntity;
-import ru.tinkoff.edu.java.scrapper.entities.TrackedLink;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.IntStream;
@@ -32,7 +31,7 @@ public class JPATrackedLinkDAO extends JPADAO {
                 .setParameter("websiteInfoId", idWebsiteInfo.get())
                 .setParameter("chatId", idChat)
                 .getResultList();
-        if(listRemovedLink.size() == 0)
+        if(listRemovedLink.isEmpty())
             return Optional.empty();
         entityManager.remove(listRemovedLink.get(0));
         return Optional.of(listRemovedLink.get(0));
@@ -53,7 +52,7 @@ public class JPATrackedLinkDAO extends JPADAO {
                 .createQuery("select tl.chatId from TrackedLinkEntity tl where tl.websiteInfoId = :websiteInfoId")
                 .setParameter("websiteInfoId", idWebsiteInfo)
                 .getResultList();
-        return ids.stream().flatMapToInt(i->IntStream.of(i)).toArray();
+        return ids.stream().flatMapToInt(IntStream::of).toArray();
 
     }
     public List<TrackedLinkEntity> findAllByChatId(int idChat){

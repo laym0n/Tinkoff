@@ -28,8 +28,7 @@ public class GitHubClientImpl implements GitHubClient {
         GitHubBranchResponse[] branches = getArrayOfGitHubBranches(gitHubInfo);
         GitHubCommitResponse[] commits = getArrayOfGitHubCommitResponses(gitHubInfo);
 
-        GitHubResponse result = new GitHubResponse(infoResponse, branches, commits);
-        return result;
+        return new GitHubResponse(infoResponse, branches, commits);
     }
 
     @Override
@@ -38,7 +37,7 @@ public class GitHubClientImpl implements GitHubClient {
     }
 
     private GitHubBranchResponse[] getArrayOfGitHubBranches(GitHubLinkInfo gitHubInfo){
-        GitHubBranchResponse[] gitHubBranchResponses = webClient
+        return webClient
                 .get().uri("/repos/{owner}/{repo}/branches", gitHubInfo.userName(), gitHubInfo.repositoryName())
                 .accept(MediaType.APPLICATION_JSON)
                 .retrieve()
@@ -46,11 +45,10 @@ public class GitHubClientImpl implements GitHubClient {
                 .onStatus(HttpStatusCode::is5xxServerError, clientResponse -> Mono.error(
                         new RuntimeException("Something wrong with GitHub")))
                 .bodyToMono(GitHubBranchResponse[].class).block();
-        return gitHubBranchResponses;
     }
 
     private GitHubCommitResponse[] getArrayOfGitHubCommitResponses(GitHubLinkInfo gitHubInfo){
-        GitHubCommitResponse[] gitHubCommitResponses = webClient
+        return webClient
                 .get().uri("/repos/{owner}/{repo}/commits", gitHubInfo.userName(), gitHubInfo.repositoryName())
                 .accept(MediaType.APPLICATION_JSON)
                 .retrieve()
@@ -58,11 +56,10 @@ public class GitHubClientImpl implements GitHubClient {
                 .onStatus(HttpStatusCode::is5xxServerError, clientResponse -> Mono.error(
                         new RuntimeException("Something wrong with GitHub")))
                 .bodyToMono(GitHubCommitResponse[].class).block();
-        return gitHubCommitResponses;
     }
 
     private GitHubInfoResponse getGitHubInfoResponse(GitHubLinkInfo gitHubInfo){
-        GitHubInfoResponse gitHubInfoResponse = webClient
+        return webClient
                 .get().uri("/repos/{owner}/{repo}", gitHubInfo.userName(), gitHubInfo.repositoryName())
                 .accept(MediaType.APPLICATION_JSON)
                 .retrieve()
@@ -70,6 +67,5 @@ public class GitHubClientImpl implements GitHubClient {
                 .onStatus(HttpStatusCode::is5xxServerError, clientResponse -> Mono.error(
                         new RuntimeException("Something wrong with GitHub")))
                 .bodyToMono(GitHubInfoResponse.class).block();
-        return gitHubInfoResponse;
     }
 }

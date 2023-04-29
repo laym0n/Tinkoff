@@ -5,7 +5,7 @@ import parserservice.dto.LinkInfo;
 public abstract class ParserStrategy <T extends LinkInfo> {
     private String website;
 
-    public ParserStrategy(String website) {
+    protected ParserStrategy(String website) {
         this.website = website;
     }
 

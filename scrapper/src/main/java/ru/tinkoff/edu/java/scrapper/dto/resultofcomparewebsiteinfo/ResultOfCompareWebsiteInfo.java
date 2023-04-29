@@ -12,7 +12,7 @@ public abstract sealed class ResultOfCompareWebsiteInfo permits ResultOfCompareG
     protected boolean isDifferent = false;
     private int idWebsiteInfo;
     public abstract LinkInfo getLinkInfo();
-    public ResultOfCompareWebsiteInfo(int idWebsiteInfo) {
+    protected ResultOfCompareWebsiteInfo(int idWebsiteInfo) {
         this.idWebsiteInfo = idWebsiteInfo;
     }
 }

@@ -10,13 +10,13 @@ import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class ParserLinksGitHubLinksTest {
+class ParserLinksGitHubLinksTest {
     public ParserLinksGitHubLinksTest() {
     }
 
     @ParameterizedTest
     @ArgumentsSource(ValidLinksArgumentsProvider.class)
-    public void parseValidLinksTest(String path, GitHubLinkInfo expectedResult){
+    void parseValidLinksTest(String path, GitHubLinkInfo expectedResult){
         GitHubParserStrategy gitHubParserStrategy = new GitHubParserStrategy();
 
         boolean canParseResult = gitHubParserStrategy.canParse(path);
@@ -27,7 +27,7 @@ public class ParserLinksGitHubLinksTest {
     }
     @ParameterizedTest
     @ArgumentsSource(InvalidLinksArgumentsProvider.class)
-    public void parseInvalidLinksTest(String path){
+    void parseInvalidLinksTest(String path){
         GitHubParserStrategy gitHubParserStrategy = new GitHubParserStrategy();
 
         boolean canParseResult = gitHubParserStrategy.canParse(path);

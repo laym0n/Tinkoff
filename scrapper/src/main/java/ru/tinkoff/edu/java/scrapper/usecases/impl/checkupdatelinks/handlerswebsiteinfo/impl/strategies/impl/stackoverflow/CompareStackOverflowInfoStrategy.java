@@ -1,4 +1,4 @@
-package ru.tinkoff.edu.java.scrapper.usecases.impl.checkupdatelinks.handlersWebsiteInfo.impl.strategies.impl.stackoverflow;
+package ru.tinkoff.edu.java.scrapper.usecases.impl.checkupdatelinks.handlerswebsiteinfo.impl.strategies.impl.stackoverflow;
 
 import org.springframework.stereotype.Component;
 import ru.tinkoff.edu.java.scrapper.dto.resultofcomparewebsiteinfo.ResultOfCompareStackOverflowInfo;
@@ -8,9 +8,8 @@ import ru.tinkoff.edu.java.scrapper.dto.response.website.stackoverflow.StackOver
 import ru.tinkoff.edu.java.scrapper.entities.websiteinfo.StackOverflowInfo;
 import ru.tinkoff.edu.java.scrapper.entities.websiteinfo.stackoverflow.StackOverflowAnswer;
 import ru.tinkoff.edu.java.scrapper.entities.websiteinfo.stackoverflow.StackOverflowComment;
-import ru.tinkoff.edu.java.scrapper.usecases.impl.checkupdatelinks.handlersWebsiteInfo.impl.strategies.CompareInfoStrategy;
+import ru.tinkoff.edu.java.scrapper.usecases.impl.checkupdatelinks.handlerswebsiteinfo.impl.strategies.CompareInfoStrategy;
 
-import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -34,7 +33,7 @@ public class CompareStackOverflowInfoStrategy implements CompareInfoStrategy<Sta
     private void findDeletedAnswers(ResultOfCompareStackOverflowInfo result,
                                     StackOverflowInfo savedInfo, StackOverflowResponse loadedResponse){
         Set<Integer> loadedAnswers = Arrays.stream(loadedResponse.getAnswers().getItems())
-                .map(answerResponse -> answerResponse.getAnswerId()).collect(Collectors.toSet());
+                .map(StackOverflowAnswerResponse::getAnswerId).collect(Collectors.toSet());
         StackOverflowAnswer[] deletedAnswers = savedInfo.getAnswers().values().stream()
                 .filter(savedAnswer -> !loadedAnswers.contains(savedAnswer.getIdAnswer()))
                 .toArray(StackOverflowAnswer[]::new);
@@ -45,7 +44,7 @@ public class CompareStackOverflowInfoStrategy implements CompareInfoStrategy<Sta
     private void findDeletedComments(ResultOfCompareStackOverflowInfo result,
                                             StackOverflowInfo savedInfo, StackOverflowResponse loadedResponse){
         Set<Integer> loadedComments = Arrays.stream(loadedResponse.getComments().getItems())
-                .map(loadedComment -> loadedComment.getIdComment()).collect(Collectors.toSet());
+                .map(StackOverflowCommentResponse::getIdComment).collect(Collectors.toSet());
 
         StackOverflowComment[] deletedComments = savedInfo.getComments().values().stream()
                 .filter(savedComment -> !loadedComments.contains(savedComment.getIdComment()))
@@ -70,7 +69,7 @@ public class CompareStackOverflowInfoStrategy implements CompareInfoStrategy<Sta
                 });
         result.setEditedAnswers(editedAnswers.toArray(StackOverflowAnswerResponse[]::new));
         result.setAddedAnswers(addedAnswers.toArray(StackOverflowAnswerResponse[]::new));
-        if(editedAnswers.size() > 0 || addedAnswers.size() > 0)
+        if(!editedAnswers.isEmpty() || !addedAnswers.isEmpty())
             result.setDifferent(true);
     }
     private void findAddedComments(ResultOfCompareStackOverflowInfo result,

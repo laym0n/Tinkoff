@@ -31,7 +31,7 @@ public class JPAChainStackOverflowInfoDAOImpl implements JPAChainWebsiteInfoDAO 
     @Override
     public Optional<Integer> findIdByLinkInfo(LinkInfo linkInfo) {
         if(!(linkInfo instanceof StackOverflowLinkInfo))
-            return nextChain == null ? null : nextChain.findIdByLinkInfo(linkInfo);
+            return nextChain == null ? Optional.empty() : nextChain.findIdByLinkInfo(linkInfo);
         return stackOverflowDAO.findIdByLinkInfo((StackOverflowLinkInfo) linkInfo);
     }
 

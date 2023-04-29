@@ -3,11 +3,8 @@ package ru.tinkoff.edu.java.scrapper.dataaccess.impl.jpa.dao;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Component;
 import ru.tinkoff.edu.java.scrapper.entities.websiteinfo.stackoverflow.StackOverflowComment;
-
-import javax.sql.DataSource;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 
 @Component
 @ConditionalOnProperty(prefix = "app", name = "database-access-type", havingValue = "jpa")

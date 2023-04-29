@@ -13,7 +13,7 @@ import ru.tinkoff.edu.java.scrapper.entities.TrackedLink;
 import ru.tinkoff.edu.java.scrapper.entities.websiteinfo.StackOverflowInfo;
 import static org.junit.jupiter.api.Assertions.*;
 
-public class JPATrackedLinkDAServiceTest extends JPAIntegrationEnvironment{
+class JPATrackedLinkDAServiceTest extends JPAIntegrationEnvironment{
     @Autowired
     private JPATrackedLinkDAService SUT;
     @Autowired
@@ -23,7 +23,7 @@ public class JPATrackedLinkDAServiceTest extends JPAIntegrationEnvironment{
     @Test
     @Rollback
     @Transactional
-    public void testSetIdForSavedInfoWhenSaveWebsiteInfo(){
+    void testSetIdForSavedInfoWhenSaveWebsiteInfo(){
         //Assign
         StackOverflowInfo argument1 = new StackOverflowInfo(new StackOverflowLinkInfo(5));
         StackOverflowInfo argument2 = new StackOverflowInfo(new StackOverflowLinkInfo(100));
@@ -41,7 +41,7 @@ public class JPATrackedLinkDAServiceTest extends JPAIntegrationEnvironment{
     @Test
     @Rollback
     @Transactional
-    public void testSetIdForSavedTrackedLinkWhenSaveTrackedLink(){
+    void testSetIdForSavedTrackedLinkWhenSaveTrackedLink(){
         //Assign
         final int idChat1 = 100;
         final int idChat2 = 101;

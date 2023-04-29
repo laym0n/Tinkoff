@@ -35,10 +35,10 @@ public class GitHubInfoEntity extends WebsiteInfoEntity{
     private String userName;
     @Column(name = "last_activity_date_time")
     private Timestamp lastActiveTime;
-    @OneToMany
+    @OneToMany(fetch = FetchType.EAGER)
     @JoinColumn(name = "website_info_id")
     private Collection<GitHubBranchEntity> branches;
-    @OneToMany
+    @OneToMany(fetch = FetchType.EAGER)
     @JoinColumn(name = "website_info_id")
     private Collection<GitHubCommitEntity> commits;
     public GitHubInfoEntity(GitHubInfo gitHubInfo){
@@ -69,7 +69,7 @@ public class GitHubInfoEntity extends WebsiteInfoEntity{
         Map<String, GitHubBranch> branchesForResult = branches.stream()
                 .map(GitHubBranchEntity::getGitHubBranch)
                 .collect(Collectors.toMap(GitHubBranch::getBranchName, i->i));
-        GitHubInfo result = new GitHubInfo(
+        return new GitHubInfo(
                 id,
                 OffsetDateTime.of(lastCheckUpdate.toLocalDateTime(), ZoneOffset.MIN),
                 new GitHubLinkInfo(userName, repositoryName),
@@ -77,7 +77,6 @@ public class GitHubInfoEntity extends WebsiteInfoEntity{
                 commitsForResult,
                 OffsetDateTime.of(lastActiveTime.toLocalDateTime(), ZoneOffset.MIN)
         );
-        return result;
     }
     @Override
     public void setId(int id){
@@ -100,5 +99,10 @@ public class GitHubInfoEntity extends WebsiteInfoEntity{
                         .equals(new HashSet<>(entity.getBranches())) &&
                 new HashSet<>(getCommits())
                         .equals(new HashSet<>(entity.getCommits()));
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), getRepositoryName(), getUserName());
     }
 }

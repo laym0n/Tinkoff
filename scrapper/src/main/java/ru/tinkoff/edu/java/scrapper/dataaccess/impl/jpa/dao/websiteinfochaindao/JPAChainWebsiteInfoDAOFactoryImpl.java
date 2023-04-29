@@ -1,6 +1,5 @@
 package ru.tinkoff.edu.java.scrapper.dataaccess.impl.jpa.dao.websiteinfochaindao;
 
-import jakarta.persistence.EntityManager;
 import lombok.AllArgsConstructor;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Component;
@@ -16,8 +15,7 @@ public class JPAChainWebsiteInfoDAOFactoryImpl implements JPAChainWebsiteInfoDAO
     public JPAChainWebsiteInfoDAO getJPAWebsiteInfoInfoDAO() {
         JPAChainGitHubInfoDAOImpl chainGitHubInfoDAO = new JPAChainGitHubInfoDAOImpl(gitHubInfoDAO, null);
 
-        JPAChainStackOverflowInfoDAOImpl chainStackOverflowInfoDAO = new JPAChainStackOverflowInfoDAOImpl(stackOverflowInfoDAO,
+        return new JPAChainStackOverflowInfoDAOImpl(stackOverflowInfoDAO,
                 chainGitHubInfoDAO);
-        return chainStackOverflowInfoDAO;
     }
 }

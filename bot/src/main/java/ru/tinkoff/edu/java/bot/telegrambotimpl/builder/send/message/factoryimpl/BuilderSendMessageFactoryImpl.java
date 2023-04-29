@@ -22,7 +22,6 @@ public class BuilderSendMessageFactoryImpl implements BuilderSendMessageFactory 
         ChainBuilderSendMessage secondChain = new ChainBuilderSendMessage(firstChain, trackBuilderSendMessage);
         ChainBuilderSendMessage thirdChain = new ChainBuilderSendMessage(secondChain, startBuilderSendMessage);
         ChainBuilderSendMessage fourChain = new ChainBuilderSendMessage(thirdChain, listBuilderSendMessage);
-        ChainBuilderSendMessage fiveChain = new ChainBuilderSendMessage(fourChain, helpBuilderSendMessage);
-        return fiveChain;
+        return new ChainBuilderSendMessage(fourChain, helpBuilderSendMessage);
     }
 }

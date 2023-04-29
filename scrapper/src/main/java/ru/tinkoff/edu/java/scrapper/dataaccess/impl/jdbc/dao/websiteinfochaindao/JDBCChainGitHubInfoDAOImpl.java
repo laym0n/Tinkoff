@@ -1,14 +1,11 @@
 package ru.tinkoff.edu.java.scrapper.dataaccess.impl.jdbc.dao.websiteinfochaindao;
 
 import lombok.AllArgsConstructor;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
-import org.springframework.stereotype.Component;
 import parserservice.dto.GitHubLinkInfo;
 import parserservice.dto.LinkInfo;
 import ru.tinkoff.edu.java.scrapper.dataaccess.impl.jdbc.dao.JDBCGitHubInfoDAO;
 import ru.tinkoff.edu.java.scrapper.entities.websiteinfo.GitHubInfo;
 import ru.tinkoff.edu.java.scrapper.entities.websiteinfo.WebsiteInfo;
-
 import java.util.Optional;
 
 @AllArgsConstructor
@@ -29,7 +26,7 @@ public class JDBCChainGitHubInfoDAOImpl implements JDBCChainWebsiteInfoDAO {
     @Override
     public Optional<Integer> findIdByLinkInfo(LinkInfo linkInfo) {
         if(!(linkInfo instanceof GitHubLinkInfo))
-            return nextChain == null ? null : nextChain.findIdByLinkInfo(linkInfo);
+            return nextChain == null ? Optional.empty() : nextChain.findIdByLinkInfo(linkInfo);
         return gitHubInfoDAO.findIdByLinkInfo((GitHubLinkInfo) linkInfo);
     }
     @Override

@@ -10,6 +10,7 @@ import org.springframework.jdbc.datasource.DriverManagerDataSource;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
 import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.transaction.support.TransactionTemplate;
 import ru.tinkoff.edu.java.scrapper.configuration.JDBCAccessConfiguration;
 
 import javax.sql.DataSource;
@@ -28,6 +29,10 @@ public class JDBCIntegrationEnvironment extends IntegrationEnvironment {
         @Bean
         public PlatformTransactionManager platformTransactionManager(DataSource dataSource){
             return new DataSourceTransactionManager(dataSource);
+        }
+        @Bean
+        public TransactionTemplate transactionTemplate(PlatformTransactionManager platformTransactionManager){
+            return new TransactionTemplate(platformTransactionManager);
         }
     }
     @DynamicPropertySource

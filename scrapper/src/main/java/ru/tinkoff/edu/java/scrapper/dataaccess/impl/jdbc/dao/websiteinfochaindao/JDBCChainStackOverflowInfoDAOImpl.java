@@ -1,9 +1,6 @@
 package ru.tinkoff.edu.java.scrapper.dataaccess.impl.jdbc.dao.websiteinfochaindao;
 
 import lombok.AllArgsConstructor;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
-import org.springframework.stereotype.Component;
-import parserservice.dto.GitHubLinkInfo;
 import parserservice.dto.LinkInfo;
 import parserservice.dto.StackOverflowLinkInfo;
 import ru.tinkoff.edu.java.scrapper.dataaccess.impl.jdbc.dao.JDBCStackOverflowInfoDAO;
@@ -29,7 +26,7 @@ public class JDBCChainStackOverflowInfoDAOImpl implements JDBCChainWebsiteInfoDA
     @Override
     public Optional<Integer> findIdByLinkInfo(LinkInfo linkInfo) {
         if(!(linkInfo instanceof StackOverflowLinkInfo))
-            return nextChain == null ? null : nextChain.findIdByLinkInfo(linkInfo);
+            return nextChain == null ? Optional.empty() : nextChain.findIdByLinkInfo(linkInfo);
         return stackOverflowDAO.findIdByLinkInfo((StackOverflowLinkInfo) linkInfo);
     }
 

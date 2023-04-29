@@ -18,7 +18,7 @@ import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class JPATrackedLinkDAOTest extends JPAIntegrationEnvironment {
+class JPATrackedLinkDAOTest extends JPAIntegrationEnvironment {
     @Autowired
     private JPATrackedLinkDAO SUT;
     @Autowired
@@ -28,7 +28,7 @@ public class JPATrackedLinkDAOTest extends JPAIntegrationEnvironment {
     @Test
     @Rollback
     @Transactional
-    public void addLinkTest(){
+    void addLinkTest(){
         //Assign
         final int idChat = 100;
         chatDAO.add(new ChatEntity(idChat));
@@ -43,14 +43,14 @@ public class JPATrackedLinkDAOTest extends JPAIntegrationEnvironment {
 
         //Assert
         List<TrackedLinkEntity> resultFromSut = SUT.findAllByChatId(idChat);
-        assertEquals(resultFromSut.size(), 1,
+        assertEquals(1, resultFromSut.size(),
                 ()->"Only one chat track test website info");
         assertEquals(new TrackedLinkEntity(trackedLinkForSUT.getId(), websiteInfo.getId(), idChat), resultFromSut.get(0));
     }
     @Test
     @Rollback
     @Transactional
-    public void containsSavedTrackedLinkTest(){
+    void containsSavedTrackedLinkTest(){
         //Assign
         final int idChat = 100;
         chatDAO.add(new ChatEntity(idChat));
@@ -73,7 +73,7 @@ public class JPATrackedLinkDAOTest extends JPAIntegrationEnvironment {
     @Test
     @Rollback
     @Transactional
-    public void containsNotSavedTrackedLinkTest(){
+    void containsNotSavedTrackedLinkTest(){
         //Assign
         final int idChat = 100;
 
@@ -88,7 +88,7 @@ public class JPATrackedLinkDAOTest extends JPAIntegrationEnvironment {
     @Test
     @Rollback
     @Transactional
-    public void removeSavedLinkByLinkInfoAndChatIdTest(){
+    void removeSavedLinkByLinkInfoAndChatIdTest(){
         //Assign
         final int idChat = 100;
         chatDAO.add(new ChatEntity(idChat));
@@ -112,7 +112,7 @@ public class JPATrackedLinkDAOTest extends JPAIntegrationEnvironment {
     @Test
     @Rollback
     @Transactional
-    public void removeNotSavedLinkByLinkInfoAndChatIdTest(){
+    void removeNotSavedLinkByLinkInfoAndChatIdTest(){
         //Assign
         final int idChat = 100;
         chatDAO.add(new ChatEntity(idChat));
@@ -128,7 +128,7 @@ public class JPATrackedLinkDAOTest extends JPAIntegrationEnvironment {
     @Test
     @Transactional
     @Rollback
-    public void findAllByChatIdTest(){
+    void findAllByChatIdTest(){
         //Assign
         final int idChat = 100;
         chatDAO.add(new ChatEntity(idChat));
@@ -170,7 +170,7 @@ public class JPATrackedLinkDAOTest extends JPAIntegrationEnvironment {
     @Test
     @Transactional
     @Rollback
-    public void findAllChatIdsWithTrackedLinkTest(){
+    void findAllChatIdsWithTrackedLinkTest(){
         //Assign
         List<ChatEntity> chats = List.of(
             new ChatEntity(1),

@@ -9,9 +9,9 @@ import static org.mockito.Mockito.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 @ExtendWith(MockitoExtension.class)
-public class ManageChatsUseCaseTest {
+class ManageChatsUseCaseTest {
     @Test
-    public void testValidRegistryChat(){
+    void testValidRegistryChat(){
         //Assign
         ChatDAService chatDAService = mock(ChatDAService.class);
         ManageChatsUseCase sut = new ManageChatsUseCaseImpl(chatDAService);
@@ -23,7 +23,7 @@ public class ManageChatsUseCaseTest {
         verify(chatDAService).createChat(new Chat(1));
     }
     @Test
-    public void testValidRemoveChat(){
+    void testValidRemoveChat(){
         //Assign
         ChatDAService chatDAService = mock(ChatDAService.class);
         ManageChatsUseCase sut = new ManageChatsUseCaseImpl(chatDAService);

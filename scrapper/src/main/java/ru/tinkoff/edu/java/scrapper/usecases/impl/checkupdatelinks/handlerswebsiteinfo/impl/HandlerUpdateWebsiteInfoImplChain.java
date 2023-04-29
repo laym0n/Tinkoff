@@ -1,4 +1,4 @@
-package ru.tinkoff.edu.java.scrapper.usecases.impl.checkupdatelinks.handlersWebsiteInfo.impl;
+package ru.tinkoff.edu.java.scrapper.usecases.impl.checkupdatelinks.handlerswebsiteinfo.impl;
 
 import lombok.AllArgsConstructor;
 import ru.tinkoff.edu.java.scrapper.dataaccess.UpdateWebsiteInfoDAService;
@@ -6,9 +6,9 @@ import ru.tinkoff.edu.java.scrapper.dto.resultofcomparewebsiteinfo.ResultOfCompa
 import ru.tinkoff.edu.java.scrapper.dto.request.LinkUpdateRequest;
 import ru.tinkoff.edu.java.scrapper.dto.response.website.WebsiteResponse;
 import ru.tinkoff.edu.java.scrapper.entities.websiteinfo.WebsiteInfo;
-import ru.tinkoff.edu.java.scrapper.usecases.impl.checkupdatelinks.handlersWebsiteInfo.HandlerUpdateWebsiteInfo;
-import ru.tinkoff.edu.java.scrapper.usecases.impl.checkupdatelinks.handlersWebsiteInfo.impl.strategies.BuilderLinkUpdateRequestStrategy;
-import ru.tinkoff.edu.java.scrapper.usecases.impl.checkupdatelinks.handlersWebsiteInfo.impl.strategies.CompareInfoStrategy;
+import ru.tinkoff.edu.java.scrapper.usecases.impl.checkupdatelinks.handlerswebsiteinfo.HandlerUpdateWebsiteInfo;
+import ru.tinkoff.edu.java.scrapper.usecases.impl.checkupdatelinks.handlerswebsiteinfo.impl.strategies.BuilderLinkUpdateRequestStrategy;
+import ru.tinkoff.edu.java.scrapper.usecases.impl.checkupdatelinks.handlerswebsiteinfo.impl.strategies.CompareInfoStrategy;
 
 import java.util.Optional;
 
@@ -19,7 +19,7 @@ public abstract class HandlerUpdateWebsiteInfoImplChain<W extends WebsiteInfo, R
     private CompareInfoStrategy<W, R, C> compareInfoStrategy;
     private BuilderLinkUpdateRequestStrategy<C> builderLinkUpdateRequestStrategy;
 
-    public HandlerUpdateWebsiteInfoImplChain(UpdateWebsiteInfoDAService<C> daService, CompareInfoStrategy<W, R, C> compareInfoStrategy, BuilderLinkUpdateRequestStrategy<C> builderLinkUpdateRequestStrategy) {
+    protected HandlerUpdateWebsiteInfoImplChain(UpdateWebsiteInfoDAService<C> daService, CompareInfoStrategy<W, R, C> compareInfoStrategy, BuilderLinkUpdateRequestStrategy<C> builderLinkUpdateRequestStrategy) {
         this.daService = daService;
         this.compareInfoStrategy = compareInfoStrategy;
         this.builderLinkUpdateRequestStrategy = builderLinkUpdateRequestStrategy;

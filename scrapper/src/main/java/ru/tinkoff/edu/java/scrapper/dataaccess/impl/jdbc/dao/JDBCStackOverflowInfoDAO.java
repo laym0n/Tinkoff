@@ -1,24 +1,16 @@
 package ru.tinkoff.edu.java.scrapper.dataaccess.impl.jdbc.dao;
 
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
-import org.springframework.dao.DataAccessException;
-import org.springframework.jdbc.core.ResultSetExtractor;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Component;
-import parserservice.dto.GitHubLinkInfo;
-import parserservice.dto.LinkInfo;
 import parserservice.dto.StackOverflowLinkInfo;
 import ru.tinkoff.edu.java.scrapper.dto.response.website.stackoverflow.StackOverflowAnswerResponse;
 import ru.tinkoff.edu.java.scrapper.dto.response.website.stackoverflow.StackOverflowCommentResponse;
 import ru.tinkoff.edu.java.scrapper.dto.resultofcomparewebsiteinfo.ResultOfCompareStackOverflowInfo;
-import ru.tinkoff.edu.java.scrapper.entities.websiteinfo.GitHubInfo;
 import ru.tinkoff.edu.java.scrapper.entities.websiteinfo.StackOverflowInfo;
 import ru.tinkoff.edu.java.scrapper.entities.websiteinfo.stackoverflow.StackOverflowAnswer;
 import ru.tinkoff.edu.java.scrapper.entities.websiteinfo.stackoverflow.StackOverflowComment;
-
 import javax.sql.DataSource;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.time.OffsetDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -37,7 +29,7 @@ public class JDBCStackOverflowInfoDAO extends JDBCDAO{
     public Optional<Integer> findIdByLinkInfo(StackOverflowLinkInfo linkInfo){
         List<Integer> ids = jdbcTemplate.queryForList("select website_info_id from stackoverflow_info where question_id = ?",
                 Integer.class, linkInfo.idQuestion());
-        return Optional.ofNullable((ids.size() == 0 ? null : ids.get(0)));
+        return Optional.ofNullable((ids.isEmpty() ? null : ids.get(0)));
     }
     public void add(StackOverflowInfo newStackOverflowInfo){
         Map<String, Object> paramMap = new HashMap<>();
@@ -80,8 +72,7 @@ public class JDBCStackOverflowInfoDAO extends JDBCDAO{
                     OffsetDateTime lastUpdateTime = rs.getObject("last_update_date_time", OffsetDateTime.class);
                     int idQuestion = rs.getInt("question_id");
                     StackOverflowLinkInfo linkInfo = new StackOverflowLinkInfo(idQuestion);
-                    StackOverflowInfo resultOfMapRows = new StackOverflowInfo(id, lastUpdateTime, linkInfo);
-                    return resultOfMapRows;
+                    return new StackOverflowInfo(id, lastUpdateTime, linkInfo);
                 });
         Map<Integer, StackOverflowComment> comments = commentDAO.findAll(idStackOverflowInfo).stream()
                 .collect(Collectors.toMap(i->i.getIdComment(), i->i));

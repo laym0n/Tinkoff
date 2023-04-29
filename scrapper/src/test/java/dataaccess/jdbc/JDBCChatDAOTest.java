@@ -9,14 +9,14 @@ import ru.tinkoff.edu.java.scrapper.entities.Chat;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class JDBCChatDAOTest extends JDBCIntegrationEnvironment {
+class JDBCChatDAOTest extends JDBCIntegrationEnvironment {
     @Autowired
     public JDBCChatDAO SUT;
 
     @Test
     @Transactional
     @Rollback
-    public void validAddTest(){
+    void validAddTest(){
         //Assign
         final int idChat = 100;
         Chat argumentForSUT = new Chat(idChat);
@@ -31,7 +31,7 @@ public class JDBCChatDAOTest extends JDBCIntegrationEnvironment {
     @Test
     @Transactional
     @Rollback
-    public void containsChatTest(){
+    void containsChatTest(){
         //Assign
         final int idChat = 100;
         Chat argumentForSUT = new Chat(idChat);
@@ -44,7 +44,7 @@ public class JDBCChatDAOTest extends JDBCIntegrationEnvironment {
         assertTrue(contains, ()->"DB must contain chat with id " + idChat);
     }
     @Test
-    public void notContainsChatTest(){
+    void notContainsChatTest(){
         //Assign
         final int idOfChat = 100;
 
@@ -57,7 +57,7 @@ public class JDBCChatDAOTest extends JDBCIntegrationEnvironment {
     @Test
     @Transactional
     @Rollback
-    public void validRemoveChatTest(){
+    void validRemoveChatTest(){
         //Assign
         final int idOfChat = 100;
         Chat addedChat = new Chat(idOfChat);
@@ -69,16 +69,4 @@ public class JDBCChatDAOTest extends JDBCIntegrationEnvironment {
         //Assert
         assertFalse(SUT.containsChatWithId(idOfChat), ()->"Chat with id " + idOfChat + " must be removed");
     }
-//    @Test
-//    @Rollback
-//    public void removeNotExistedChatTest(){
-//        //Assign
-//        final int idOfChat = 100;
-//
-//        //Action
-//        SUT.remove(idOfChat);
-//
-//        //Assert
-//        assertFalse(SUT.containsChatWithId(idOfChat), ()->"Chat with id " + idOfChat + " must be removed");
-//    }
 }

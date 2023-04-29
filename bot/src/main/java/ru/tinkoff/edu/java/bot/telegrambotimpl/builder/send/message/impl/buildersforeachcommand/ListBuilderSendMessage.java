@@ -22,7 +22,7 @@ public class ListBuilderSendMessage implements BuilderSendMessage {
             return null;
 
         SendMessage result = new SendMessage();
-        result.setChatId(Long.valueOf(parsedCommand.getChatId()).toString());
+        result.setChatId(Long.toString(parsedCommand.getChatId()));
 
         try{
             ListLinksResponse listLinksResponse = scrapperClient.allLinksFromChat(parsedCommand.getChatId());

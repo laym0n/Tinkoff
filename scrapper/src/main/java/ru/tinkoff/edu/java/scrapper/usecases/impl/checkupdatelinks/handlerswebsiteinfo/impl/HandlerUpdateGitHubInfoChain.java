@@ -1,13 +1,13 @@
-package ru.tinkoff.edu.java.scrapper.usecases.impl.checkupdatelinks.handlersWebsiteInfo.impl;
+package ru.tinkoff.edu.java.scrapper.usecases.impl.checkupdatelinks.handlerswebsiteinfo.impl;
 
 import ru.tinkoff.edu.java.scrapper.dataaccess.UpdateWebsiteInfoDAService;
 import ru.tinkoff.edu.java.scrapper.dto.response.website.GitHubResponse;
 import ru.tinkoff.edu.java.scrapper.dto.resultofcomparewebsiteinfo.ResultOfCompareGitHubInfo;
 import ru.tinkoff.edu.java.scrapper.entities.websiteinfo.GitHubInfo;
 import ru.tinkoff.edu.java.scrapper.entities.websiteinfo.WebsiteInfo;
-import ru.tinkoff.edu.java.scrapper.usecases.impl.checkupdatelinks.handlersWebsiteInfo.HandlerUpdateWebsiteInfo;
-import ru.tinkoff.edu.java.scrapper.usecases.impl.checkupdatelinks.handlersWebsiteInfo.impl.strategies.BuilderLinkUpdateRequestStrategy;
-import ru.tinkoff.edu.java.scrapper.usecases.impl.checkupdatelinks.handlersWebsiteInfo.impl.strategies.CompareInfoStrategy;
+import ru.tinkoff.edu.java.scrapper.usecases.impl.checkupdatelinks.handlerswebsiteinfo.HandlerUpdateWebsiteInfo;
+import ru.tinkoff.edu.java.scrapper.usecases.impl.checkupdatelinks.handlerswebsiteinfo.impl.strategies.BuilderLinkUpdateRequestStrategy;
+import ru.tinkoff.edu.java.scrapper.usecases.impl.checkupdatelinks.handlerswebsiteinfo.impl.strategies.CompareInfoStrategy;
 import ru.tinkoff.edu.java.scrapper.webclients.githubclient.GitHubClient;
 
 public class HandlerUpdateGitHubInfoChain extends HandlerUpdateWebsiteInfoImplChain<GitHubInfo, GitHubResponse, ResultOfCompareGitHubInfo>{
@@ -25,8 +25,7 @@ public class HandlerUpdateGitHubInfoChain extends HandlerUpdateWebsiteInfoImplCh
 
     @Override
     protected GitHubResponse getWebsiteResponse(GitHubInfo savedWebsiteInfo) {
-        GitHubResponse response = gitHubClient.getGitHubResponse(savedWebsiteInfo.getLinkInfo());
-        return response;
+        return gitHubClient.getGitHubResponse(savedWebsiteInfo.getLinkInfo());
     }
 
     @Override

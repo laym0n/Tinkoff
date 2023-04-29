@@ -27,9 +27,9 @@ import static org.mockito.Mockito.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 @ExtendWith(MockitoExtension.class)
-public class ManageTrackedLinksUseCaseTest {
+class ManageTrackedLinksUseCaseTest {
     @Test
-    public void testValidAddLinkWithAlreadySavedWebsiteInfoForChat(){
+    void testValidAddLinkWithAlreadySavedWebsiteInfoForChat(){
         //Assign
         final int idChat = 1;
         final int expectedIdTrackedLink = 100;
@@ -78,7 +78,7 @@ public class ManageTrackedLinksUseCaseTest {
                         " but result is " + resultFromSUT);
     }
     @Test
-    public void testValidAddLinkWithNotSavedWebsiteInfoForChat(){
+    void testValidAddLinkWithNotSavedWebsiteInfoForChat(){
         //Assign
         final int idChat = 1;
         final int expectedIdTrackedLink = 100;
@@ -137,7 +137,7 @@ public class ManageTrackedLinksUseCaseTest {
                         " but result is " + resultFromSUT);
     }
     @Test
-    public void testAddLinkForNotExistedChat(){
+    void testAddLinkForNotExistedChat(){
         //Assign
         final int idChat = 1;
         final String path = "https://github.com/sanyarnd/tinkoff-java-course-2022/";
@@ -165,7 +165,7 @@ public class ManageTrackedLinksUseCaseTest {
     }
 
     @Test
-    public void testAddNotValidLinkForChat(){
+    void testAddNotValidLinkForChat(){
         //Assign
         final String path = "";
         final int idChat = 1;
@@ -190,7 +190,7 @@ public class ManageTrackedLinksUseCaseTest {
                         " but result message is " + resultExceptionFromSUT.getMessage());
     }
     @Test
-    public void testAddAlreadyTrackedLinkForChat(){
+    void testAddAlreadyTrackedLinkForChat(){
         //Assign
         final String path = "https://github.com/sanyarnd/tinkoff-java-course-2022/";
         final int idChat = 1;
@@ -219,7 +219,7 @@ public class ManageTrackedLinksUseCaseTest {
                         " but result message is " + resultExceptionFromSUT.getMessage());
     }
     @Test
-    public void testValidRemoveLinkFromChat(){
+    void testValidRemoveLinkFromChat(){
         //Assign
         final int idChat = 1;
         final String path = "https://github.com/sanyarnd/tinkoff-java-course-2022/";
@@ -259,7 +259,7 @@ public class ManageTrackedLinksUseCaseTest {
     }
 
     @Test
-    public void testRemoveNotValidLinkFromChat(){
+    void testRemoveNotValidLinkFromChat(){
         //Assign
         final int idChat = 1;
         final String path = "";
@@ -288,7 +288,7 @@ public class ManageTrackedLinksUseCaseTest {
                         " but result message is " + resultExceptionFromSUT.getMessage());
     }
     @Test
-    public void testRemoveNotExistedInDBLinkFromChat(){
+    void testRemoveNotExistedInDBLinkFromChat(){
         //Assign
         final int idChat = 1;
         final String path = "https://github.com/sanyarnd/tinkoff-java-course-2022/";
@@ -318,7 +318,7 @@ public class ManageTrackedLinksUseCaseTest {
                         " but result message is " + resultExceptionFromSUT.getMessage());
     }
     @Test
-    public void testValidGetAllLinksForChat(){
+    void testValidGetAllLinksForChat(){
         //Assign
         final int idChat = 1;
         OffsetDateTime expectedOffsetDateTime = OffsetDateTime.MAX;
@@ -358,7 +358,7 @@ public class ManageTrackedLinksUseCaseTest {
                         "but result from sut is " + resultFromSUT);
     }
     @Test
-    public void testGetAllLinksForNotExistedChat(){
+    void testGetAllLinksForNotExistedChat(){
         //Assign
         final int idChat = 1;
         final String expectedMessage = "Chat with id " + idChat + " is not registered";

@@ -28,7 +28,6 @@ public class GitHubChainWebClient extends WebsiteInfoWebClientChainImpl{
     protected WebsiteInfo loadWebsiteInfo(LinkInfo linkInfo) {
         GitHubLinkInfo gitHubLinkInfo = (GitHubLinkInfo) linkInfo;
         GitHubResponse response = gitHubClient.getGitHubResponse(gitHubLinkInfo);
-        GitHubInfo result = response.getGitHubInfo(gitHubLinkInfo);
-        return result;
+        return response.getGitHubInfo(gitHubLinkInfo);
     }
 }

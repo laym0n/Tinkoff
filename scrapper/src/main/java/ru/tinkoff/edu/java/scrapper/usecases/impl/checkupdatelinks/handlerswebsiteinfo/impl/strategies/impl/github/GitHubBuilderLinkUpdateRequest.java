@@ -1,17 +1,14 @@
-package ru.tinkoff.edu.java.scrapper.usecases.impl.checkupdatelinks.handlersWebsiteInfo.impl.strategies.impl.github;
+package ru.tinkoff.edu.java.scrapper.usecases.impl.checkupdatelinks.handlerswebsiteinfo.impl.strategies.impl.github;
 
 import org.springframework.stereotype.Component;
 import parserservice.dto.LinkInfo;
 import ru.tinkoff.edu.java.scrapper.dto.resultofcomparewebsiteinfo.ResultOfCompareGitHubInfo;
-import ru.tinkoff.edu.java.scrapper.dto.resultofcomparewebsiteinfo.ResultOfCompareWebsiteInfo;
 import ru.tinkoff.edu.java.scrapper.dto.request.LinkUpdateRequest;
-import ru.tinkoff.edu.java.scrapper.dto.response.website.GitHubResponse;
 import ru.tinkoff.edu.java.scrapper.dto.response.website.github.GitHubBranchResponse;
 import ru.tinkoff.edu.java.scrapper.dto.response.website.github.GitHubCommitResponse;
-import ru.tinkoff.edu.java.scrapper.entities.websiteinfo.GitHubInfo;
 import ru.tinkoff.edu.java.scrapper.entities.websiteinfo.github.GitHubBranch;
 import ru.tinkoff.edu.java.scrapper.entities.websiteinfo.github.GitHubCommit;
-import ru.tinkoff.edu.java.scrapper.usecases.impl.checkupdatelinks.handlersWebsiteInfo.impl.strategies.BuilderLinkUpdateRequestStrategy;
+import ru.tinkoff.edu.java.scrapper.usecases.impl.checkupdatelinks.handlerswebsiteinfo.impl.strategies.BuilderLinkUpdateRequestStrategy;
 
 import java.net.URI;
 
@@ -23,28 +20,25 @@ public class GitHubBuilderLinkUpdateRequest implements BuilderLinkUpdateRequestS
         LinkInfo linkInfo = changes.getLinkInfo();
 
         StringBuilder descriptionUpdate = new StringBuilder();
-        descriptionUpdate.append("Ссылка " + linkInfo.getPath() + " получила обновление:\n");
+        descriptionUpdate.append("Ссылка ").append(linkInfo.getPath()).append(" получила обновление:\n");
         for(GitHubBranch branch : changes.getDroppedBranches()){
-            descriptionUpdate.append("Ветка " + branch.getBranchName() + " удалена\n");
+            descriptionUpdate.append("Ветка ").append(branch.getBranchName()).append(" удалена\n");
         }
         for(GitHubCommit commit : changes.getDroppedCommits()){
-            descriptionUpdate.append("Коммит с sha " + commit.getSha() + " удален\n");
+            descriptionUpdate.append("Коммит с sha ").append(commit.getSha()).append(" удален\n");
         }
         for(GitHubBranchResponse branch : changes.getAddedBranches()){
-            descriptionUpdate.append("Ветка " + branch.getName() + " добавлена\n");
+            descriptionUpdate.append("Ветка ").append(branch.getName()).append(" добавлена\n");
         }
         for(GitHubCommitResponse commit : changes.getPushedCommits()){
-            descriptionUpdate.append(commit.getCommit().getCommitter().getDate() + " - коммит с sha " +
-                    commit.getSha() + " добавлен\n");
+            descriptionUpdate.append(commit.getCommit().getCommitter().getDate()).append(" - коммит с sha ").append(commit.getSha()).append(" добавлен\n");
         }
         if(changes.getLastActivityDate().isPresent())
-            descriptionUpdate.append("Время последней активности " + changes.getLastActivityDate().get() + " получила обновление:\n");
+            descriptionUpdate.append("Время последней активности ").append(changes.getLastActivityDate().get()).append(" получила обновление:\n");
 
-        LinkUpdateRequest result =
-                new LinkUpdateRequest(changes.getIdWebsiteInfo(),
+        return new LinkUpdateRequest(changes.getIdWebsiteInfo(),
                         URI.create(linkInfo.getPath()),
                         descriptionUpdate.toString(),
                         chatIds);
-        return result;
     }
 }

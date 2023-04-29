@@ -12,10 +12,8 @@ import ru.tinkoff.edu.java.scrapper.dataaccess.impl.jpa.entities.WebsiteInfoType
 import ru.tinkoff.edu.java.scrapper.dto.response.website.github.GitHubBranchResponse;
 import ru.tinkoff.edu.java.scrapper.dto.response.website.github.GitHubCommitResponse;
 import ru.tinkoff.edu.java.scrapper.dto.resultofcomparewebsiteinfo.ResultOfCompareGitHubInfo;
-import ru.tinkoff.edu.java.scrapper.entities.websiteinfo.GitHubInfo;
 import ru.tinkoff.edu.java.scrapper.entities.websiteinfo.github.GitHubBranch;
 import ru.tinkoff.edu.java.scrapper.entities.websiteinfo.github.GitHubCommit;
-
 import java.sql.Timestamp;
 import java.time.OffsetDateTime;
 import java.util.*;

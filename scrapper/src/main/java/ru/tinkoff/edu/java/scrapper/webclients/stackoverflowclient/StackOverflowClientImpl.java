@@ -4,21 +4,10 @@ import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
 import parserservice.dto.StackOverflowLinkInfo;
-import parserservice.dto.LinkInfo;
 import ru.tinkoff.edu.java.scrapper.dto.response.website.StackOverflowResponse;
 import ru.tinkoff.edu.java.scrapper.dto.response.website.stackoverflow.StackOverflowAnswersResponse;
 import ru.tinkoff.edu.java.scrapper.dto.response.website.stackoverflow.StackOverflowCommentsResponse;
 import ru.tinkoff.edu.java.scrapper.dto.response.website.stackoverflow.StackOverflowQuestionsResponse;
-import ru.tinkoff.edu.java.scrapper.entities.websiteinfo.StackOverflowInfo;
-import ru.tinkoff.edu.java.scrapper.entities.websiteinfo.WebsiteInfo;
-import ru.tinkoff.edu.java.scrapper.entities.websiteinfo.stackoverflow.StackOverflowAnswer;
-import ru.tinkoff.edu.java.scrapper.entities.websiteinfo.stackoverflow.StackOverflowComment;
-import ru.tinkoff.edu.java.scrapper.entities.websiteinfo.stackoverflow.StackOverflowUser;
-
-import java.util.Arrays;
-import java.util.Optional;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 @Component
 public class StackOverflowClientImpl implements StackOverflowClient {

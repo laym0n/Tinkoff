@@ -1,22 +1,13 @@
 package ru.tinkoff.edu.java.scrapper.dataaccess.impl.jdbc.dao;
 
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
-import org.springframework.jdbc.core.BeanPropertyRowMapper;
-import org.springframework.jdbc.core.PreparedStatementCreator;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
-import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.stereotype.Component;
 import parserservice.dto.LinkInfo;
 import ru.tinkoff.edu.java.scrapper.dataaccess.impl.jdbc.dao.websiteinfochaindao.JDBCChainWebsiteInfoDAO;
 import ru.tinkoff.edu.java.scrapper.entities.TrackedLink;
-
 import javax.sql.DataSource;
-import java.security.InvalidParameterException;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.time.OffsetDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -51,9 +42,7 @@ public class JDBCTrackedLinkDAO extends JDBCDAO {
         String sql = "select id from tracked_link where chat_id = ? and website_info_id = ?;";
         Object[] params = new Object[] { idChat, idWebsiteInfo.get() };
 
-        List<Integer> idsDeleted = jdbcTemplate.query(sql, (rs, rowNum) -> {
-            return rs.getInt("id");
-        }, params);
+        List<Integer> idsDeleted = jdbcTemplate.query(sql, (rs, rowNum) -> rs.getInt("id"), params);
 
         TrackedLink deletedEntity = null;
         if (!idsDeleted.isEmpty()) {
@@ -74,7 +63,7 @@ public class JDBCTrackedLinkDAO extends JDBCDAO {
     public int[] findAllChatsWithIdWebsiteInfo(int idWebsiteInfo){
         return jdbcTemplate.query("select chat_id from tracked_link where website_info_id = ?",
                 (RowMapper<Integer>) (rs, rowNum) -> rs.getInt("chat_id"), idWebsiteInfo).stream()
-                .flatMapToInt(integer -> IntStream.of(integer)).toArray();
+                .flatMapToInt(IntStream::of).toArray();
 
     }
     public List<TrackedLink> findAllByChatId(int idChat){

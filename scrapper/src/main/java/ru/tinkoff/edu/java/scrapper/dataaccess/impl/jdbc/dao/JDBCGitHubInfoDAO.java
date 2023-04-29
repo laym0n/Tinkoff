@@ -1,21 +1,16 @@
 package ru.tinkoff.edu.java.scrapper.dataaccess.impl.jdbc.dao;
 
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
-import org.springframework.dao.DataAccessException;
-import org.springframework.jdbc.core.ResultSetExtractor;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Component;
 import parserservice.dto.GitHubLinkInfo;
-import parserservice.dto.LinkInfo;
 import ru.tinkoff.edu.java.scrapper.dto.response.website.github.GitHubBranchResponse;
 import ru.tinkoff.edu.java.scrapper.dto.response.website.github.GitHubCommitResponse;
 import ru.tinkoff.edu.java.scrapper.dto.resultofcomparewebsiteinfo.ResultOfCompareGitHubInfo;
 import ru.tinkoff.edu.java.scrapper.entities.websiteinfo.GitHubInfo;
 import ru.tinkoff.edu.java.scrapper.entities.websiteinfo.github.GitHubBranch;
 import ru.tinkoff.edu.java.scrapper.entities.websiteinfo.github.GitHubCommit;
-
 import javax.sql.DataSource;
-import java.sql.ResultSet;
 import java.time.OffsetDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -63,9 +58,9 @@ public class JDBCGitHubInfoDAO extends JDBCDAO {
     }
     public GitHubInfo getById(int idGitHubInfo){
         Map<String, GitHubBranch> branches = branchesDAO.findAll(idGitHubInfo).stream()
-                .collect(Collectors.toMap(i->i.getBranchName(), i->i));
+                .collect(Collectors.toMap(GitHubBranch::getBranchName, i->i));
         Map<String, GitHubCommit> commits = commitDAO.findAll(idGitHubInfo).stream()
-                .collect(Collectors.toMap(i->i.getSha(), i->i));
+                .collect(Collectors.toMap(GitHubCommit::getSha, i->i));
         GitHubInfo result = jdbcTemplate.queryForObject(
                 "select * from website_info " +
                 " join github_info ON github_info.website_info_id = website_info.id " +

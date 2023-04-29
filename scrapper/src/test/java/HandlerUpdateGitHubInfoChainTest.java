@@ -16,9 +16,9 @@ import ru.tinkoff.edu.java.scrapper.dto.resultofcomparewebsiteinfo.ResultOfCompa
 import ru.tinkoff.edu.java.scrapper.entities.websiteinfo.GitHubInfo;
 import ru.tinkoff.edu.java.scrapper.entities.websiteinfo.github.GitHubBranch;
 import ru.tinkoff.edu.java.scrapper.entities.websiteinfo.github.GitHubCommit;
-import ru.tinkoff.edu.java.scrapper.usecases.impl.checkupdatelinks.handlersWebsiteInfo.impl.HandlerUpdateGitHubInfoChain;
-import ru.tinkoff.edu.java.scrapper.usecases.impl.checkupdatelinks.handlersWebsiteInfo.impl.strategies.impl.github.CompareGitHubInfoStrategy;
-import ru.tinkoff.edu.java.scrapper.usecases.impl.checkupdatelinks.handlersWebsiteInfo.impl.strategies.impl.github.GitHubBuilderLinkUpdateRequest;
+import ru.tinkoff.edu.java.scrapper.usecases.impl.checkupdatelinks.handlerswebsiteinfo.impl.HandlerUpdateGitHubInfoChain;
+import ru.tinkoff.edu.java.scrapper.usecases.impl.checkupdatelinks.handlerswebsiteinfo.impl.strategies.impl.github.CompareGitHubInfoStrategy;
+import ru.tinkoff.edu.java.scrapper.usecases.impl.checkupdatelinks.handlerswebsiteinfo.impl.strategies.impl.github.GitHubBuilderLinkUpdateRequest;
 import ru.tinkoff.edu.java.scrapper.webclients.githubclient.GitHubClient;
 
 import java.time.OffsetDateTime;
@@ -34,9 +34,9 @@ import static org.mockito.Mockito.*;
 
 @Transactional
 @ContextConfiguration
-public class HandlerUpdateGitHubInfoChainTest {
+class HandlerUpdateGitHubInfoChainTest {
     @Test
-    public void handleNotUpdatedLinkTest(){
+    void handleNotUpdatedLinkTest(){
         //Assign
         final int idWebSiteInfo = 100;
         int[] chatIds = IntStream.of(1, 2, 3, 4).toArray();
@@ -88,7 +88,7 @@ public class HandlerUpdateGitHubInfoChainTest {
     }
     @ParameterizedTest
     @ArgumentsSource(DataArgumentsProvider.class)
-    public void handleUpdatedLinkTest(GitHubResponse responseForReturnFromWebClient,
+    void handleUpdatedLinkTest(GitHubResponse responseForReturnFromWebClient,
                                       GitHubInfo argumentForSUT,
                                       LinkUpdateRequest expectedResultRequest,
                                       ResultOfCompareGitHubInfo expectedResultOfCompare,

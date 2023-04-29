@@ -10,13 +10,13 @@ import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class ParserLinksStackOverflowLinksTest {
+class ParserLinksStackOverflowLinksTest {
     public ParserLinksStackOverflowLinksTest() {
     }
 
     @ParameterizedTest
     @ArgumentsSource(ValidLinksArgumentsProvider.class)
-    public void parseValidLinksTest(String path, StackOverflowLinkInfo expectedResult){
+    void parseValidLinksTest(String path, StackOverflowLinkInfo expectedResult){
         StackOverflowParserStrategy stackOverflowParserStrategy = new StackOverflowParserStrategy();
 
         boolean canParseResult = stackOverflowParserStrategy.canParse(path);
@@ -27,7 +27,7 @@ public class ParserLinksStackOverflowLinksTest {
     }
     @ParameterizedTest
     @ArgumentsSource(InvalidLinksArgumentsProvider.class)
-    public void parseInvalidLinksTest(String path){
+    void parseInvalidLinksTest(String path){
         StackOverflowParserStrategy stackOverflowParserStrategy = new StackOverflowParserStrategy();
 
         boolean canParseResult = stackOverflowParserStrategy.canParse(path);

@@ -30,9 +30,8 @@ public class JPAChainGitHubInfoDAOImpl implements JPAChainWebsiteInfoDAO {
 
     @Override
     public Optional<Integer> findIdByLinkInfo(LinkInfo linkInfo) {
-        if(!(linkInfo instanceof GitHubLinkInfo))
-            return nextChain == null ? null : nextChain.findIdByLinkInfo(linkInfo);
-        GitHubLinkInfo gitHubLinkInfo = (GitHubLinkInfo) linkInfo;
+        if(!(linkInfo instanceof GitHubLinkInfo gitHubLinkInfo))
+            return nextChain == null ? Optional.empty() : nextChain.findIdByLinkInfo(linkInfo);
         return gitHubInfoDAO.findIdByUserNameAndRepositoryName(gitHubLinkInfo.userName(), gitHubLinkInfo.repositoryName());
     }
     @Override

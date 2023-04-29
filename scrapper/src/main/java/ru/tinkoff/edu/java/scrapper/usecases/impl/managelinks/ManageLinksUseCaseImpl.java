@@ -35,8 +35,7 @@ public class ManageLinksUseCaseImpl implements ManageLinksUseCase {
     @Override
     public List<TrackedLink> findAllLinksByIdChat(int idChat) {
         checkIfChatExist(idChat);
-        List<TrackedLink> linksForChat = trackedLinkDAService.getAllTrackedLinksByChatId(idChat);
-        return linksForChat;
+        return trackedLinkDAService.getAllTrackedLinksByChatId(idChat);
     }
 
     @Override
@@ -79,9 +78,7 @@ public class ManageLinksUseCaseImpl implements ManageLinksUseCase {
             throw new NotFoundException("Link with path " + removeLinkRequest.getLink() +
                     " already is not tracked in chat with id " + idChat);
 
-        TrackedLink removableTrackedLink = optionalRemovableTrackedLink.get();
-
-        return removableTrackedLink;
+        return optionalRemovableTrackedLink.get();
     }
     private LinkInfo getLinkInfoFromParser(String path){
         LinkInfo linkInfo = parserLinks.parse(path);

@@ -23,13 +23,13 @@ import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class JDBCGitHubDAOTest extends JDBCIntegrationEnvironment {
+class JDBCGitHubDAOTest extends JDBCIntegrationEnvironment {
     @Autowired
     public JDBCGitHubInfoDAO SUT;
     @Test
     @Rollback
     @Transactional
-    public void validAddTest(){
+    void validAddTest(){
         //Assign
         final OffsetDateTime lastActiveTime = OffsetDateTime.now().minusDays(5);
         GitHubLinkInfo linkInfoForArgument = new GitHubLinkInfo("sanyarnd", "tinkoff-java-course-2022");
@@ -77,7 +77,7 @@ public class JDBCGitHubDAOTest extends JDBCIntegrationEnvironment {
     @Test
     @Rollback
     @Transactional
-    public void applyChangesTest(){
+    void applyChangesTest(){
         //Assign
         final OffsetDateTime lastActiveTimeForInitial = OffsetDateTime.now().minusDays(5);
         final OffsetDateTime dateForCommitsAndBranches = OffsetDateTime.now();
@@ -142,7 +142,7 @@ public class JDBCGitHubDAOTest extends JDBCIntegrationEnvironment {
     @Test
     @Rollback
     @Transactional
-    public void loadLinkInfoBuChatIdTest(){
+    void loadLinkInfoBuChatIdTest(){
         //Assign
         final OffsetDateTime lastActiveTime = OffsetDateTime.now().minusDays(5);
         GitHubLinkInfo linkInfoForArgument = new GitHubLinkInfo("sanyarnd", "tinkoff-java-course-2022");
@@ -168,7 +168,7 @@ public class JDBCGitHubDAOTest extends JDBCIntegrationEnvironment {
     @Test
     @Rollback
     @Transactional
-    public void findIdByLinkInfoForSavedInfoTest(){
+    void findIdByLinkInfoForSavedInfoTest(){
         //Assign
         final OffsetDateTime lastActiveTime = OffsetDateTime.now().minusDays(5);
         GitHubLinkInfo linkInfoForArgument = new GitHubLinkInfo("sanyarnd", "tinkoff-java-course-2022");
@@ -190,7 +190,7 @@ public class JDBCGitHubDAOTest extends JDBCIntegrationEnvironment {
     @Test
     @Rollback
     @Transactional
-    public void findIdByLinkInfoForNotSavedInfoTest(){
+    void findIdByLinkInfoForNotSavedInfoTest(){
         //Assign
         final OffsetDateTime lastActiveTime = OffsetDateTime.now().minusDays(5);
         GitHubLinkInfo linkInfoForArgument = new GitHubLinkInfo("sanyarnd", "tinkoff-java-course-2022");

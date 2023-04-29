@@ -20,7 +20,7 @@ import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class JDBCTrackedLinkDAOTest extends JDBCIntegrationEnvironment {
+class JDBCTrackedLinkDAOTest extends JDBCIntegrationEnvironment {
     @Autowired
     private JDBCTrackedLinkDAO SUT;
     @Autowired
@@ -30,7 +30,7 @@ public class JDBCTrackedLinkDAOTest extends JDBCIntegrationEnvironment {
     @Test
     @Rollback
     @Transactional
-    public void addLinkTest(){
+    void addLinkTest(){
         //Assign
         final int idChat = 100;
         chatDAO.add(new Chat(idChat));
@@ -46,7 +46,7 @@ public class JDBCTrackedLinkDAOTest extends JDBCIntegrationEnvironment {
 
         //Assert
         List<TrackedLink> resultFromSut = SUT.findAllByChatId(idChat);
-        assertEquals(resultFromSut.size(), 1,
+        assertEquals(1, resultFromSut.size(),
                 ()->"Only one chat track test website info");
         assertEquals(trackedLinkForSUT, resultFromSut.get(0));
     }
@@ -54,7 +54,7 @@ public class JDBCTrackedLinkDAOTest extends JDBCIntegrationEnvironment {
     @Test
     @Rollback
     @Transactional
-    public void containsSavedTrackedLinkTest(){
+    void containsSavedTrackedLinkTest(){
         //Assign
         final int idChat = 100;
         chatDAO.add(new Chat(idChat));
@@ -76,7 +76,7 @@ public class JDBCTrackedLinkDAOTest extends JDBCIntegrationEnvironment {
     @Test
     @Rollback
     @Transactional
-    public void containsNotSavedTrackedLinkTest(){
+    void containsNotSavedTrackedLinkTest(){
         //Assign
         final int idChat = 100;
 
@@ -91,7 +91,7 @@ public class JDBCTrackedLinkDAOTest extends JDBCIntegrationEnvironment {
     @Test
     @Rollback
     @Transactional
-    public void removeSavedLinkByLinkInfoAndChatIdTest(){
+    void removeSavedLinkByLinkInfoAndChatIdTest(){
         //Assign
         final int idChat = 100;
         chatDAO.add(new Chat(idChat));
@@ -114,7 +114,7 @@ public class JDBCTrackedLinkDAOTest extends JDBCIntegrationEnvironment {
     @Test
     @Rollback
     @Transactional
-    public void removeNotSavedLinkByLinkInfoAndChatIdTest(){
+    void removeNotSavedLinkByLinkInfoAndChatIdTest(){
         //Assign
         final int idChat = 100;
         chatDAO.add(new Chat(idChat));
@@ -130,7 +130,7 @@ public class JDBCTrackedLinkDAOTest extends JDBCIntegrationEnvironment {
     @Test
     @Transactional
     @Rollback
-    public void findAllByChatIdTest(){
+    void findAllByChatIdTest(){
         //Assign
         final int idChat = 100;
         chatDAO.add(new Chat(idChat));
@@ -167,7 +167,7 @@ public class JDBCTrackedLinkDAOTest extends JDBCIntegrationEnvironment {
     @Test
     @Transactional
     @Rollback
-    public void findAllChatIdsWithTrackedLinkTest(){
+    void findAllChatIdsWithTrackedLinkTest(){
         //Assign
         List<Chat> chats = List.of(
             new Chat(1),
@@ -215,8 +215,8 @@ public class JDBCTrackedLinkDAOTest extends JDBCIntegrationEnvironment {
         int[] resultFromSUT = SUT.findAllChatsWithIdWebsiteInfo(soInfos.get(4).getId());
 
         //Assert
-        Set<Integer> expectedIds = expectedResult.stream().map(i-> i.getIdChat()).collect(Collectors.toSet());
-        Set<Integer> loadedIds = Arrays.stream(resultFromSUT).mapToObj(i->i).collect(Collectors.toSet());
+        Set<Integer> expectedIds = expectedResult.stream().map(TrackedLink::getIdChat).collect(Collectors.toSet());
+        Set<Integer> loadedIds = Arrays.stream(resultFromSUT).boxed().collect(Collectors.toSet());
         assertEquals(expectedIds, loadedIds,
                 ()->"Expected: " + expectedIds +
                 "\nLoaded: " + loadedIds);

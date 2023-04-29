@@ -22,13 +22,13 @@ import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class JDBCStackoverflowDAOTest extends JDBCIntegrationEnvironment {
+class JDBCStackoverflowDAOTest extends JDBCIntegrationEnvironment {
     @Autowired
     public JDBCStackOverflowInfoDAO SUT;
     @Test
     @Rollback
     @Transactional
-    public void validAddTest(){
+    void validAddTest(){
         //Assign
         final OffsetDateTime lastEditDateOfAnswers = OffsetDateTime.now().minusDays(5);
         StackOverflowLinkInfo linkInfoForArgument = new StackOverflowLinkInfo(1412);
@@ -84,7 +84,7 @@ public class JDBCStackoverflowDAOTest extends JDBCIntegrationEnvironment {
     @Test
     @Rollback
     @Transactional
-    public void applyChangesTest(){
+    void applyChangesTest(){
         //Assign
         final OffsetDateTime lastEditDateOfAnswersForInitial = OffsetDateTime.now().minusDays(5);
         final OffsetDateTime lastEditDateOfAnswersForArgument = OffsetDateTime.now().plusDays(5);
@@ -179,7 +179,7 @@ public class JDBCStackoverflowDAOTest extends JDBCIntegrationEnvironment {
     @Test
     @Rollback
     @Transactional
-    public void loadLinkInfoTest(){
+    void loadLinkInfoTest(){
         //Assign
         final OffsetDateTime lastEditDateOfAnswers = OffsetDateTime.now().minusDays(5);
         StackOverflowLinkInfo linkInfoForArgument = new StackOverflowLinkInfo(1412);
@@ -205,7 +205,7 @@ public class JDBCStackoverflowDAOTest extends JDBCIntegrationEnvironment {
     @Test
     @Rollback
     @Transactional
-    public void findIdWithLinkInfoForSavedTest(){
+    void findIdWithLinkInfoForSavedTest(){
         //Assign
         final OffsetDateTime lastEditDateOfAnswers = OffsetDateTime.now().minusDays(5);
         StackOverflowLinkInfo linkInfoForArgument = new StackOverflowLinkInfo(1412);
@@ -227,7 +227,7 @@ public class JDBCStackoverflowDAOTest extends JDBCIntegrationEnvironment {
     @Test
     @Rollback
     @Transactional
-    public void findIdWithLinkInfoForNotSavedTest(){
+    void findIdWithLinkInfoForNotSavedTest(){
         //Assign
         final OffsetDateTime lastEditDateOfAnswers = OffsetDateTime.now().minusDays(5);
         StackOverflowLinkInfo linkInfoForArgument = new StackOverflowLinkInfo(1412);

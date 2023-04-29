@@ -2,29 +2,19 @@ package ru.tinkoff.edu.java.scrapper.dataaccess.impl.jpa.dao;
 
 import jakarta.persistence.Query;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
-import org.springframework.data.jpa.repository.support.QuerydslJpaRepository;
-import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import parserservice.dto.StackOverflowLinkInfo;
 import ru.tinkoff.edu.java.scrapper.dataaccess.impl.jpa.entities.*;
 import ru.tinkoff.edu.java.scrapper.dataaccess.impl.jpa.entities.embededids.StackOverflowAnswerPrimaryKey;
-import ru.tinkoff.edu.java.scrapper.dto.response.website.github.GitHubBranchResponse;
-import ru.tinkoff.edu.java.scrapper.dto.response.website.github.GitHubCommitResponse;
 import ru.tinkoff.edu.java.scrapper.dto.response.website.stackoverflow.StackOverflowAnswerResponse;
 import ru.tinkoff.edu.java.scrapper.dto.response.website.stackoverflow.StackOverflowCommentResponse;
 import ru.tinkoff.edu.java.scrapper.dto.resultofcomparewebsiteinfo.ResultOfCompareStackOverflowInfo;
-import ru.tinkoff.edu.java.scrapper.entities.websiteinfo.StackOverflowInfo;
-import ru.tinkoff.edu.java.scrapper.entities.websiteinfo.github.GitHubBranch;
-import ru.tinkoff.edu.java.scrapper.entities.websiteinfo.github.GitHubCommit;
 import ru.tinkoff.edu.java.scrapper.entities.websiteinfo.stackoverflow.StackOverflowAnswer;
 import ru.tinkoff.edu.java.scrapper.entities.websiteinfo.stackoverflow.StackOverflowComment;
-
-import javax.sql.DataSource;
 import java.sql.Timestamp;
 import java.time.OffsetDateTime;
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Component
 @ConditionalOnProperty(prefix = "app", name = "database-access-type", havingValue = "jpa")

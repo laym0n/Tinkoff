@@ -11,13 +11,13 @@ import java.security.InvalidParameterException;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class JPAChatDAServiceTest extends JPAIntegrationEnvironment{
+class JPAChatDAServiceTest extends JPAIntegrationEnvironment{
     @Autowired
     private JPAChatDAService SUT;
     @Test
     @Rollback
     @Transactional
-    public void testThrowExceptionWhenAddDuplicatedChat(){
+    void testThrowExceptionWhenAddDuplicatedChat(){
         //Assign
         Chat argument = new Chat(5);
         SUT.createChat(argument);

@@ -1,4 +1,4 @@
-package ru.tinkoff.edu.java.scrapper.usecases.impl.checkupdatelinks.handlersWebsiteInfo.impl.strategies.impl.github;
+package ru.tinkoff.edu.java.scrapper.usecases.impl.checkupdatelinks.handlerswebsiteinfo.impl.strategies.impl.github;
 
 import org.springframework.stereotype.Component;
 import ru.tinkoff.edu.java.scrapper.dto.resultofcomparewebsiteinfo.ResultOfCompareGitHubInfo;
@@ -8,7 +8,7 @@ import ru.tinkoff.edu.java.scrapper.dto.response.website.github.GitHubCommitResp
 import ru.tinkoff.edu.java.scrapper.entities.websiteinfo.GitHubInfo;
 import ru.tinkoff.edu.java.scrapper.entities.websiteinfo.github.GitHubBranch;
 import ru.tinkoff.edu.java.scrapper.entities.websiteinfo.github.GitHubCommit;
-import ru.tinkoff.edu.java.scrapper.usecases.impl.checkupdatelinks.handlersWebsiteInfo.impl.strategies.CompareInfoStrategy;
+import ru.tinkoff.edu.java.scrapper.usecases.impl.checkupdatelinks.handlerswebsiteinfo.impl.strategies.CompareInfoStrategy;
 import java.time.OffsetDateTime;
 import java.util.Arrays;
 import java.util.Optional;
@@ -34,7 +34,7 @@ public class CompareGitHubInfoStrategy implements CompareInfoStrategy<GitHubInfo
     private void findDropedBranches(ResultOfCompareGitHubInfo result, GitHubInfo savedInfo,
                                     GitHubResponse loadedResponse){
         Set<String> loadedBranches = Arrays.stream(loadedResponse.getBranches())
-                .map(branchResponse -> branchResponse.getName()).collect(Collectors.toSet());
+                .map(GitHubBranchResponse::getName).collect(Collectors.toSet());
         GitHubBranch[] droppedBranches = savedInfo.getBranches().values().stream()
                 .filter(i->!loadedBranches.contains(i.getBranchName()))
                 .toArray(GitHubBranch[]::new);
@@ -45,7 +45,7 @@ public class CompareGitHubInfoStrategy implements CompareInfoStrategy<GitHubInfo
     private void findDroppedCommits(ResultOfCompareGitHubInfo result, GitHubInfo savedInfo,
                                     GitHubResponse loadedResponse){
         Set<String> loadedCommits = Arrays.stream(loadedResponse.getCommits())
-                .map(commitResponse->commitResponse.getSha()).collect(Collectors.toSet());
+                .map(GitHubCommitResponse::getSha).collect(Collectors.toSet());
         GitHubCommit[] droppedCommits = savedInfo.getCommits().values().stream()
                 .filter(commit -> !loadedCommits.contains(commit.getSha()))
                 .toArray(GitHubCommit[]::new);
@@ -70,11 +70,5 @@ public class CompareGitHubInfoStrategy implements CompareInfoStrategy<GitHubInfo
         result.setPushedCommits(pushedCommits);
         if(pushedCommits.length > 0)
             result.setDifferent(true);
-    }
-
-    private boolean isDifferent(GitHubInfo uniqueInfo, GitHubResponse uniqueResponse){
-        return (uniqueInfo.getBranches().size() != 0 || uniqueInfo.getLastActiveTime() != null ||
-                uniqueInfo.getCommits().size() != 0 || uniqueResponse.getCommits().length != 0 ||
-                uniqueResponse.getBranches().length != 0);
     }
 }

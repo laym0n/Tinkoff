@@ -1,12 +1,11 @@
 package ru.tinkoff.edu.java.bot.telegrambotimpl;
 
 import org.glassfish.grizzly.utils.Pair;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 @Component
 public class ParserCommands {
-    private final String PREFIX_FOR_COMMAND = "/";
+    private static final String PREFIX_FOR_COMMAND = "/";
 
     public ParsedCommand getParsedCommand(String text) {
         String trimText = "";

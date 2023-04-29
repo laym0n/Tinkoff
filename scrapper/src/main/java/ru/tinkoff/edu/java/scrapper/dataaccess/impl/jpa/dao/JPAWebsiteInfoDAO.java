@@ -4,10 +4,6 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Component;
 import ru.tinkoff.edu.java.scrapper.dataaccess.impl.jpa.dao.websiteinfochaindao.JPAChainWebsiteInfoDAO;
 import ru.tinkoff.edu.java.scrapper.dataaccess.impl.jpa.entities.WebsiteInfoEntity;
-import ru.tinkoff.edu.java.scrapper.entities.websiteinfo.WebsiteInfo;
-
-import javax.sql.DataSource;
-import java.util.ArrayList;
 import java.util.List;
 
 @Component

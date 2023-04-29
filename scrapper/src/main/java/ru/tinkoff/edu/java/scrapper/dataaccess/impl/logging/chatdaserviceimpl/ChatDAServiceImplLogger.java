@@ -1,10 +1,9 @@
 package ru.tinkoff.edu.java.scrapper.dataaccess.impl.logging.chatdaserviceimpl;
 
-import org.springframework.stereotype.Repository;
 import ru.tinkoff.edu.java.scrapper.dataaccess.ChatDAService;
 import ru.tinkoff.edu.java.scrapper.entities.Chat;
 
-import java.util.Optional;
+import java.text.MessageFormat;
 import java.util.logging.Logger;
 
 public class ChatDAServiceImplLogger implements ChatDAService {
@@ -15,6 +14,6 @@ public class ChatDAServiceImplLogger implements ChatDAService {
     }
     @Override
     public void deleteChat(int idEntity) {
-        log.info("Delete chat with id " + idEntity);
+        log.info(MessageFormat.format("Delete chat with id {0}", idEntity));
     }
 }

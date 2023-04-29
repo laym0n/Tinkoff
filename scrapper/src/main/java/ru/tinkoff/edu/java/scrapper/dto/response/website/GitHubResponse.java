@@ -12,7 +12,6 @@ import ru.tinkoff.edu.java.scrapper.entities.websiteinfo.github.GitHubCommit;
 import java.time.OffsetDateTime;
 import java.util.Arrays;
 import java.util.Map;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 @AllArgsConstructor
@@ -33,7 +32,6 @@ public final class GitHubResponse implements WebsiteResponse{
         Map<String, GitHubCommit> newCommits = Arrays.stream(commits)
                 .map(GitHubCommitResponse::getGitHubCommit)
                 .collect(Collectors.toMap(i->i.getSha(), i->i));
-        GitHubInfo result = new GitHubInfo(0, OffsetDateTime.now(), linkInfo, newBranches, newCommits, infoResponse.getUpdatedAt());
-        return result;
+        return new GitHubInfo(0, OffsetDateTime.now(), linkInfo, newBranches, newCommits, infoResponse.getUpdatedAt());
     }
 }

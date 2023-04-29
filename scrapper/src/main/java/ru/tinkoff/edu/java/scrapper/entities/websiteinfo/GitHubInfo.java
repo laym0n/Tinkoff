@@ -8,6 +8,7 @@ import ru.tinkoff.edu.java.scrapper.entities.websiteinfo.github.GitHubCommit;
 import java.time.OffsetDateTime;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 
 @Data
@@ -46,5 +47,10 @@ public final class GitHubInfo extends WebsiteInfo{
         if (!super.equals(o)) return false;
         GitHubInfo that = (GitHubInfo) o;
         return getLinkInfo().equals(that.getLinkInfo()) && getBranches().equals(that.getBranches()) && getCommits().equals(that.getCommits());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), getLinkInfo());
     }
 }

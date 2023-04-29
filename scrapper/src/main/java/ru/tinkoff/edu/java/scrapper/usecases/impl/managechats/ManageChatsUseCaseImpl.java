@@ -2,12 +2,9 @@ package ru.tinkoff.edu.java.scrapper.usecases.impl.managechats;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import org.webjars.NotFoundException;
 import ru.tinkoff.edu.java.scrapper.dataaccess.ChatDAService;
 import ru.tinkoff.edu.java.scrapper.entities.Chat;
 import ru.tinkoff.edu.java.scrapper.usecases.ManageChatsUseCase;
-
-import java.security.InvalidParameterException;
 
 @Component
 public class ManageChatsUseCaseImpl implements ManageChatsUseCase {
