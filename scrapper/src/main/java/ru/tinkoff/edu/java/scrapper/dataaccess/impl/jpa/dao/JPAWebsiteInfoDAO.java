@@ -3,6 +3,7 @@ package ru.tinkoff.edu.java.scrapper.dataaccess.impl.jpa.dao;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Component;
 import ru.tinkoff.edu.java.scrapper.dataaccess.impl.jpa.dao.websiteinfochaindao.JPAChainWebsiteInfoDAO;
+import ru.tinkoff.edu.java.scrapper.dataaccess.impl.jpa.entities.WebsiteInfoEntity;
 import ru.tinkoff.edu.java.scrapper.entities.websiteinfo.WebsiteInfo;
 
 import javax.sql.DataSource;
@@ -18,17 +19,15 @@ public class JPAWebsiteInfoDAO extends JPADAO {
         this.chainWebsiteInfoDAO = chainWebsiteInfoDAO;
     }
 
-    public List<WebsiteInfo> loadWebsiteInfoWithTheEarliestUpdateTime(int count){
-        return new ArrayList<>();
-//        return jdbcTemplate.query("SELECT wi.id, wit.name " +
-//                        "FROM website_info wi " +
-//                        "JOIN website_info_type wit ON wi.type_id = wit.id " +
-//                        "ORDER BY wi.last_update_date_time ASC, wi.id ASC " +
-//                        "LIMIT ?;",
-//                (rs, rowNum) -> chainWebsiteInfoDAO.loadWebsiteInfo(rs.getString("name"), rs.getInt("id")),
-//                count);
+    public List<WebsiteInfoEntity> loadWebsiteInfoWithTheEarliestUpdateTime(int count){
+        List<WebsiteInfoEntity> abstractInfos = entityManager
+                .createQuery("select wi from WebsiteInfoEntity wi " +
+                        "order by wi.lastCheckUpdate asc, wi.id asc ")
+                .setMaxResults(count).getResultList();
+        return abstractInfos.stream().map(i->chainWebsiteInfoDAO.loadWebsiteInfo(i.getTypeOfWebsite().getName(), i.getId())).toList();
     }
     public void remove(int idWebsiteInfo){
-//        jdbcTemplate.update("delete from website_info where id = ?", idWebsiteInfo);
+        entityManager.createQuery("delete from WebsiteInfoEntity wi where wi.id = :id")
+                .setParameter("id", idWebsiteInfo).executeUpdate();
     }
 }

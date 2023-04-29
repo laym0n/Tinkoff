@@ -4,6 +4,9 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
+import org.apache.commons.lang3.builder.EqualsExclude;
+import org.apache.commons.lang3.builder.HashCodeExclude;
 import parserservice.dto.GitHubLinkInfo;
 import ru.tinkoff.edu.java.scrapper.entities.websiteinfo.GitHubInfo;
 import ru.tinkoff.edu.java.scrapper.entities.websiteinfo.WebsiteInfo;
@@ -13,17 +16,16 @@ import ru.tinkoff.edu.java.scrapper.entities.websiteinfo.github.GitHubCommit;
 import java.sql.Timestamp;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Map;
-import java.util.Set;
+import java.time.temporal.ChronoUnit;
+import java.time.temporal.TemporalUnit;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Entity
 @Data
+@ToString(callSuper = true)
 @NoArgsConstructor
 @AllArgsConstructor
-@Inheritance(strategy = InheritanceType.JOINED)
 @PrimaryKeyJoinColumn(name = "website_info_id")
 @Table(name = "github_info")
 public class GitHubInfoEntity extends WebsiteInfoEntity{
@@ -50,6 +52,15 @@ public class GitHubInfoEntity extends WebsiteInfoEntity{
                 .map(i-> new GitHubCommitEntity(i, gitHubInfo.getId())).collect(Collectors.toCollection(ArrayList::new));
     }
 
+    public GitHubInfoEntity(Timestamp lastCheckUpdate,String repositoryName, String userName, Timestamp lastActiveTime, Collection<GitHubBranchEntity> branches, Collection<GitHubCommitEntity> commits) {
+        super(lastCheckUpdate);
+        this.repositoryName = repositoryName;
+        this.userName = userName;
+        this.lastActiveTime = lastActiveTime;
+        this.branches = branches;
+        this.commits = commits;
+    }
+
     @Override
     public GitHubInfo getWebsiteInfo() {
         Map<String, GitHubCommit> commitsForResult = commits.stream()
@@ -67,5 +78,27 @@ public class GitHubInfoEntity extends WebsiteInfoEntity{
                 OffsetDateTime.of(lastActiveTime.toLocalDateTime(), ZoneOffset.MIN)
         );
         return result;
+    }
+    @Override
+    public void setId(int id){
+        super.setId(id);
+        commits.forEach(i->i.getPrimaryKey().setGitHubInfoId(id));
+        branches.forEach(i->i.getPrimaryKey().setGitHubSiteId(id));
+    }
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
+        GitHubInfoEntity entity = (GitHubInfoEntity) o;
+        return getRepositoryName().equals(entity.getRepositoryName())
+                &&
+                getUserName().equals(entity.getUserName()) &&
+                getLastActiveTime().toLocalDateTime().truncatedTo(ChronoUnit.SECONDS)
+                        .equals(entity.getLastActiveTime().toLocalDateTime().truncatedTo(ChronoUnit.SECONDS)) &&
+                new HashSet<>(getBranches())
+                        .equals(new HashSet<>(entity.getBranches())) &&
+                new HashSet<>(getCommits())
+                        .equals(new HashSet<>(entity.getCommits()));
     }
 }

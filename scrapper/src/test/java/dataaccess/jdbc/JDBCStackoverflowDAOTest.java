@@ -80,7 +80,6 @@ public class JDBCStackoverflowDAOTest extends JDBCIntegrationEnvironment {
         }) && expectedAnswers.size() == loadedInfo.getAnswers().size(),
                 ()->"Expected answers: " + expectedAnswers +
                 "\n loaded answers: " + loadedInfo.getAnswers());
-        SUT.remove(argumentForSUT.getId());
     }
     @Test
     @Rollback
@@ -176,7 +175,6 @@ public class JDBCStackoverflowDAOTest extends JDBCIntegrationEnvironment {
                 }) && expectedAnswers.size() == loadedInfo.getAnswers().size(),
                 ()->"Expected answers: " + expectedAnswers +
                         "\n loaded answers: " + loadedInfo.getAnswers());
-        SUT.remove(initialInfo.getId());
     }
     @Test
     @Rollback
@@ -203,7 +201,6 @@ public class JDBCStackoverflowDAOTest extends JDBCIntegrationEnvironment {
 
         //Assert
         assertEquals(resultFromSUT, argumentForSUT.getLinkInfo());
-        SUT.remove(argumentForSUT.getId());
     }
     @Test
     @Rollback

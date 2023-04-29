@@ -6,6 +6,12 @@ import org.springframework.test.annotation.Rollback;
 import org.springframework.transaction.annotation.Transactional;
 import parserservice.dto.StackOverflowLinkInfo;
 import ru.tinkoff.edu.java.scrapper.dataaccess.impl.jdbc.dao.JDBCStackOverflowInfoDAO;
+import ru.tinkoff.edu.java.scrapper.dataaccess.impl.jpa.dao.JPAStackOverflowInfoDAO;
+import ru.tinkoff.edu.java.scrapper.dataaccess.impl.jpa.entities.StackOverflowAnswerEntity;
+import ru.tinkoff.edu.java.scrapper.dataaccess.impl.jpa.entities.StackOverflowCommentEntity;
+import ru.tinkoff.edu.java.scrapper.dataaccess.impl.jpa.entities.StackOverflowInfoEntity;
+import ru.tinkoff.edu.java.scrapper.dataaccess.impl.jpa.entities.embededids.StackOverflowAnswerPrimaryKey;
+import ru.tinkoff.edu.java.scrapper.dataaccess.impl.jpa.entities.embededids.StackOverflowCommentPrimaryKey;
 import ru.tinkoff.edu.java.scrapper.dto.response.website.stackoverflow.StackOverflowAnswerResponse;
 import ru.tinkoff.edu.java.scrapper.dto.response.website.stackoverflow.StackOverflowCommentResponse;
 import ru.tinkoff.edu.java.scrapper.dto.response.website.stackoverflow.StackOverflowUserResponse;
@@ -14,232 +20,259 @@ import ru.tinkoff.edu.java.scrapper.entities.websiteinfo.StackOverflowInfo;
 import ru.tinkoff.edu.java.scrapper.entities.websiteinfo.stackoverflow.StackOverflowAnswer;
 import ru.tinkoff.edu.java.scrapper.entities.websiteinfo.stackoverflow.StackOverflowComment;
 
+import java.sql.Timestamp;
 import java.time.OffsetDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class JPAStackoverflowDAOTest extends JPAIntegrationEnvironment {
-//    @Autowired
-//    public JDBCStackOverflowInfoDAO SUT;
-//    @Test
-//    @Rollback
-//    @Transactional
-//    public void validAddTest(){
-//        //Assign
-//        final OffsetDateTime lastEditDateOfAnswers = OffsetDateTime.now().minusDays(5);
-//        StackOverflowLinkInfo linkInfoForArgument = new StackOverflowLinkInfo(1412);
-//
-//        StackOverflowInfo argumentForSUT = new StackOverflowInfo(0, OffsetDateTime.now(), linkInfoForArgument,
-//                Map.of(
-//                        145, new StackOverflowComment(145),
-//                        1452135, new StackOverflowComment(1452135)
-//                ),
-//                Map.of(
-//                        51, new StackOverflowAnswer(51, "test1", lastEditDateOfAnswers),
-//                        5511, new StackOverflowAnswer(5511, "test2", lastEditDateOfAnswers)
-//        ));
-//
-//
-//
-//        //Action
-//        SUT.add(argumentForSUT);
-//
-//        //Assert
-//        StackOverflowInfo loadedInfo = SUT.getById(argumentForSUT.getId());
-//
-//        StackOverflowLinkInfo expectedLinkInfo = new StackOverflowLinkInfo(1412);
-//        assertEquals(expectedLinkInfo, loadedInfo.getLinkInfo(),
-//                () -> "Link info not equals");
-//        Map<Integer, StackOverflowComment> expectedComments = Map.of(
-//                145, new StackOverflowComment(145),
-//                1452135, new StackOverflowComment(1452135)
-//        );
-//        assertEquals(expectedComments, loadedInfo.getComments(),
-//                ()->"Comments not equal");
-//
-//        Map<Integer, StackOverflowAnswer> expectedAnswers = Map.of(
-//                51, new StackOverflowAnswer(51, "test1", lastEditDateOfAnswers),
-//                5511, new StackOverflowAnswer(5511, "test2", lastEditDateOfAnswers)
-//        );
-//        assertTrue(expectedAnswers.values().stream().allMatch(expectedAnswer ->{
-//            boolean result = true;
-//            if(!loadedInfo.getAnswers().containsKey(expectedAnswer.getIdAnswer())){
-//                result = false;
-//            }
-//            else{
-//                StackOverflowAnswer loadedAnswer = loadedInfo.getAnswers().get(expectedAnswer.getIdAnswer());
-//                result = loadedAnswer.getUserName().equals(expectedAnswer.getUserName()) &&
-//                        loadedAnswer.getLastEditDate().toLocalDateTime().truncatedTo(ChronoUnit.SECONDS)
-//                                .equals(expectedAnswer.getLastEditDate().toLocalDateTime().truncatedTo(ChronoUnit.SECONDS));
-//            }
-//            return result;
-//        }) && expectedAnswers.size() == loadedInfo.getAnswers().size(),
-//                ()->"Expected answers: " + expectedAnswers +
-//                "\n loaded answers: " + loadedInfo.getAnswers());
-//        SUT.remove(argumentForSUT.getId());
-//    }
-//    @Test
-//    @Rollback
-//    @Transactional
-//    public void applyChangesTest(){
-//        //Assign
-//        final OffsetDateTime lastEditDateOfAnswersForInitial = OffsetDateTime.now().minusDays(5);
-//        final OffsetDateTime lastEditDateOfAnswersForArgument = OffsetDateTime.now().plusDays(5);
-//        StackOverflowLinkInfo linkInfoForInitial = new StackOverflowLinkInfo(1412);
-//
-//        StackOverflowInfo initialInfo = new StackOverflowInfo(0, OffsetDateTime.now(), linkInfoForInitial,
-//                Map.of(
-//                        1, new StackOverflowComment(1),
-//                        2, new StackOverflowComment(2),
-//                        3, new StackOverflowComment(3)
-//                ),
-//                Map.of(
-//                        1, new StackOverflowAnswer(1, "test1", lastEditDateOfAnswersForInitial),
-//                        2, new StackOverflowAnswer(2, "test2", lastEditDateOfAnswersForInitial),
-//                        3, new StackOverflowAnswer(3, "test3", lastEditDateOfAnswersForInitial),
-//                        4, new StackOverflowAnswer(4, "test4", lastEditDateOfAnswersForInitial),
-//                        5, new StackOverflowAnswer(5, "test5", lastEditDateOfAnswersForInitial)
-//                ));
-//        SUT.add(initialInfo);
-//
-//        ResultOfCompareStackOverflowInfo argumentForSUT = new ResultOfCompareStackOverflowInfo(true,
-//                linkInfoForInitial, initialInfo.getId(),
-//                new StackOverflowAnswer[]{
-//                        new StackOverflowAnswer(1, "test1", lastEditDateOfAnswersForInitial),
-//                        new StackOverflowAnswer(2, "test2", lastEditDateOfAnswersForInitial)
-//                },
-//                new StackOverflowAnswerResponse[]{
-//                        new StackOverflowAnswerResponse(new StackOverflowUserResponse("test6"), lastEditDateOfAnswersForArgument,
-//                                lastEditDateOfAnswersForArgument, 6),
-//                        new StackOverflowAnswerResponse(new StackOverflowUserResponse("test7"), lastEditDateOfAnswersForArgument,
-//                                lastEditDateOfAnswersForArgument, 7)
-//                },
-//                new StackOverflowAnswerResponse[]{
-//                        new StackOverflowAnswerResponse(new StackOverflowUserResponse("test4"), lastEditDateOfAnswersForArgument,
-//                                lastEditDateOfAnswersForArgument, 4),
-//                        new StackOverflowAnswerResponse(new StackOverflowUserResponse("test5"), lastEditDateOfAnswersForArgument,
-//                                lastEditDateOfAnswersForArgument, 5)
-//                },
-//                new StackOverflowComment[]{
-//                        new StackOverflowComment(1),
-//                        new StackOverflowComment(3)
-//                },
-//                new StackOverflowCommentResponse[]{
-//                        new StackOverflowCommentResponse(new StackOverflowUserResponse("test8"), lastEditDateOfAnswersForArgument,
-//                                4),
-//                        new StackOverflowCommentResponse(new StackOverflowUserResponse("test9"), lastEditDateOfAnswersForArgument,
-//                                5)
-//                });
-//
-//        //Action
-//        SUT.applyChanges(argumentForSUT);
-//
-//        //Assert
-//        StackOverflowInfo loadedInfo = SUT.getById(initialInfo.getId());
-//
-//        StackOverflowLinkInfo expectedLinkInfo = new StackOverflowLinkInfo(1412);
-//        assertEquals(expectedLinkInfo, loadedInfo.getLinkInfo(),
-//                () -> "Link info not equals");
-//        Map<Integer, StackOverflowComment> expectedComments = Map.of(
-//                2, new StackOverflowComment(2),
-//                4, new StackOverflowComment(4),
-//                5, new StackOverflowComment(5)
-//        );
-//        assertEquals(expectedComments, loadedInfo.getComments(),
-//                ()->"Comments not equal");
-//
-//        Map<Integer, StackOverflowAnswer> expectedAnswers = Map.of(
-//                3, new StackOverflowAnswer(3, "test3", lastEditDateOfAnswersForInitial),
-//                4, new StackOverflowAnswer(4, "test4", lastEditDateOfAnswersForArgument),
-//                5, new StackOverflowAnswer(5, "test5", lastEditDateOfAnswersForArgument),
-//                6, new StackOverflowAnswer(6, "test6", lastEditDateOfAnswersForArgument),
-//                7, new StackOverflowAnswer(7, "test7", lastEditDateOfAnswersForArgument)
-//        );
-//        assertEquals(expectedAnswers, loadedInfo.getAnswers(),()->"Expected answers: " + expectedAnswers +
-//                "\n loaded answers: " + loadedInfo.getAnswers());
-//        assertTrue(expectedAnswers.values().stream().allMatch(expectedAnswer ->{
-//                    boolean result = true;
-//                    if(!loadedInfo.getAnswers().containsKey(expectedAnswer.getIdAnswer())){
-//                        result = false;
-//                    }
-//                    else{
-//                        StackOverflowAnswer loadedAnswer = loadedInfo.getAnswers().get(expectedAnswer.getIdAnswer());
-//                        result = loadedAnswer.getUserName().equals(expectedAnswer.getUserName()) &&
-//                                loadedAnswer.getLastEditDate().toLocalDateTime().truncatedTo(ChronoUnit.SECONDS)
-//                                        .equals(expectedAnswer.getLastEditDate().toLocalDateTime().truncatedTo(ChronoUnit.SECONDS));
-//                    }
-//                    return result;
-//                }) && expectedAnswers.size() == loadedInfo.getAnswers().size(),
-//                ()->"Expected answers: " + expectedAnswers +
-//                        "\n loaded answers: " + loadedInfo.getAnswers());
-//        SUT.remove(initialInfo.getId());
-//    }
-//    @Test
-//    @Rollback
-//    @Transactional
-//    public void loadLinkInfoTest(){
-//        //Assign
-//        final OffsetDateTime lastEditDateOfAnswers = OffsetDateTime.now().minusDays(5);
-//        StackOverflowLinkInfo linkInfoForArgument = new StackOverflowLinkInfo(1412);
-//
-//        StackOverflowInfo argumentForSUT = new StackOverflowInfo(0, OffsetDateTime.now(), linkInfoForArgument,
-//                Map.of(
-//                        145, new StackOverflowComment(145),
-//                        1452135, new StackOverflowComment(1452135)
-//                ),
-//                Map.of(
-//                        51, new StackOverflowAnswer(51, "test1", lastEditDateOfAnswers),
-//                        5511, new StackOverflowAnswer(5511, "test2", lastEditDateOfAnswers)
-//                ));
-//
-//        SUT.add(argumentForSUT);
-//
-//        //Action
-//        StackOverflowLinkInfo resultFromSUT = SUT.loadLinkInfo(argumentForSUT.getId());
-//
-//        //Assert
-//        assertEquals(resultFromSUT, argumentForSUT.getLinkInfo());
-//        SUT.remove(argumentForSUT.getId());
-//    }
-//    @Test
-//    @Rollback
-//    @Transactional
-//    public void findIdWithLinkInfoForSavedTest(){
-//        //Assign
-//        final OffsetDateTime lastEditDateOfAnswers = OffsetDateTime.now().minusDays(5);
-//        StackOverflowLinkInfo linkInfoForArgument = new StackOverflowLinkInfo(1412);
-//
-//        StackOverflowInfo argumentForSUT = new StackOverflowInfo(linkInfoForArgument);
-//
-//        SUT.add(argumentForSUT);
-//
-//        //Action
-//        Optional<Integer> optionalResultFromSUT = SUT.findIdByLinkInfo(linkInfoForArgument);
-//
-//        //Assert
-//        assertTrue(optionalResultFromSUT.isPresent(),
-//                () -> "Method findIdByLinkInfo must return not optional result from SUT for saved info");
-//        assertEquals(argumentForSUT.getId(), optionalResultFromSUT.get(),
-//                ()->"Saved info have id " + argumentForSUT.getId() +
-//                        " but loaded id is " + optionalResultFromSUT.get());
-//    }
-//    @Test
-//    @Rollback
-//    @Transactional
-//    public void findIdWithLinkInfoForNotSavedTest(){
-//        //Assign
-//        final OffsetDateTime lastEditDateOfAnswers = OffsetDateTime.now().minusDays(5);
-//        StackOverflowLinkInfo linkInfoForArgument = new StackOverflowLinkInfo(1412);
-//
-//        //Action
-//        Optional<Integer> optionalResultFromSUT = SUT.findIdByLinkInfo(linkInfoForArgument);
-//
-//        //Assert
-//        assertTrue(optionalResultFromSUT.isEmpty(),
-//                () -> "Method findIdByLinkInfo must return optional result from SUT for not saved info");
-//    }
+    @Autowired
+    public JPAStackOverflowInfoDAO SUT;
+    @Test
+    @Rollback
+    @Transactional
+    public void validAddTest(){
+        //Assign
+        final OffsetDateTime lastEditDateOfAnswers = OffsetDateTime.now().minusDays(5);
+        StackOverflowLinkInfo linkInfoForArgument = new StackOverflowLinkInfo(1412);
+
+        StackOverflowInfo infoForArgument = new StackOverflowInfo(0, OffsetDateTime.now(), linkInfoForArgument,
+                Map.of(
+                        145, new StackOverflowComment(145),
+                        1452135, new StackOverflowComment(1452135)
+                ),
+                Map.of(
+                        51, new StackOverflowAnswer(51, "test1", lastEditDateOfAnswers),
+                        5511, new StackOverflowAnswer(5511, "test2", lastEditDateOfAnswers)
+        ));
+        StackOverflowInfoEntity argumentForSUT = new StackOverflowInfoEntity(infoForArgument);
+
+        //Action
+        SUT.add(argumentForSUT);
+
+        //Assert
+        StackOverflowInfoEntity resultFromSUT = SUT.getById(argumentForSUT.getId());
+
+        assertEquals(linkInfoForArgument.idQuestion(), resultFromSUT.getQuestionId(),
+                () -> "Question ids is not equal");
+
+        Set<StackOverflowCommentEntity> expectedComments = Set.of(
+                new StackOverflowCommentEntity(new StackOverflowCommentPrimaryKey(145, argumentForSUT.getId())),
+                new StackOverflowCommentEntity(new StackOverflowCommentPrimaryKey(1452135, argumentForSUT.getId()))
+        );
+        assertEquals(expectedComments, resultFromSUT.getComments().stream().collect(Collectors.toSet()),
+                ()->"Comments not equal");
+
+        Map<Integer, StackOverflowAnswerEntity> expectedAnswers = Map.of(
+                51, new StackOverflowAnswerEntity(
+                        new StackOverflowAnswerPrimaryKey(51, argumentForSUT.getId()),
+                        "test1",
+                        Timestamp.valueOf(lastEditDateOfAnswers.toLocalDateTime())
+                ),
+                5511, new StackOverflowAnswerEntity(
+                        new StackOverflowAnswerPrimaryKey(5511, argumentForSUT.getId()),
+                        "test2",
+                        Timestamp.valueOf(lastEditDateOfAnswers.toLocalDateTime())
+                )
+        );
+        assertTrue(resultFromSUT.getAnswers().stream().allMatch(loadedAnswer ->{
+            boolean result = true;
+            if(!expectedAnswers.containsKey(loadedAnswer.getPrimaryKey().getId())){
+                result = false;
+            }
+            else{
+                StackOverflowAnswerEntity expectedAnswer = expectedAnswers.get(loadedAnswer.getPrimaryKey().getId());
+                result = loadedAnswer.getUserName().equals(expectedAnswer.getUserName()) &&
+                        loadedAnswer.getLastEditDateTime().toLocalDateTime().truncatedTo(ChronoUnit.SECONDS)
+                                .equals(expectedAnswer.getLastEditDateTime().toLocalDateTime().truncatedTo(ChronoUnit.SECONDS)) &&
+                        loadedAnswer.getPrimaryKey().getWebsiteInfoId() == expectedAnswer.getPrimaryKey().getWebsiteInfoId();
+            }
+            return result;
+        }) && expectedAnswers.size() == resultFromSUT.getAnswers().size(),
+                ()->"Expected and loaded answers not equal");
+    }
+    @Test
+    @Rollback
+    @Transactional
+    public void applyChangesTest(){
+        //Assign
+        final OffsetDateTime lastEditDateOfAnswersForInitial = OffsetDateTime.now().minusDays(5);
+        final OffsetDateTime lastEditDateOfAnswersForArgument = OffsetDateTime.now().plusDays(5);
+        StackOverflowLinkInfo linkInfoForInitial = new StackOverflowLinkInfo(1412);
+
+        StackOverflowInfo initialInfo = new StackOverflowInfo(0, OffsetDateTime.now(), linkInfoForInitial,
+                Map.of(
+                        1, new StackOverflowComment(1),
+                        2, new StackOverflowComment(2),
+                        3, new StackOverflowComment(3)
+                ),
+                Map.of(
+                        1, new StackOverflowAnswer(1, "test1", lastEditDateOfAnswersForInitial),
+                        2, new StackOverflowAnswer(2, "test2", lastEditDateOfAnswersForInitial),
+                        3, new StackOverflowAnswer(3, "test3", lastEditDateOfAnswersForInitial),
+                        4, new StackOverflowAnswer(4, "test4", lastEditDateOfAnswersForInitial),
+                        5, new StackOverflowAnswer(5, "test5", lastEditDateOfAnswersForInitial)
+                ));
+        StackOverflowInfoEntity initialEntity = new StackOverflowInfoEntity(initialInfo);
+        SUT.add(initialEntity);
+
+        ResultOfCompareStackOverflowInfo argumentForSUT = new ResultOfCompareStackOverflowInfo(true,
+                linkInfoForInitial, initialEntity.getId(),
+                new StackOverflowAnswer[]{
+                        new StackOverflowAnswer(1, "test1", lastEditDateOfAnswersForInitial),
+                        new StackOverflowAnswer(2, "test2", lastEditDateOfAnswersForInitial)
+                },
+                new StackOverflowAnswerResponse[]{
+                        new StackOverflowAnswerResponse(new StackOverflowUserResponse("test6"), lastEditDateOfAnswersForArgument,
+                                lastEditDateOfAnswersForArgument, 6),
+                        new StackOverflowAnswerResponse(new StackOverflowUserResponse("test7"), lastEditDateOfAnswersForArgument,
+                                lastEditDateOfAnswersForArgument, 7)
+                },
+                new StackOverflowAnswerResponse[]{
+                        new StackOverflowAnswerResponse(new StackOverflowUserResponse("test4"), lastEditDateOfAnswersForArgument,
+                                lastEditDateOfAnswersForArgument, 4),
+                        new StackOverflowAnswerResponse(new StackOverflowUserResponse("test5"), lastEditDateOfAnswersForArgument,
+                                lastEditDateOfAnswersForArgument, 5)
+                },
+                new StackOverflowComment[]{
+                        new StackOverflowComment(1),
+                        new StackOverflowComment(3)
+                },
+                new StackOverflowCommentResponse[]{
+                        new StackOverflowCommentResponse(new StackOverflowUserResponse("test8"), lastEditDateOfAnswersForArgument,
+                                4),
+                        new StackOverflowCommentResponse(new StackOverflowUserResponse("test9"), lastEditDateOfAnswersForArgument,
+                                5)
+                });
+
+        //Action
+        SUT.applyChanges(argumentForSUT);
+
+        //Assert
+        StackOverflowInfoEntity resultFromSUT = SUT.getById(initialEntity.getId());
+
+        assertEquals(linkInfoForInitial.idQuestion(), resultFromSUT.getQuestionId(),
+                () -> "Loaded and expected question id is not equal ");
+        Set<StackOverflowCommentEntity> expectedComments = Set.of(
+                new StackOverflowCommentEntity(new StackOverflowCommentPrimaryKey(2, initialEntity.getId())),
+                new StackOverflowCommentEntity(new StackOverflowCommentPrimaryKey(4, initialEntity.getId())),
+                new StackOverflowCommentEntity(new StackOverflowCommentPrimaryKey(5, initialEntity.getId()))
+        );
+        assertEquals(expectedComments, resultFromSUT.getComments().stream().collect(Collectors.toSet()),
+                ()->"Comments not equal");
+
+        Map<Integer, StackOverflowAnswerEntity> expectedAnswers = Map.of(
+                3, new StackOverflowAnswerEntity(
+                        new StackOverflowAnswerPrimaryKey(3, initialEntity.getId()),
+                        "test3",
+                        Timestamp.valueOf(lastEditDateOfAnswersForInitial.toLocalDateTime())
+                ),
+                4,  new StackOverflowAnswerEntity(
+                        new StackOverflowAnswerPrimaryKey(4, initialEntity.getId()),
+                        "test4",
+                        Timestamp.valueOf(lastEditDateOfAnswersForArgument.toLocalDateTime())
+                ),
+                5, new StackOverflowAnswerEntity(
+                        new StackOverflowAnswerPrimaryKey(5, initialEntity.getId()),
+                        "test5",
+                        Timestamp.valueOf(lastEditDateOfAnswersForArgument.toLocalDateTime())
+                ),
+                6, new StackOverflowAnswerEntity(
+                        new StackOverflowAnswerPrimaryKey(6, initialEntity.getId()),
+                        "test6",
+                        Timestamp.valueOf(lastEditDateOfAnswersForArgument.toLocalDateTime())
+                ),
+                7, new StackOverflowAnswerEntity(
+                        new StackOverflowAnswerPrimaryKey(7, initialEntity.getId()),
+                        "test7",
+                        Timestamp.valueOf(lastEditDateOfAnswersForArgument.toLocalDateTime())
+                )
+        );
+        assertTrue(resultFromSUT.getAnswers().stream().allMatch(loadedAnswer ->{
+                    boolean result = true;
+                    if(!expectedAnswers.containsKey(loadedAnswer.getPrimaryKey().getId())){
+                        result = false;
+                    }
+                    else{
+                        StackOverflowAnswerEntity expectedAnswer = expectedAnswers.get(loadedAnswer.getPrimaryKey().getId());
+                        result = loadedAnswer.getUserName().equals(expectedAnswer.getUserName()) &&
+                                loadedAnswer.getLastEditDateTime().toLocalDateTime().truncatedTo(ChronoUnit.SECONDS)
+                                        .equals(expectedAnswer.getLastEditDateTime().toLocalDateTime()
+                                                .truncatedTo(ChronoUnit.SECONDS)) &&
+                        loadedAnswer.getPrimaryKey().getWebsiteInfoId() == expectedAnswer.getPrimaryKey().getWebsiteInfoId();
+                    }
+                    return result;
+                }) && expectedAnswers.size() == resultFromSUT.getAnswers().size(),
+                ()->"Loaded and expected answers is not equal\nExpected answers:\n" + expectedAnswers.values() +
+                "\nLoaded answers:\n" + resultFromSUT.getAnswers());
+    }
+    @Test
+    @Rollback
+    @Transactional
+    public void loadLinkInfoTest(){
+        //Assign
+        final OffsetDateTime lastEditDateOfAnswers = OffsetDateTime.now().minusDays(5);
+        StackOverflowLinkInfo linkInfoForArgument = new StackOverflowLinkInfo(1412);
+
+        StackOverflowInfo infoForArgument = new StackOverflowInfo(0, OffsetDateTime.now(), linkInfoForArgument,
+                Map.of(
+                        145, new StackOverflowComment(145),
+                        1452135, new StackOverflowComment(1452135)
+                ),
+                Map.of(
+                        51, new StackOverflowAnswer(51, "test1", lastEditDateOfAnswers),
+                        5511, new StackOverflowAnswer(5511, "test2", lastEditDateOfAnswers)
+                ));
+        StackOverflowInfoEntity argumentForSUT = new StackOverflowInfoEntity(infoForArgument);
+        SUT.add(argumentForSUT);
+
+        //Action
+        StackOverflowLinkInfo resultFromSUT = SUT.loadLinkInfo(argumentForSUT.getId());
+
+        //Assert
+        assertEquals(linkInfoForArgument, resultFromSUT);
+    }
+    @Test
+    @Rollback
+    @Transactional
+    public void findIdWithLinkInfoForSavedTest(){
+        //Assign
+        final OffsetDateTime lastEditDateOfAnswers = OffsetDateTime.now().minusDays(5);
+        StackOverflowLinkInfo linkInfoForArgument = new StackOverflowLinkInfo(1412);
+
+        StackOverflowInfo infoForArgument = new StackOverflowInfo(linkInfoForArgument);
+        StackOverflowInfoEntity argumentForSUT = new StackOverflowInfoEntity(infoForArgument);
+        SUT.add(argumentForSUT);
+
+        //Action
+        Optional<Integer> optionalResultFromSUT = SUT.findIdByLinkInfo(linkInfoForArgument);
+
+        //Assert
+        assertTrue(optionalResultFromSUT.isPresent(),
+                () -> "Method findIdByLinkInfo must return not optional result from SUT for saved info");
+        assertEquals(argumentForSUT.getId(), optionalResultFromSUT.get(),
+                ()->"Saved info have id " + argumentForSUT.getId() +
+                        " but loaded id is " + optionalResultFromSUT.get());
+    }
+    @Test
+    @Rollback
+    @Transactional
+    public void findIdWithLinkInfoForNotSavedTest(){
+        //Assign
+        final OffsetDateTime lastEditDateOfAnswers = OffsetDateTime.now().minusDays(5);
+        StackOverflowLinkInfo linkInfoForArgument = new StackOverflowLinkInfo(1412);
+
+        //Action
+        Optional<Integer> optionalResultFromSUT = SUT.findIdByLinkInfo(linkInfoForArgument);
+
+        //Assert
+        assertTrue(optionalResultFromSUT.isEmpty(),
+                () -> "Method findIdByLinkInfo must return optional result from SUT for not saved info");
+    }
 }

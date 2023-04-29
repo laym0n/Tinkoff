@@ -24,14 +24,6 @@ import java.util.*;
 @Component
 @ConditionalOnProperty(prefix = "app", name = "database-access-type", havingValue = "jpa")
 public class JPAGitHubInfoDAO extends JPADAO {
-    private JPAGitHubCommitDAO commitDAO;
-    private JPAGitHubBranchesDAO branchesDAO;
-
-    public JPAGitHubInfoDAO(JPAGitHubCommitDAO commitDAO, JPAGitHubBranchesDAO branchesDAO) {
-        this.commitDAO = commitDAO;
-        this.branchesDAO = branchesDAO;
-    }
-
     public Optional<Integer> findIdByUserNameAndRepositoryName(String userName, String repositoryName){
         Query query = entityManager.createQuery("select ghi.id from GitHubInfoEntity ghi " +
                 "where ghi.repositoryName = :repositoryName and ghi.userName = :userName");
@@ -47,9 +39,11 @@ public class JPAGitHubInfoDAO extends JPADAO {
         newGitHubInfo.setTypeOfWebsite(type);
         entityManager.persist(newGitHubInfo);
         for(GitHubCommitEntity commit : newGitHubInfo.getCommits()){
+            commit.getPrimaryKey().setGitHubInfoId(newGitHubInfo.getId());
             entityManager.persist(commit);
         }
         for(GitHubBranchEntity branch : newGitHubInfo.getBranches()){
+            branch.getPrimaryKey().setGitHubSiteId(newGitHubInfo.getId());
             entityManager.persist(branch);
         }
     }
@@ -64,21 +58,20 @@ public class JPAGitHubInfoDAO extends JPADAO {
     @Transactional
     public void applyChanges(ResultOfCompareGitHubInfo changes){
         Query queryForRemoveBranches = entityManager.createQuery("delete from GitHubBranchEntity ghb " +
-                "where ghb.primaryKey.gitHubSiteId = :id " +
-                "and ghb.primaryKey.name = :branchName");
+                "where ghb.id.gitHubSiteId = :id " +
+                "and ghb.id.name = :branchName");
         for(GitHubBranch branchForRemove : changes.getDroppedBranches()){
             queryForRemoveBranches.setParameter("id", changes.getIdWebsiteInfo());
             queryForRemoveBranches.setParameter("branchName", branchForRemove.getBranchName());
             queryForRemoveBranches.executeUpdate();
         }
-
         Query queryForRemoveCommits = entityManager.createQuery("delete from GitHubCommitEntity ghc " +
                 "where ghc.primaryKey.gitHubInfoId = :id " +
                 "and ghc.primaryKey.sha = :sha");
         for(GitHubCommit commitForRemove : changes.getDroppedCommits()){
-            queryForRemoveBranches.setParameter("id", changes.getIdWebsiteInfo());
-            queryForRemoveBranches.setParameter("sha", commitForRemove.getSha());
-            queryForRemoveBranches.executeUpdate();
+            queryForRemoveCommits.setParameter("id", changes.getIdWebsiteInfo());
+            queryForRemoveCommits.setParameter("sha", commitForRemove.getSha());
+            queryForRemoveCommits.executeUpdate();
         }
 
         Arrays.stream(changes.getAddedBranches()).map(GitHubBranchResponse::getGitHubBranch)
@@ -104,6 +97,8 @@ public class JPAGitHubInfoDAO extends JPADAO {
                 .setParameter("id", changes.getIdWebsiteInfo())
                 .setParameter("lastCheckUpdate", Timestamp.valueOf(OffsetDateTime.now().toLocalDateTime()))
                 .executeUpdate();
+        entityManager.flush();
+        entityManager.detach(entityManager.getReference(GitHubInfoEntity.class, changes.getIdWebsiteInfo()));
     }
 
     public GitHubLinkInfo getLinkInfoById(int idWebsiteInfo) {

@@ -5,6 +5,7 @@ import parserservice.dto.GitHubLinkInfo;
 import parserservice.dto.LinkInfo;
 import ru.tinkoff.edu.java.scrapper.dataaccess.impl.jpa.dao.JPAGitHubInfoDAO;
 import ru.tinkoff.edu.java.scrapper.dataaccess.impl.jpa.entities.GitHubInfoEntity;
+import ru.tinkoff.edu.java.scrapper.dataaccess.impl.jpa.entities.WebsiteInfoEntity;
 import ru.tinkoff.edu.java.scrapper.entities.websiteinfo.GitHubInfo;
 import ru.tinkoff.edu.java.scrapper.entities.websiteinfo.WebsiteInfo;
 
@@ -24,6 +25,7 @@ public class JPAChainGitHubInfoDAOImpl implements JPAChainWebsiteInfoDAO {
         }
         GitHubInfoEntity newInfoEntity = new GitHubInfoEntity((GitHubInfo) newWebsiteInfo);
         gitHubInfoDAO.add(newInfoEntity);
+        newWebsiteInfo.setId(newInfoEntity.getId());
     }
 
     @Override
@@ -34,11 +36,11 @@ public class JPAChainGitHubInfoDAOImpl implements JPAChainWebsiteInfoDAO {
         return gitHubInfoDAO.findIdByUserNameAndRepositoryName(gitHubLinkInfo.userName(), gitHubLinkInfo.repositoryName());
     }
     @Override
-    public WebsiteInfo loadWebsiteInfo(String websiteInfoType, int idWebsiteInfo){
+    public WebsiteInfoEntity loadWebsiteInfo(String websiteInfoType, int idWebsiteInfo){
         if(!websiteInfoType.equals("GitHub")){
             return nextChain == null ? null : nextChain.loadWebsiteInfo(websiteInfoType, idWebsiteInfo);
         }
-        return gitHubInfoDAO.getById(idWebsiteInfo).getWebsiteInfo();
+        return gitHubInfoDAO.getById(idWebsiteInfo);
     }
 
     @Override

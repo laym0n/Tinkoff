@@ -20,47 +20,45 @@ public class JPATrackedLinkDAO extends JPADAO {
     }
 
     public void add(TrackedLinkEntity newTrackedLink){
-//        entityManager.createQuery("insert into TrackedLinkEntity ?").executeUpdate();
-//
-//        newTrackedLink.setId(idAddedTrackedLink);
+        entityManager.persist(newTrackedLink);
     }
-    public Optional<TrackedLink> remove(LinkInfo trackedLink, int idChat){
-//        Optional<Integer> idWebsiteInfo = websiteInfoDAO.findIdByLinkInfo(trackedLink);
-//        if(idWebsiteInfo.isEmpty())
-//            return Optional.empty();
-//        String sql = "select id from tracked_link where chat_id = ? and website_info_id = ?;";
-//        Object[] params = new Object[] { idChat, idWebsiteInfo.get() };
-//
-//        List<Integer> idsDeleted = jdbcTemplate.query(sql, (rs, rowNum) -> {
-//            return rs.getInt("id");
-//        }, params);
-//
-//        TrackedLink deletedEntity = null;
-//        if (!idsDeleted.isEmpty()) {
-//            deletedEntity = new TrackedLink(idsDeleted.get(0), idChat, idWebsiteInfo.get(), trackedLink);
-//            jdbcTemplate.update("delete from tracked_link where chat_id = ? and website_info_id = ?;", params);
-//        }
-//        return Optional.ofNullable(deletedEntity);
-        return Optional.empty();
+    public Optional<TrackedLinkEntity> remove(LinkInfo trackedLink, int idChat){
+        Optional<Integer> idWebsiteInfo = websiteInfoDAO.findIdByLinkInfo(trackedLink);
+        if(idWebsiteInfo.isEmpty())
+            return Optional.empty();
+        List<TrackedLinkEntity> listRemovedLink = entityManager.createQuery("select tl from TrackedLinkEntity tl " +
+                "where tl.chatId = :chatId and " +
+                "tl.websiteInfoId = :websiteInfoId")
+                .setParameter("websiteInfoId", idWebsiteInfo.get())
+                .setParameter("chatId", idChat)
+                .getResultList();
+        if(listRemovedLink.size() == 0)
+            return Optional.empty();
+        entityManager.remove(listRemovedLink.get(0));
+        return Optional.of(listRemovedLink.get(0));
     }
     public boolean containsTrackedLinkWithChatIdAndLinkInfo(LinkInfo linkInfo, int idChat){
-//        Optional<Integer> idWebsiteInfo = websiteInfoDAO.findIdByLinkInfo(linkInfo);
-//        if(idWebsiteInfo.isEmpty())
-//            return false;
-//        Object[] params = new Object[] { idChat, idWebsiteInfo.get() };
-//        int count = jdbcTemplate.queryForObject("select count(*) from tracked_link " +
-//                "where chat_id = ? and website_info_id = ?", Integer.class, params);
-//        return count > 0;
-        return true;
+        Optional<Integer> idWebsiteInfo = websiteInfoDAO.findIdByLinkInfo(linkInfo);
+        if(idWebsiteInfo.isEmpty())
+            return false;
+        long count = entityManager.createQuery("select count(*) from TrackedLinkEntity tl " +
+                "where tl.chatId = :chatId and tl.websiteInfoId = :websiteInfoId", Long.class)
+                .setParameter("chatId", idChat)
+                .setParameter("websiteInfoId", idWebsiteInfo.get())
+                .getSingleResult();
+        return count > 0l;
     }
     public int[] findAllChatsWithIdWebsiteInfo(int idWebsiteInfo){
         List<Integer> ids = entityManager
-                .createQuery("select tl.chatId from TrackedLinkEntity tl where tl.websiteInfoId = ?")
+                .createQuery("select tl.chatId from TrackedLinkEntity tl where tl.websiteInfoId = :websiteInfoId")
+                .setParameter("websiteInfoId", idWebsiteInfo)
                 .getResultList();
         return ids.stream().flatMapToInt(i->IntStream.of(i)).toArray();
 
     }
     public List<TrackedLinkEntity> findAllByChatId(int idChat){
-        return entityManager.createQuery("select * from TrackedLinkEntity tl where tl.chatId = ?").getResultList();
+        return entityManager.createQuery("select tl from TrackedLinkEntity tl where tl.chatId = :chatId")
+                .setParameter("chatId", idChat)
+                .getResultList();
     }
 }

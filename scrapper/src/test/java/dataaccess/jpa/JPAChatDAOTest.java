@@ -29,7 +29,7 @@ public class JPAChatDAOTest extends JPAIntegrationEnvironment {
 
         //Assert
         ChatEntity chatFromDB = SUT.findByID(idChat);
-        assertEquals(chatFromDB.getId(), idChat);
+        assertEquals(chatFromDB, argumentForSUT);
     }
     @Test
     @Transactional

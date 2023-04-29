@@ -4,6 +4,8 @@ import lombok.AllArgsConstructor;
 import parserservice.dto.LinkInfo;
 import parserservice.dto.StackOverflowLinkInfo;
 import ru.tinkoff.edu.java.scrapper.dataaccess.impl.jpa.dao.JPAStackOverflowInfoDAO;
+import ru.tinkoff.edu.java.scrapper.dataaccess.impl.jpa.entities.StackOverflowInfoEntity;
+import ru.tinkoff.edu.java.scrapper.dataaccess.impl.jpa.entities.WebsiteInfoEntity;
 import ru.tinkoff.edu.java.scrapper.entities.websiteinfo.StackOverflowInfo;
 import ru.tinkoff.edu.java.scrapper.entities.websiteinfo.WebsiteInfo;
 
@@ -21,7 +23,9 @@ public class JPAChainStackOverflowInfoDAOImpl implements JPAChainWebsiteInfoDAO 
                 nextChain.create(newWebsiteInfo);
             return;
         }
-        stackOverflowDAO.add((StackOverflowInfo) newWebsiteInfo);
+        StackOverflowInfoEntity newEntity = new StackOverflowInfoEntity((StackOverflowInfo) newWebsiteInfo);
+        stackOverflowDAO.add(newEntity);
+        newWebsiteInfo.setId(newEntity.getId());
     }
 
     @Override
@@ -32,7 +36,7 @@ public class JPAChainStackOverflowInfoDAOImpl implements JPAChainWebsiteInfoDAO 
     }
 
     @Override
-    public WebsiteInfo loadWebsiteInfo(String websiteInfoType, int idWebsiteInfo) {
+    public WebsiteInfoEntity loadWebsiteInfo(String websiteInfoType, int idWebsiteInfo) {
         if(!websiteInfoType.equals("StackOverflow")){
             return nextChain == null ? null : nextChain.loadWebsiteInfo(websiteInfoType, idWebsiteInfo);
         }

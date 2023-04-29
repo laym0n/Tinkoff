@@ -38,8 +38,8 @@ public class JPATrackedLinkDAService implements TrackedLinkDAService {
     }
 
     @Override
-    public boolean containsTrackedLinkWithIdChatAndLinkInfo(int idChat, LinkInfo linkInfoForRemove) {
-        return trackedLinkDAO.containsTrackedLinkWithChatIdAndLinkInfo(linkInfoForRemove, idChat);
+    public boolean containsTrackedLinkWithIdChatAndLinkInfo(int idChat, LinkInfo linkInfo) {
+        return trackedLinkDAO.containsTrackedLinkWithChatIdAndLinkInfo(linkInfo, idChat);
     }
 
     @Override
@@ -57,6 +57,9 @@ public class JPATrackedLinkDAService implements TrackedLinkDAService {
 
     @Override
     public Optional<TrackedLink> deleteTrackedLinkByIdChatAndLinkInfo(int idChat, LinkInfo linkInfo) {
-        return trackedLinkDAO.remove(linkInfo, idChat);
+        Optional<TrackedLinkEntity> optionalTrackedLinkEntity = trackedLinkDAO.remove(linkInfo, idChat);
+        if(optionalTrackedLinkEntity.isEmpty())
+            return Optional.empty();
+        return Optional.of(optionalTrackedLinkEntity.get().getTrackedLink());
     }
 }

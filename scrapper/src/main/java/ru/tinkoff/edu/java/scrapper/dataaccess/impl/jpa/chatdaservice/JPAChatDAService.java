@@ -1,5 +1,6 @@
 package ru.tinkoff.edu.java.scrapper.dataaccess.impl.jpa.chatdaservice;
 
+import jakarta.persistence.EntityExistsException;
 import lombok.AllArgsConstructor;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.dao.DuplicateKeyException;
@@ -23,8 +24,8 @@ public class JPAChatDAService implements ChatDAService {
         try {
             chatDAO.add(chatEntity);
         }
-        catch (DuplicateKeyException ex){
-            throw new InvalidParameterException("Chat with id" +
+        catch (EntityExistsException ex){
+            throw new InvalidParameterException("Chat with id " +
                     chat.getId() + " already registered");
         }
     }

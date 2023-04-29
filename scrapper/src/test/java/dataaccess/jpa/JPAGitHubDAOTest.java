@@ -7,7 +7,11 @@ import org.springframework.transaction.annotation.Transactional;
 import parserservice.dto.GitHubLinkInfo;
 import ru.tinkoff.edu.java.scrapper.dataaccess.impl.jdbc.dao.JDBCGitHubInfoDAO;
 import ru.tinkoff.edu.java.scrapper.dataaccess.impl.jpa.dao.JPAGitHubInfoDAO;
+import ru.tinkoff.edu.java.scrapper.dataaccess.impl.jpa.entities.GitHubBranchEntity;
+import ru.tinkoff.edu.java.scrapper.dataaccess.impl.jpa.entities.GitHubCommitEntity;
 import ru.tinkoff.edu.java.scrapper.dataaccess.impl.jpa.entities.GitHubInfoEntity;
+import ru.tinkoff.edu.java.scrapper.dataaccess.impl.jpa.entities.embededids.GitHubBranchPrimaryKey;
+import ru.tinkoff.edu.java.scrapper.dataaccess.impl.jpa.entities.embededids.GitHubCommitPrimaryKey;
 import ru.tinkoff.edu.java.scrapper.dto.response.website.github.GitHubBranchResponse;
 import ru.tinkoff.edu.java.scrapper.dto.response.website.github.GitHubCommitResponse;
 import ru.tinkoff.edu.java.scrapper.dto.response.website.github.GitHubCommiterResponse;
@@ -19,9 +23,14 @@ import ru.tinkoff.edu.java.scrapper.entities.websiteinfo.github.GitHubCommit;
 
 import java.sql.Timestamp;
 import java.time.OffsetDateTime;
+import java.time.ZoneOffset;
 import java.time.temporal.ChronoUnit;
+import java.util.Collections;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -53,30 +62,8 @@ public class JPAGitHubDAOTest extends JPAIntegrationEnvironment {
         argumentForSUT.setId(argumentForSUT.getId());
 
         //Assert
-        GitHubInfo resultOfLoad = SUT.getById(argumentForSUT.getId()).getWebsiteInfo();
-
-        Map<String, GitHubBranch> expectedBranches = Map.of(
-                "hw1", new GitHubBranch("hw1"),
-                "hw2", new GitHubBranch("hw2")
-        );
-        assertEquals(expectedBranches, resultOfLoad.getBranches(), ()->"Expected branches is" + expectedBranches +
-                " but result is " + resultOfLoad.getBranches());
-
-        Map<String, GitHubCommit> expectedCommits = Map.of(
-                "12345", new GitHubCommit("12345"),
-                "12346", new GitHubCommit("12346")
-        );
-        assertEquals(expectedCommits, resultOfLoad.getCommits(), ()->"Expected commits is" + expectedCommits +
-                " but result is " + resultOfLoad.getCommits());
-
-        GitHubLinkInfo expectedLinkInfo = new GitHubLinkInfo("sanyarnd", "tinkoff-java-course-2022");
-        assertEquals(expectedLinkInfo, resultOfLoad.getLinkInfo(),
-                ()->"Expected link info is " + expectedLinkInfo + " but result is " + resultOfLoad.getLinkInfo());
-
-        assertEquals(lastActiveTime.toLocalDateTime().truncatedTo(ChronoUnit.SECONDS),
-                resultOfLoad.getLastActiveTime().toLocalDateTime().truncatedTo(ChronoUnit.SECONDS),
-                ()->"Expected result of last active time is " + lastActiveTime +
-                " but result is " + resultOfLoad.getLastActiveTime());
+        GitHubInfoEntity resultFromSUT = SUT.getById(argumentForSUT.getId());
+        assertEquals(argumentForSUT, resultFromSUT);
 
     }
     @Test
@@ -100,10 +87,11 @@ public class JPAGitHubDAOTest extends JPAIntegrationEnvironment {
                         "abcde", new GitHubCommit("abcde")
                 ), lastActiveTimeForInitial);
 
-        SUT.add(new GitHubInfoEntity(initialInfo));
+        GitHubInfoEntity initialInfoEntity = new GitHubInfoEntity(initialInfo);
+        SUT.add(initialInfoEntity);
 
         ResultOfCompareGitHubInfo argumentForSUT = new ResultOfCompareGitHubInfo(true,
-                linkInfoForInitialInfo, initialInfo.getId(),
+                linkInfoForInitialInfo, initialInfoEntity.getId(),
                 new GitHubCommit[] {new GitHubCommit("12345"), new GitHubCommit("abcde")},
                 new GitHubCommitResponse[] {
                         new GitHubCommitResponse("first", new GitHubNestedCommitResponse(new GitHubCommiterResponse(dateForCommitsAndBranches))),
@@ -117,32 +105,34 @@ public class JPAGitHubDAOTest extends JPAIntegrationEnvironment {
         SUT.applyChanges(argumentForSUT);
 
         //Assert
-        GitHubInfo resultOfLoad = SUT.getById(initialInfo.getId()).getWebsiteInfo();
+        GitHubInfoEntity resultFromSUT = SUT.getById(initialInfoEntity.getId());
 
-        Map<String, GitHubBranch> expectedBranches = Map.of(
-                "hw4", new GitHubBranch("hw4"),
-                "hw2", new GitHubBranch("hw2"),
-                "hw3", new GitHubBranch("hw3")
+        Set<GitHubBranchEntity> expectedBranches = Set.of(
+                new GitHubBranchEntity(new GitHubBranchPrimaryKey("hw4", initialInfoEntity.getId())),
+                new GitHubBranchEntity(new GitHubBranchPrimaryKey("hw3", initialInfoEntity.getId())),
+                new GitHubBranchEntity(new GitHubBranchPrimaryKey("hw2", initialInfoEntity.getId()))
         );
-        assertEquals(expectedBranches, resultOfLoad.getBranches(), ()->"Expected branches is" + expectedBranches +
-                " but result is " + resultOfLoad.getBranches());
+        assertEquals(expectedBranches, resultFromSUT.getBranches().stream().collect(Collectors.toSet()));
 
-        Map<String, GitHubCommit> expectedCommits = Map.of(
-                "12346", new GitHubCommit("12346"),
-                "first", new GitHubCommit("first"),
-                "second", new GitHubCommit("second")
+        Set<GitHubCommitEntity> expectedCommits = Set.of(
+                new GitHubCommitEntity(new GitHubCommitPrimaryKey("12346", initialInfoEntity.getId())),
+                new GitHubCommitEntity(new GitHubCommitPrimaryKey("first", initialInfoEntity.getId())),
+                new GitHubCommitEntity(new GitHubCommitPrimaryKey("second", initialInfoEntity.getId()))
         );
-        assertEquals(expectedCommits, resultOfLoad.getCommits(), ()->"Expected commits is" + expectedCommits +
-                " but result is " + resultOfLoad.getCommits());
+        assertEquals(expectedCommits, resultFromSUT.getCommits().stream().collect(Collectors.toSet()));
 
-        GitHubLinkInfo expectedLinkInfo = new GitHubLinkInfo("sanyarnd", "tinkoff-java-course-2022");
-        assertEquals(expectedLinkInfo, resultOfLoad.getLinkInfo(),
-                ()->"Expected link info is " + expectedLinkInfo + " but result is " + resultOfLoad.getLinkInfo());
+        assertEquals(linkInfoForInitialInfo.userName(), resultFromSUT.getUserName(),
+                ()->"Expected user name is " + linkInfoForInitialInfo.userName() +
+                        " but loaded result is " + resultFromSUT.getUserName());
+
+        assertEquals(linkInfoForInitialInfo.repositoryName(), resultFromSUT.getRepositoryName(),
+                ()->"Expected repository name is " + linkInfoForInitialInfo.repositoryName() +
+                        " but loaded result is " + resultFromSUT.getRepositoryName());
 
         assertEquals(lastActiveTimeForArgument.toLocalDateTime().truncatedTo(ChronoUnit.SECONDS),
-                resultOfLoad.getLastActiveTime().toLocalDateTime().truncatedTo(ChronoUnit.SECONDS),
+                resultFromSUT.getLastActiveTime().toLocalDateTime().truncatedTo(ChronoUnit.SECONDS),
                 ()->"Expected result of last active time is " + lastActiveTimeForInitial.toLocalDateTime().truncatedTo(ChronoUnit.SECONDS) +
-                        " but result is " + resultOfLoad.getLastActiveTime().toLocalDateTime().truncatedTo(ChronoUnit.SECONDS));
+                        " but result is " + resultFromSUT.getLastActiveTime().toLocalDateTime().truncatedTo(ChronoUnit.SECONDS));
     }
     @Test
     @Rollback
@@ -152,7 +142,7 @@ public class JPAGitHubDAOTest extends JPAIntegrationEnvironment {
         final OffsetDateTime lastActiveTime = OffsetDateTime.now().minusDays(5);
         GitHubLinkInfo linkInfoForArgument = new GitHubLinkInfo("sanyarnd", "tinkoff-java-course-2022");
 
-        GitHubInfo argumentForSUT = new GitHubInfo(0, OffsetDateTime.now(), linkInfoForArgument,
+        GitHubInfo infoForSave = new GitHubInfo(0, OffsetDateTime.now(), linkInfoForArgument,
                 Map.of(
                         "hw1", new GitHubBranch("hw1"),
                         "hw2", new GitHubBranch("hw2")
@@ -161,14 +151,14 @@ public class JPAGitHubDAOTest extends JPAIntegrationEnvironment {
                         "12345", new GitHubCommit("12345"),
                         "12346", new GitHubCommit("12346")
                 ), lastActiveTime);
-
-        SUT.add(new GitHubInfoEntity(argumentForSUT));
+        GitHubInfoEntity entityForSave = new GitHubInfoEntity(infoForSave);
+        SUT.add(entityForSave);
 
         //Action
-        GitHubLinkInfo resultFromSUT = SUT.getLinkInfoById(argumentForSUT.getId());
+        GitHubLinkInfo resultFromSUT = SUT.getLinkInfoById(entityForSave.getId());
 
         //Assert
-        assertEquals(argumentForSUT.getLinkInfo(), resultFromSUT);
+        assertEquals(infoForSave.getLinkInfo(), resultFromSUT);
     }
     @Test
     @Rollback
@@ -178,9 +168,9 @@ public class JPAGitHubDAOTest extends JPAIntegrationEnvironment {
         final OffsetDateTime lastActiveTime = OffsetDateTime.now().minusDays(5);
         GitHubLinkInfo linkInfoForArgument = new GitHubLinkInfo("sanyarnd", "tinkoff-java-course-2022");
 
-        GitHubInfo argumentForSUT = new GitHubInfo(linkInfoForArgument, lastActiveTime);
-
-        SUT.add(new GitHubInfoEntity(argumentForSUT));
+        GitHubInfo infoForSave = new GitHubInfo(linkInfoForArgument, lastActiveTime);
+        GitHubInfoEntity entityForSave = new GitHubInfoEntity(infoForSave);
+        SUT.add(entityForSave);
 
         //Action
         Optional<Integer> optionalResultFromSUT =
@@ -189,8 +179,8 @@ public class JPAGitHubDAOTest extends JPAIntegrationEnvironment {
         //Assert
         assertTrue(optionalResultFromSUT.isPresent(),
                 () -> "Method findIdByLinkInfo must return not optional result from SUT for saved info");
-        assertEquals(argumentForSUT.getId(), optionalResultFromSUT.get(),
-                ()->"Saved info have id " + argumentForSUT.getId() +
+        assertEquals(entityForSave.getId(), optionalResultFromSUT.get(),
+                ()->"Saved info have id " + entityForSave.getId() +
                 " but loaded id is " + optionalResultFromSUT.get());
     }
     @Test

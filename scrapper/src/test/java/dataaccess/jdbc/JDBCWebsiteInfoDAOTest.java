@@ -56,9 +56,6 @@ public class JDBCWebsiteInfoDAOTest extends JDBCIntegrationEnvironment {
         assertEquals(expectedInfos, resultFromSUT,
                 ()->"Expected: " + expectedInfos +
                 "\nLoaded: " + resultFromSUT);
-        for(WebsiteInfo websiteInfo : websiteInfosForLoad){
-            SUT.remove(websiteInfo.getId());
-        }
     }
     static class ArgumentsProviderValidLoadTheEarliestWebsiteInfos implements ArgumentsProvider {
         @Override

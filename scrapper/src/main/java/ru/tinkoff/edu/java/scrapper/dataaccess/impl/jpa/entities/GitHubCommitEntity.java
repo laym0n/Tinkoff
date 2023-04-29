@@ -3,6 +3,7 @@ package ru.tinkoff.edu.java.scrapper.dataaccess.impl.jpa.entities;
 import jakarta.persistence.EmbeddedId;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import ru.tinkoff.edu.java.scrapper.dataaccess.impl.jpa.entities.embededids.GitHubCommitPrimaryKey;
@@ -10,6 +11,7 @@ import ru.tinkoff.edu.java.scrapper.entities.websiteinfo.github.GitHubCommit;
 
 @Entity
 @NoArgsConstructor
+@AllArgsConstructor
 @Data
 @Table(name = "github_commit")
 public class GitHubCommitEntity {
