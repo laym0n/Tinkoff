@@ -1,6 +1,7 @@
 package ru.tinkoff.edu.java.scrapper.dataaccess.impl.jpa.dao;
 
 import jakarta.persistence.Query;
+import lombok.AllArgsConstructor;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -9,11 +10,11 @@ import ru.tinkoff.edu.java.scrapper.dataaccess.impl.jpa.entities.GitHubBranchEnt
 import ru.tinkoff.edu.java.scrapper.dataaccess.impl.jpa.entities.GitHubCommitEntity;
 import ru.tinkoff.edu.java.scrapper.dataaccess.impl.jpa.entities.GitHubInfoEntity;
 import ru.tinkoff.edu.java.scrapper.dataaccess.impl.jpa.entities.WebsiteInfoTypeEntity;
+import ru.tinkoff.edu.java.scrapper.dataaccess.impl.jpa.entities.embededids.GitHubBranchPrimaryKey;
+import ru.tinkoff.edu.java.scrapper.dataaccess.impl.jpa.entities.embededids.GitHubCommitPrimaryKey;
 import ru.tinkoff.edu.java.scrapper.dto.response.website.github.GitHubBranchResponse;
 import ru.tinkoff.edu.java.scrapper.dto.response.website.github.GitHubCommitResponse;
 import ru.tinkoff.edu.java.scrapper.dto.resultofcomparewebsiteinfo.ResultOfCompareGitHubInfo;
-import ru.tinkoff.edu.java.scrapper.entities.websiteinfo.github.GitHubBranch;
-import ru.tinkoff.edu.java.scrapper.entities.websiteinfo.github.GitHubCommit;
 import java.sql.Timestamp;
 import java.time.OffsetDateTime;
 import java.util.*;
@@ -21,7 +22,10 @@ import java.util.*;
 
 @Component
 @ConditionalOnProperty(prefix = "app", name = "database-access-type", havingValue = "jpa")
+@AllArgsConstructor
 public class JPAGitHubInfoDAO extends JPADAO {
+    private JPAGitHubBranchesDAO branchesDAO;
+    private JPAGitHubCommitDAO commitDAO;
     public Optional<Integer> findIdByUserNameAndRepositoryName(String userName, String repositoryName){
         Query query = entityManager.createQuery("select ghi.id from GitHubInfoEntity ghi " +
                 "where ghi.repositoryName = :repositoryName and ghi.userName = :userName");
@@ -36,14 +40,8 @@ public class JPAGitHubInfoDAO extends JPADAO {
                 "where wsit.name = 'GitHub'", WebsiteInfoTypeEntity.class).getSingleResult();
         newGitHubInfo.setTypeOfWebsite(type);
         entityManager.persist(newGitHubInfo);
-        for(GitHubCommitEntity commit : newGitHubInfo.getCommits()){
-            commit.getPrimaryKey().setGitHubInfoId(newGitHubInfo.getId());
-            entityManager.persist(commit);
-        }
-        for(GitHubBranchEntity branch : newGitHubInfo.getBranches()){
-            branch.getPrimaryKey().setGitHubSiteId(newGitHubInfo.getId());
-            entityManager.persist(branch);
-        }
+        branchesDAO.addAll(newGitHubInfo.getBranches(), newGitHubInfo.getId());
+        commitDAO.addAll(newGitHubInfo.getCommits(), newGitHubInfo.getId());
     }
     public void remove(int idWebsiteInfo){
         entityManager.createQuery("delete from GitHubInfoEntity ghi where ghi.id = :id")
@@ -55,22 +53,14 @@ public class JPAGitHubInfoDAO extends JPADAO {
     }
     @Transactional
     public void applyChanges(ResultOfCompareGitHubInfo changes){
-        Query queryForRemoveBranches = entityManager.createQuery("delete from GitHubBranchEntity ghb " +
-                "where ghb.id.gitHubSiteId = :id " +
-                "and ghb.id.name = :branchName");
-        for(GitHubBranch branchForRemove : changes.getDroppedBranches()){
-            queryForRemoveBranches.setParameter("id", changes.getIdWebsiteInfo());
-            queryForRemoveBranches.setParameter("branchName", branchForRemove.getBranchName());
-            queryForRemoveBranches.executeUpdate();
-        }
-        Query queryForRemoveCommits = entityManager.createQuery("delete from GitHubCommitEntity ghc " +
-                "where ghc.primaryKey.gitHubInfoId = :id " +
-                "and ghc.primaryKey.sha = :sha");
-        for(GitHubCommit commitForRemove : changes.getDroppedCommits()){
-            queryForRemoveCommits.setParameter("id", changes.getIdWebsiteInfo());
-            queryForRemoveCommits.setParameter("sha", commitForRemove.getSha());
-            queryForRemoveCommits.executeUpdate();
-        }
+        Collection<GitHubBranchPrimaryKey> idsForRemoveBranches =
+                Arrays.stream(changes.getDroppedBranches())
+                        .map(i-> new GitHubBranchPrimaryKey(i.getBranchName(), changes.getIdWebsiteInfo())).toList();
+        branchesDAO.removeAll(idsForRemoveBranches);
+
+        Collection<GitHubCommitPrimaryKey> idsForRemoveCommits = Arrays.stream(changes.getDroppedCommits())
+                .map(i->new GitHubCommitPrimaryKey(i.getSha(), changes.getIdWebsiteInfo())).toList();
+        commitDAO.removeAll(idsForRemoveCommits);
 
         Arrays.stream(changes.getAddedBranches()).map(GitHubBranchResponse::getGitHubBranch)
                 .forEach(i-> entityManager.persist(new GitHubBranchEntity(i, changes.getIdWebsiteInfo())));
@@ -78,13 +68,19 @@ public class JPAGitHubInfoDAO extends JPADAO {
         Arrays.stream(changes.getPushedCommits()).map(GitHubCommitResponse::getGitHubCommit)
                 .forEach(i->entityManager.persist(new GitHubCommitEntity(i, changes.getIdWebsiteInfo())));
 
+        updateLastEditAndLastCheckUpdate(changes.getLastActivityDate(), changes.getIdWebsiteInfo());
+
+        entityManager.flush();
+        entityManager.detach(entityManager.getReference(GitHubInfoEntity.class, changes.getIdWebsiteInfo()));
+    }
+    private void updateLastEditAndLastCheckUpdate(Optional<OffsetDateTime> lastActivityDate, int idWebsiteInfo){
         Query queryForUpdateGitHubInfo;
-        if(changes.getLastActivityDate().isPresent()){
+        if(lastActivityDate.isPresent()){
             queryForUpdateGitHubInfo = entityManager
                     .createQuery("update GitHubInfoEntity ghi set ghi.lastActiveTime = :lastActiveTime, " +
                             "ghi.lastCheckUpdate = :lastCheckUpdate " +
                             "where ghi.id = :id")
-                    .setParameter("lastActiveTime", Timestamp.valueOf(changes.getLastActivityDate().get().toLocalDateTime()));
+                    .setParameter("lastActiveTime", Timestamp.valueOf(lastActivityDate.get().toLocalDateTime()));
         }
         else{
             queryForUpdateGitHubInfo = entityManager.createQuery("update WebsiteInfoEntity wi " +
@@ -92,13 +88,10 @@ public class JPAGitHubInfoDAO extends JPADAO {
                     "where wi.id = :id");
         }
         queryForUpdateGitHubInfo
-                .setParameter("id", changes.getIdWebsiteInfo())
+                .setParameter("id", idWebsiteInfo)
                 .setParameter("lastCheckUpdate", Timestamp.valueOf(OffsetDateTime.now().toLocalDateTime()))
                 .executeUpdate();
-        entityManager.flush();
-        entityManager.detach(entityManager.getReference(GitHubInfoEntity.class, changes.getIdWebsiteInfo()));
     }
-
     public GitHubLinkInfo getLinkInfoById(int idWebsiteInfo) {
         Object[] results = entityManager.createQuery("select ghi.userName, ghi.repositoryName from GitHubInfoEntity ghi " +
                 "where ghi.id = :id", Object[].class).setParameter("id", idWebsiteInfo)

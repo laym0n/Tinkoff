@@ -1,50 +1,40 @@
 package ru.tinkoff.edu.java.scrapper.dataaccess.impl.jpa.dao;
 
+import jakarta.persistence.Query;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Component;
+import ru.tinkoff.edu.java.scrapper.dataaccess.impl.jpa.entities.StackOverflowAnswerEntity;
+import ru.tinkoff.edu.java.scrapper.dataaccess.impl.jpa.entities.embededids.StackOverflowAnswerPrimaryKey;
+import ru.tinkoff.edu.java.scrapper.dto.response.website.stackoverflow.StackOverflowAnswerResponse;
 import ru.tinkoff.edu.java.scrapper.entities.websiteinfo.stackoverflow.StackOverflowAnswer;
 
 import javax.sql.DataSource;
+import java.sql.Timestamp;
 import java.time.OffsetDateTime;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
 @Component
 @ConditionalOnProperty(prefix = "app", name = "database-access-type", havingValue = "jpa")
 public class JPAStackOverflowAnswerDAO extends JPADAO {
-    public void addAll(Collection<StackOverflowAnswer> newAnswers, int idWebsiteInfo){
-//        String sql = "INSERT INTO stack_overflow_answer (id, user_name, last_edit_date_time,  website_info_id) "+
-//                "VALUES (?, ?, ?, ?)";
-//        List<Object[]> batchArgs = newAnswers.stream()
-//                .map(i-> new Object[] {i.getIdAnswer(), i.getUserName(), i.getLastEditDate(), idWebsiteInfo})
-//                .toList();
-//        jdbcTemplate.batchUpdate(sql, batchArgs);
+    public void addAll(Collection<StackOverflowAnswerEntity> newAnswers, int idWebsiteInfo){
+        for(StackOverflowAnswerEntity newAnswer : newAnswers){
+            newAnswer.getPrimaryKey().setWebsiteInfoId(idWebsiteInfo);
+            entityManager.persist(newAnswer);
+        }
     }
-    public void removeAll(Collection<StackOverflowAnswer> answersForRemove, int idWebsiteInfo){
-//        String sql = "delete from stack_overflow_answer where id = ? and website_info_id = ?";
-//        List<Object[]> batchArgs = answersForRemove.stream()
-//                .map(i-> new Object[] {i.getIdAnswer(), idWebsiteInfo})
-//                .toList();
-//        jdbcTemplate.batchUpdate(sql, batchArgs);
+    public void removeAll(Collection<StackOverflowAnswerPrimaryKey> idsForRemove){
+        Query queryForRemoveAnswer = entityManager.createQuery("delete from StackOverflowAnswerEntity soa " +
+                "where soa.primaryKey = :primaryKey");
+        for(StackOverflowAnswerPrimaryKey idForRemove : idsForRemove){
+            queryForRemoveAnswer
+                    .setParameter("primaryKey", idForRemove)
+                    .executeUpdate();
+        }
     }
-    public Collection<StackOverflowAnswer> findAll(int idStackOverflowInfo){
-        return new ArrayList<>();
-//        return jdbcTemplate.query("select * from stack_overflow_answer where website_info_id = ?",
-//                (rs, rowNum) ->
-//                {
-//                    int id = rs.getInt("id");
-//                    String userName = rs.getString("user_name");
-//                    OffsetDateTime lastEditDateTime = rs.getObject("last_edit_date_time", OffsetDateTime.class);
-//                    return new StackOverflowAnswer(id, userName, lastEditDateTime);
-//                },
-//                idStackOverflowInfo);
-    }
-    public void updateLastEditForAll(Collection<StackOverflowAnswer> answers, int idWebsiteInfo){
-//        List<Object[]> batchArgs = answers.stream()
-//                .map(i-> new Object[] {i.getLastEditDate().toLocalDateTime(), idWebsiteInfo,i.getIdAnswer()})
-//                .toList();
-//        jdbcTemplate.batchUpdate("update stack_overflow_answer SET last_edit_date_time = ? where " +
-//                "website_info_id = ? and id = ?", batchArgs);
+    public void update(Collection<StackOverflowAnswerEntity> answersForUpdate){
+        for(StackOverflowAnswerEntity editedAnswer : answersForUpdate){
+            entityManager.merge(editedAnswer);
+        }
     }
 }
