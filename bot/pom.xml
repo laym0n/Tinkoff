@@ -116,6 +116,11 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <release>17</release>
+                    <source>17</source>
+                    <parameters>true</parameters>
+                </configuration>
             </plugin>
 
             <plugin>
