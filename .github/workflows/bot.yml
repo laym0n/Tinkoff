@@ -3,7 +3,7 @@ name: bot_build
 on:
   push:
     paths:
-      - 'scrapper/**'
+      - 'bot/**'
       - 'shareddto/**'
 env:
   REGISTRY: ghcr.io
