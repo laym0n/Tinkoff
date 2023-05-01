@@ -9,6 +9,7 @@
     <artifactId>scrapper</artifactId>
     <name>Archetype - scrapper</name>
     <url>http://maven.apache.org</url>
+    <packaging>jar</packaging>
 
     <dependencies>
 
@@ -195,6 +196,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
+                <version>3.0.0</version>
             </plugin>
 
         </plugins>
