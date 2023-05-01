@@ -3,8 +3,8 @@ package ru.tinkoff.edu.java.scrapper.scheduler;
 import lombok.AllArgsConstructor;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
-import java.util.logging.Logger;
 import ru.tinkoff.edu.java.scrapper.usecases.CheckUpdateLinksUseCase;
+import java.util.logging.Logger;
 
 @Component
 @AllArgsConstructor
