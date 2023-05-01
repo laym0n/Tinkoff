@@ -28,7 +28,7 @@ public class Test {
                 new int[] {1444737395}
         );
         rabbitTemplate.convertAndSend("LinkUpdateRequest", sdfsd);
-        rabbitTemplate.convertAndSend("LinkUpdateRequest", "asfsdfsdfsdfsdf");
+//        rabbitTemplate.convertAndSend("LinkUpdateRequest", "asfsdfsdfsdfsdf");
         System.out.println("342342423");
     }
 }

@@ -15,13 +15,12 @@ public class ScrapperQueueListener {
     private SendUpdateLinkUseCase sendUpdateLinkUseCase;
     @RabbitHandler
     public void receiver(LinkUpdateDTO update) {
-        throw new RuntimeException();
-//        LinkUpdateResponse response = new LinkUpdateResponse(
-//                update.getId(),
-//                update.getUri(),
-//                update.getDescription(),
-//                update.getTgChatIds()
-//        );
-//        sendUpdateLinkUseCase.sendUpdateLink(response);
+        LinkUpdateResponse response = new LinkUpdateResponse(
+                update.getId(),
+                update.getUri(),
+                update.getDescription(),
+                update.getTgChatIds()
+        );
+        sendUpdateLinkUseCase.sendUpdateLink(response);
     }
 }
