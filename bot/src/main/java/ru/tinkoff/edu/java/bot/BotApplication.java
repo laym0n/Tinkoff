@@ -11,8 +11,8 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 
-@SpringBootApplication()
 @EnableScheduling
+@SpringBootApplication()
 @EnableConfigurationProperties({ApplicationConfig.class, RabbitMQConfiguration.class})
 public class BotApplication {
 
