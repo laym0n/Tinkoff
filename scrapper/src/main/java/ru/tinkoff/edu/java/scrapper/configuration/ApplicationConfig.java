@@ -9,11 +9,20 @@ import java.time.Duration;
 
 @Validated
 @ConfigurationProperties(prefix = "app", ignoreUnknownFields = true)
-public record ApplicationConfig(@NotNull String test, @Bean Scheduler scheduler, @Bean BotInfo botInfo) {
-    public record Scheduler(Duration interval){
+public record ApplicationConfig(@NotNull String test, @Bean Scheduler scheduler, @Bean BotInfo botInfo,
+                                @Bean RabbitMQInfo rabbitMQInfo) {
+    record Scheduler(Duration interval){
 
     }
     record BotInfo(String path){
+
+    }
+    public record RabbitMQInfo(String queueName,
+                        boolean queueDurable,
+                        String exchangeName,
+                        boolean exchangeDurable,
+                        boolean exchangeAutoDelete,
+                        String routingKey){
 
     }
 }

@@ -3,6 +3,7 @@ package ru.tinkoff.edu.java.scrapper.dataaccess.impl.jpa.dao;
 import jakarta.persistence.Query;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 import ru.tinkoff.edu.java.scrapper.dataaccess.impl.jpa.entities.GitHubBranchEntity;
 import ru.tinkoff.edu.java.scrapper.dataaccess.impl.jpa.entities.embededids.GitHubBranchPrimaryKey;
 
@@ -11,6 +12,7 @@ import java.util.Collection;
 @Component
 @ConditionalOnProperty(prefix = "app", name = "database-access-type", havingValue = "jpa")
 public class JPAGitHubBranchesDAO extends JPADAO {
+    @Transactional
     public void addAll(Collection<GitHubBranchEntity> newBranches, int idWebsiteInfo){
         for(GitHubBranchEntity newBranch : newBranches){
             newBranch.getPrimaryKey().setGitHubSiteId(idWebsiteInfo);

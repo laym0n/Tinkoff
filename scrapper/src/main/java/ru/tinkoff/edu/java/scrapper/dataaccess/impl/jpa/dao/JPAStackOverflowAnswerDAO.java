@@ -3,6 +3,7 @@ package ru.tinkoff.edu.java.scrapper.dataaccess.impl.jpa.dao;
 import jakarta.persistence.Query;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 import ru.tinkoff.edu.java.scrapper.dataaccess.impl.jpa.entities.StackOverflowAnswerEntity;
 import ru.tinkoff.edu.java.scrapper.dataaccess.impl.jpa.entities.embededids.StackOverflowAnswerPrimaryKey;
 import ru.tinkoff.edu.java.scrapper.dto.response.website.stackoverflow.StackOverflowAnswerResponse;
@@ -17,6 +18,7 @@ import java.util.List;
 @Component
 @ConditionalOnProperty(prefix = "app", name = "database-access-type", havingValue = "jpa")
 public class JPAStackOverflowAnswerDAO extends JPADAO {
+    @Transactional
     public void addAll(Collection<StackOverflowAnswerEntity> newAnswers, int idWebsiteInfo){
         for(StackOverflowAnswerEntity newAnswer : newAnswers){
             newAnswer.getPrimaryKey().setWebsiteInfoId(idWebsiteInfo);

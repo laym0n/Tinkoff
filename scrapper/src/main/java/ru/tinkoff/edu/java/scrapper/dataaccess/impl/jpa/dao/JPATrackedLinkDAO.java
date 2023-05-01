@@ -2,6 +2,7 @@ package ru.tinkoff.edu.java.scrapper.dataaccess.impl.jpa.dao;
 
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 import parserservice.dto.LinkInfo;
 import ru.tinkoff.edu.java.scrapper.dataaccess.impl.jpa.dao.websiteinfochaindao.JPAChainWebsiteInfoDAO;
 import ru.tinkoff.edu.java.scrapper.dataaccess.impl.jpa.entities.TrackedLinkEntity;
@@ -18,6 +19,7 @@ public class JPATrackedLinkDAO extends JPADAO {
         this.websiteInfoDAO = websiteInfoDAO;
     }
 
+    @Transactional
     public void add(TrackedLinkEntity newTrackedLink){
         entityManager.persist(newTrackedLink);
     }

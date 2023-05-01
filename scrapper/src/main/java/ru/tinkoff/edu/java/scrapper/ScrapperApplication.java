@@ -11,7 +11,7 @@ import java.util.logging.Logger;
 @SpringBootApplication
 @EnableScheduling
 @EnableConfigurationProperties({ApplicationConfig.class, ParserLinksConfiguration.class, CheckerUpdateConfiguration.class,
-        JDBCAccessConfiguration.class, JPAAccessConfiguration.class})
+        JDBCAccessConfiguration.class, JPAAccessConfiguration.class, RabbitMQConfiguration.class})
 public class ScrapperApplication {
     private static Logger log = Logger.getLogger(ScrapperApplication.class.getName());
     public static void main(String[] args) {

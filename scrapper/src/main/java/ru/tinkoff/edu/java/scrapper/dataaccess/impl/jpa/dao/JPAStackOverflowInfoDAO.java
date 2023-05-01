@@ -20,10 +20,15 @@ import java.util.*;
 
 @Component
 @ConditionalOnProperty(prefix = "app", name = "database-access-type", havingValue = "jpa")
-@AllArgsConstructor
 public class JPAStackOverflowInfoDAO extends JPADAO {
     private JPAStackOverflowAnswerDAO answerDAO;
     private JPAStackOverflowCommentDAO commentDAO;
+
+    public JPAStackOverflowInfoDAO(JPAStackOverflowAnswerDAO answerDAO, JPAStackOverflowCommentDAO commentDAO) {
+        this.answerDAO = answerDAO;
+        this.commentDAO = commentDAO;
+    }
+
     public Optional<Integer> findIdByLinkInfo(StackOverflowLinkInfo linkInfo){
         Query query = entityManager.createQuery("select soi.id from StackOverflowInfoEntity soi " +
                 "where soi.questionId = :questionId");
@@ -42,6 +47,7 @@ public class JPAStackOverflowInfoDAO extends JPADAO {
 
         commentDAO.addAll(newStackOverflowInfo.getComments(), newStackOverflowInfo.getId());
     }
+    @Transactional
     public void applyChanges(ResultOfCompareStackOverflowInfo changes){
         removeComments(changes.getDeletedComments(), changes.getIdWebsiteInfo());
 

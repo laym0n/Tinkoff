@@ -10,7 +10,8 @@ import ru.tinkoff.edu.java.bot.telegrambotimpl.builder.send.message.BuilderSendM
 @Validated
 @ConfigurationProperties(prefix = "app", ignoreUnknownFields = false)
 public record ApplicationConfig(@NotNull String test, @Bean TelegramBotInfo telegramBotInfo,
-                                @Bean ScrapperInfo scrapperInfo) {
+                                @Bean ScrapperInfo scrapperInfo,
+                                @Bean RabbitMQInfo rabbitMQInfo) {
 
     record TelegramBotInfo(String botName, String botToken){
 
@@ -21,5 +22,13 @@ public record ApplicationConfig(@NotNull String test, @Bean TelegramBotInfo tele
     @Bean
     public BuilderSendMessage builderSendMessage(BuilderSendMessageFactory factory){
         return factory.getBuilderSendMessage();
+    }
+    record RabbitMQInfo(String queueName,
+                        boolean queueDurable,
+                        String exchangeName,
+                        boolean exchangeDurable,
+                        boolean exchangeAutoDelete,
+                        String routingKey){
+
     }
 }

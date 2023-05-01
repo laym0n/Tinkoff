@@ -1,33 +1,34 @@
 package ru.tinkoff.edu.java.scrapper;
 
-import org.springframework.http.MediaType;
-import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.datasource.DriverManagerDataSource;
-import org.springframework.web.reactive.function.client.WebClient;
-import parserservice.dto.GitHubLinkInfo;
-import parserservice.dto.StackOverflowLinkInfo;
-import ru.tinkoff.edu.java.scrapper.dto.request.LinkUpdateRequest;
-import ru.tinkoff.edu.java.scrapper.dto.response.website.stackoverflow.StackOverflowCommentsResponse;
-import ru.tinkoff.edu.java.scrapper.webclients.bot.BotWebClientImpl;
-import ru.tinkoff.edu.java.scrapper.webclients.githubclient.GitHubClient;
-import ru.tinkoff.edu.java.scrapper.webclients.githubclient.GitHubClientImpl;
-import ru.tinkoff.edu.java.scrapper.webclients.stackoverflowclient.StackOverflowClient;
-import ru.tinkoff.edu.java.scrapper.webclients.stackoverflowclient.StackOverflowClientImpl;
+
+import dto.LinkUpdateDTO;
+import org.springframework.amqp.rabbit.connection.CachingConnectionFactory;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
+import org.springframework.amqp.support.converter.Jackson2JsonMessageConverter;
+import ru.tinkoff.edu.java.scrapper.usecases.impl.checkupdatelinks.sendupdaterequeststrategy.impl.RabbitMQSendLinkUpdateRequestStrategy;
 
 import java.net.URI;
-import java.time.OffsetDateTime;
-import java.util.ArrayList;
-import java.util.List;
 
 public class Test {
     public static void main(String[] args){
-//        JdbcTemplate jdbcTemplate = new JdbcTemplate();
-//        jdbcTemplate.query("SELECT wi.id, wit.name " +
-//                        "FROM website_info wi " +
-//                        "JOIN website_info_type wit ON wi.type_id = wit.id " +
-//                        "ORDER BY wi.last_update_date_time ASC, wi.id ASC " +
-//                        "LIMIT ?;",
-//                (rs, rowNum) -> chainWebsiteInfoDAO.loadWebsiteInfo(rs.getString("name"), rs.getInt("id")),
-//                5);
+        CachingConnectionFactory cachingConnectionFactory = new CachingConnectionFactory("localhost");
+        cachingConnectionFactory.setUsername("guest");
+        cachingConnectionFactory.setPassword("guest");
+        cachingConnectionFactory.setPort(5672);
+
+        RabbitTemplate rabbitTemplate = new RabbitTemplate(cachingConnectionFactory);
+        rabbitTemplate.setMessageConverter(new Jackson2JsonMessageConverter());
+
+        rabbitTemplate.setExchange("testExchange");
+        RabbitMQSendLinkUpdateRequestStrategy strategy = new RabbitMQSendLinkUpdateRequestStrategy(rabbitTemplate);
+        LinkUpdateDTO sdfsd = new LinkUpdateDTO(
+                1,
+                URI.create("http://localhost:15672/#/queues/%2F/testQueue"),
+                "asdsad",
+                new int[] {1444737395}
+        );
+        rabbitTemplate.convertAndSend("LinkUpdateRequest", sdfsd);
+        rabbitTemplate.convertAndSend("LinkUpdateRequest", "asfsdfsdfsdfsdf");
+        System.out.println("342342423");
     }
 }
