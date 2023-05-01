@@ -1,4 +1,4 @@
-name: Maven Package
+name: scrapper_build
 
 on:
   push:
