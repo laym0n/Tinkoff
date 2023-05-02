@@ -9,11 +9,12 @@ import parserservice.factories.factoryimpl.ParserLinksFactoryImpl;
 @ConfigurationProperties
 public class ParserLinksConfiguration {
     @Bean
-    public ParserLinksFactory parserLinksFactory(){
+    public ParserLinksFactory parserLinksFactory() {
         return new ParserLinksFactoryImpl();
     }
+
     @Bean
-    public ParserLinks parserLinks(ParserLinksFactory parserLinksFactory){
+    public ParserLinks parserLinks(ParserLinksFactory parserLinksFactory) {
         return parserLinksFactory.getParserLinks();
     }
 }

@@ -10,11 +10,13 @@ import ru.tinkoff.edu.java.scrapper.dto.request.LinkUpdateRequest;
 @Component
 public class BotWebClientImpl implements BotWebClient {
     private  WebClient webClient;
-    public BotWebClientImpl(){
+
+    public BotWebClientImpl() {
         this("http://localhost:8080");
     }
+
     @Autowired
-    public BotWebClientImpl(@Value("#{botInfo.path}") String baseURL){
+    public BotWebClientImpl(@Value("#{botInfo.path}") String baseURL) {
         webClient = WebClient.create(baseURL);
     }
 

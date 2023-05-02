@@ -15,10 +15,12 @@ import ru.tinkoff.edu.java.scrapper.dto.response.website.github.GitHubInfoRespon
 @Component
 public class GitHubClientImpl implements GitHubClient {
     private  WebClient webClient;
-    public GitHubClientImpl(){
+
+    public GitHubClientImpl() {
         this("https://api.github.com");
     }
-    public GitHubClientImpl(String baseURL){
+
+    public GitHubClientImpl(String baseURL) {
         webClient = WebClient.create(baseURL);
     }
 
@@ -36,7 +38,7 @@ public class GitHubClientImpl implements GitHubClient {
         throw new NotImplementedException();
     }
 
-    private GitHubBranchResponse[] getArrayOfGitHubBranches(GitHubLinkInfo gitHubInfo){
+    private GitHubBranchResponse[] getArrayOfGitHubBranches(GitHubLinkInfo gitHubInfo) {
         return webClient
                 .get().uri("/repos/{owner}/{repo}/branches", gitHubInfo.userName(), gitHubInfo.repositoryName())
                 .accept(MediaType.APPLICATION_JSON)
@@ -47,25 +49,25 @@ public class GitHubClientImpl implements GitHubClient {
                 .bodyToMono(GitHubBranchResponse[].class).block();
     }
 
-    private GitHubCommitResponse[] getArrayOfGitHubCommitResponses(GitHubLinkInfo gitHubInfo){
+    private GitHubCommitResponse[] getArrayOfGitHubCommitResponses(GitHubLinkInfo gitHubInfo) {
         return webClient
                 .get().uri("/repos/{owner}/{repo}/commits", gitHubInfo.userName(), gitHubInfo.repositoryName())
                 .accept(MediaType.APPLICATION_JSON)
                 .retrieve()
                 .onStatus(HttpStatusCode::is4xxClientError, clientResponse -> Mono.empty())
                 .onStatus(HttpStatusCode::is5xxServerError, clientResponse -> Mono.error(
-                        new RuntimeException("Something wrong with GitHub")))
+                        new RuntimeException("Something wrong with GitHub  ")))
                 .bodyToMono(GitHubCommitResponse[].class).block();
     }
 
-    private GitHubInfoResponse getGitHubInfoResponse(GitHubLinkInfo gitHubInfo){
+    private GitHubInfoResponse getGitHubInfoResponse(GitHubLinkInfo gitHubInfo) {
         return webClient
                 .get().uri("/repos/{owner}/{repo}", gitHubInfo.userName(), gitHubInfo.repositoryName())
                 .accept(MediaType.APPLICATION_JSON)
                 .retrieve()
                 .onStatus(HttpStatusCode::is4xxClientError, clientResponse -> Mono.empty())
                 .onStatus(HttpStatusCode::is5xxServerError, clientResponse -> Mono.error(
-                        new RuntimeException("Something wrong with GitHub")))
+                        new RuntimeException("Something wrong with GitHub ")))
                 .bodyToMono(GitHubInfoResponse.class).block();
     }
 }

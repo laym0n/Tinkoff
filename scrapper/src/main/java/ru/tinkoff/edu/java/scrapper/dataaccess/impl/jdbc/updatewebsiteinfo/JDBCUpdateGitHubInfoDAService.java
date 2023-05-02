@@ -11,7 +11,8 @@ import ru.tinkoff.edu.java.scrapper.dto.resultofcomparewebsiteinfo.ResultOfCompa
 public class JDBCUpdateGitHubInfoDAService extends JDBCUpdateWebsiteInfo<ResultOfCompareGitHubInfo> {
     private JDBCGitHubInfoDAO gitHubInfoDAO;
 
-    public JDBCUpdateGitHubInfoDAService(JDBCTrackedLinkDAO trackedLinkDAO, JDBCGitHubInfoDAO gitHubInfoDAO) {
+    public JDBCUpdateGitHubInfoDAService(JDBCTrackedLinkDAO trackedLinkDAO,
+            JDBCGitHubInfoDAO gitHubInfoDAO) {
         super(trackedLinkDAO);
         this.gitHubInfoDAO = gitHubInfoDAO;
     }

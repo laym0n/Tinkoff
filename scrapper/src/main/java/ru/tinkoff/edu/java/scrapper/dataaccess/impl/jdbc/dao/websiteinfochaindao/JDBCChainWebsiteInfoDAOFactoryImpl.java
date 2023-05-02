@@ -3,7 +3,8 @@ package ru.tinkoff.edu.java.scrapper.dataaccess.impl.jdbc.dao.websiteinfochainda
 import lombok.AllArgsConstructor;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Component;
-import ru.tinkoff.edu.java.scrapper.dataaccess.impl.jdbc.dao.*;
+import ru.tinkoff.edu.java.scrapper.dataaccess.impl.jdbc.dao.JDBCGitHubInfoDAO;
+import ru.tinkoff.edu.java.scrapper.dataaccess.impl.jdbc.dao.JDBCStackOverflowInfoDAO;
 
 @AllArgsConstructor
 @Component
@@ -17,6 +18,6 @@ public class JDBCChainWebsiteInfoDAOFactoryImpl implements JDBCChainWebsiteInfoD
         JDBCChainGitHubInfoDAOImpl chainGitHubInfoDAO = new JDBCChainGitHubInfoDAOImpl(gitHubInfoDAO, null);
 
         return new JDBCChainStackOverflowInfoDAOImpl(stackOverflowInfoDAO,
-        chainGitHubInfoDAO);
+            chainGitHubInfoDAO);
     }
 }

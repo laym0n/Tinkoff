@@ -1,11 +1,11 @@
 package ru.tinkoff.edu.java.scrapper.dataaccess.impl.jdbc.dao;
 
+import javax.sql.DataSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.stereotype.Component;
 import ru.tinkoff.edu.java.scrapper.entities.Chat;
-import javax.sql.DataSource;
 
 @Component
 @ConditionalOnProperty(prefix = "app", name = "database-access-type", havingValue = "jdbc")
@@ -14,21 +14,31 @@ public class JDBCChatDAO extends JDBCDAO {
     public JDBCChatDAO(DataSource dataSource) {
         super(dataSource);
     }
-    public void add(Chat newChat){
+
+    public void add(Chat newChat) {
         jdbcTemplate.update(
                 "insert into chat (id) values (?)",
-                newChat.getId());
+                newChat.getId()
+        );
     }
-    public void remove(int idChat){
+
+    public void remove(int idChat) {
         jdbcTemplate.update(
                 "delete from chat where id = ?",
-                idChat);
+                idChat
+        );
     }
-    public boolean containsChatWithId(int chatId){
-        int countRows = jdbcTemplate.queryForObject("SELECT COUNT(*) FROM chat WHERE id = ?", int.class, chatId);
+
+    public boolean containsChatWithId(int chatId) {
+        int countRows =
+            jdbcTemplate.queryForObject(
+                "SELECT COUNT(*) FROM chat WHERE id = ?", int.class,
+                chatId
+            );
         return countRows != 0;
     }
-    public Chat findByID(int id){
+
+    public Chat findByID(int id) {
         return jdbcTemplate.queryForObject(
                 "SELECT * FROM chat WHERE id = ?",
                 new Object[] {id},

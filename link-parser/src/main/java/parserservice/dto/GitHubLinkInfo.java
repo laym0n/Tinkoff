@@ -6,8 +6,12 @@ public record GitHubLinkInfo(String userName, String repositoryName) implements 
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
         GitHubLinkInfo that = (GitHubLinkInfo) o;
         return userName.equals(that.userName) && repositoryName.equals(that.repositoryName);
     }
@@ -27,4 +31,5 @@ public record GitHubLinkInfo(String userName, String repositoryName) implements 
         return "GitHub repository with repository name " + repositoryName
                 + " of user with username " + userName;
     }
+
 }

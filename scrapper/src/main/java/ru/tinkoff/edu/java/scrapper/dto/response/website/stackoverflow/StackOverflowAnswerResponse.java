@@ -1,10 +1,14 @@
 package ru.tinkoff.edu.java.scrapper.dto.response.website.stackoverflow;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import lombok.*;
+import java.time.OffsetDateTime;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
+import lombok.ToString;
 import org.apache.commons.lang3.builder.HashCodeExclude;
 import ru.tinkoff.edu.java.scrapper.entities.websiteinfo.stackoverflow.StackOverflowAnswer;
-import java.time.OffsetDateTime;
 
 @Data
 @AllArgsConstructor
@@ -23,12 +27,15 @@ public class StackOverflowAnswerResponse {
     private  OffsetDateTime lastEditDate;
     @JsonProperty("answer_id")
     private  int answerId;
-    public StackOverflowAnswer getStackOverflowAnswer(){
+
+    public StackOverflowAnswer getStackOverflowAnswer() {
         return new StackOverflowAnswer(answerId, owner.getName(), (lastEditDate != null ? lastEditDate : creationDate));
     }
-    public OffsetDateTime getLastEditDate(){
-        if(lastEditDate == null)
+
+    public OffsetDateTime getLastEditDate() {
+        if (lastEditDate == null) {
             lastEditDate = creationDate;
+        }
         return lastEditDate;
     }
 }

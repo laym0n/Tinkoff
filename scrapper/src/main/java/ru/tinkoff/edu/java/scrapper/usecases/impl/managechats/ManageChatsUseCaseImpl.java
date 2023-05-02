@@ -9,6 +9,7 @@ import ru.tinkoff.edu.java.scrapper.usecases.ManageChatsUseCase;
 @Component
 public class ManageChatsUseCaseImpl implements ManageChatsUseCase {
     private ChatDAService chatDAService;
+
     @Autowired
     public ManageChatsUseCaseImpl(ChatDAService chatDAService) {
         this.chatDAService = chatDAService;

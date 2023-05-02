@@ -13,6 +13,7 @@ import ru.tinkoff.edu.java.bot.usecases.SendUpdateLinkUseCase;
 @RabbitListener(queues = "${app.rabbitMQInfo.queueName}")
 public class ScrapperQueueListener {
     private SendUpdateLinkUseCase sendUpdateLinkUseCase;
+
     @RabbitHandler
     public void receiver(LinkUpdateDTO update) {
         LinkUpdateResponse response = new LinkUpdateResponse(

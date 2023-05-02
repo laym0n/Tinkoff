@@ -17,10 +17,12 @@ import ru.tinkoff.edu.java.scrapper.entities.websiteinfo.github.GitHubBranch;
 public class GitHubBranchEntity {
     @EmbeddedId
     private GitHubBranchPrimaryKey primaryKey;
-    public GitHubBranchEntity(GitHubBranch branch, int gitHubInfoId){
+
+    public GitHubBranchEntity(GitHubBranch branch, int gitHubInfoId) {
         this.primaryKey = new GitHubBranchPrimaryKey(branch.getBranchName(), gitHubInfoId);
     }
-    public GitHubBranch getGitHubBranch(){
+
+    public GitHubBranch getGitHubBranch() {
         return new GitHubBranch(primaryKey.getName());
     }
 }

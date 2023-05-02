@@ -1,8 +1,11 @@
 package ru.tinkoff.edu.java.bot.telegrambotimpl;
 
-import lombok.*;
-
 import java.util.Objects;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
 
 
 @NoArgsConstructor
@@ -22,10 +25,16 @@ public class ParsedCommand {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
         ParsedCommand that = (ParsedCommand) o;
-        return getChatId() == that.getChatId() && getCommand() == that.getCommand() && getText().equals(that.getText());
+        return getChatId() == that.getChatId()
+            && getCommand() == that.getCommand()
+            && getText().equals(that.getText());
     }
 
     @Override

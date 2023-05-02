@@ -1,7 +1,15 @@
 package ru.tinkoff.edu.java.scrapper.dataaccess.impl.jpa.entities;
 
-import jakarta.persistence.*;
-import lombok.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.Table;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import ru.tinkoff.edu.java.scrapper.entities.TrackedLink;
 
 @Entity
@@ -20,7 +28,8 @@ public class TrackedLinkEntity {
     @Column(name = "chat_id")
     @JoinColumn(table = "chat", referencedColumnName = "id")
     private int chatId;
-    public TrackedLinkEntity(TrackedLink trackedLink){
+
+    public TrackedLinkEntity(TrackedLink trackedLink) {
         this.id = trackedLink.getId();
         this.websiteInfoId = trackedLink.getIdWebsiteInfo();
         this.chatId = trackedLink.getIdChat();
@@ -30,7 +39,7 @@ public class TrackedLinkEntity {
         this(0, websiteInfoId, chatId);
     }
 
-    public TrackedLink getTrackedLink(){
-        return new TrackedLink(id, chatId, websiteInfoId,null);
+    public TrackedLink getTrackedLink() {
+        return new TrackedLink(id, chatId, websiteInfoId, null);
     }
 }

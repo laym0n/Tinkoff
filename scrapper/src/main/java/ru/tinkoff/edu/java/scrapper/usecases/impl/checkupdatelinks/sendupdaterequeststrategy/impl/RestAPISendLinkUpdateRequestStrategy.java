@@ -12,6 +12,7 @@ import ru.tinkoff.edu.java.scrapper.webclients.bot.BotWebClient;
 @ConditionalOnProperty(prefix = "app", name = "use-queue", havingValue = "false")
 public class RestAPISendLinkUpdateRequestStrategy extends SendLinkUpdateRequestStrategy {
     private BotWebClient botWebClient;
+
     @Override
     public void sendLinkUpdateRequest(LinkUpdateRequest linkUpdateRequest) {
         botWebClient.sendLinkUpdateRequest(linkUpdateRequest);

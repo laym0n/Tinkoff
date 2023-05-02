@@ -4,7 +4,12 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
 import ru.tinkoff.edu.java.bot.telegrambotimpl.builder.send.message.BuilderSendMessage;
 import ru.tinkoff.edu.java.bot.telegrambotimpl.builder.send.message.BuilderSendMessageFactory;
-import ru.tinkoff.edu.java.bot.telegrambotimpl.builder.send.message.impl.buildersforeachcommand.*;
+import ru.tinkoff.edu.java.bot.telegrambotimpl.builder.send.message.impl.buildersforeachcommand.HelpBuilderSendMessage;
+import ru.tinkoff.edu.java.bot.telegrambotimpl.builder.send.message.impl.buildersforeachcommand.ListBuilderSendMessage;
+import ru.tinkoff.edu.java.bot.telegrambotimpl.builder.send.message.impl.buildersforeachcommand.StartBuilderSendMessage;
+import ru.tinkoff.edu.java.bot.telegrambotimpl.builder.send.message.impl.buildersforeachcommand.TrackBuilderSendMessage;
+import ru.tinkoff.edu.java.bot.telegrambotimpl.builder.send.message.impl.buildersforeachcommand.UnknownBuilderSendMessage;
+import ru.tinkoff.edu.java.bot.telegrambotimpl.builder.send.message.impl.buildersforeachcommand.UntrackBuilderSendMessage;
 import ru.tinkoff.edu.java.bot.telegrambotimpl.builder.send.message.impl.chainbuilder.ChainBuilderSendMessage;
 
 @Component
@@ -16,12 +21,17 @@ public class BuilderSendMessageFactoryImpl implements BuilderSendMessageFactory 
     private StartBuilderSendMessage startBuilderSendMessage;
     private ListBuilderSendMessage listBuilderSendMessage;
     private HelpBuilderSendMessage helpBuilderSendMessage;
+
     @Override
     public BuilderSendMessage getBuilderSendMessage() {
-        ChainBuilderSendMessage firstChain = new ChainBuilderSendMessage(unknownBuilderSendMessage, untrackBuilderSendMessage);
-        ChainBuilderSendMessage secondChain = new ChainBuilderSendMessage(firstChain, trackBuilderSendMessage);
-        ChainBuilderSendMessage thirdChain = new ChainBuilderSendMessage(secondChain, startBuilderSendMessage);
-        ChainBuilderSendMessage fourChain = new ChainBuilderSendMessage(thirdChain, listBuilderSendMessage);
+        ChainBuilderSendMessage firstChain =
+            new ChainBuilderSendMessage(unknownBuilderSendMessage, untrackBuilderSendMessage);
+        ChainBuilderSendMessage secondChain =
+            new ChainBuilderSendMessage(firstChain, trackBuilderSendMessage);
+        ChainBuilderSendMessage thirdChain =
+            new ChainBuilderSendMessage(secondChain, startBuilderSendMessage);
+        ChainBuilderSendMessage fourChain =
+            new ChainBuilderSendMessage(thirdChain, listBuilderSendMessage);
         return new ChainBuilderSendMessage(fourChain, helpBuilderSendMessage);
     }
 }

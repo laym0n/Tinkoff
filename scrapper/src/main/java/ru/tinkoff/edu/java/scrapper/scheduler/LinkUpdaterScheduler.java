@@ -1,9 +1,9 @@
 package ru.tinkoff.edu.java.scrapper.scheduler;
 
+import java.util.logging.Logger;
 import lombok.AllArgsConstructor;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
-import java.util.logging.Logger;
 import ru.tinkoff.edu.java.scrapper.usecases.CheckUpdateLinksUseCase;
 
 @Component
@@ -11,8 +11,9 @@ import ru.tinkoff.edu.java.scrapper.usecases.CheckUpdateLinksUseCase;
 public class LinkUpdaterScheduler {
     private static Logger log = Logger.getLogger(LinkUpdaterScheduler.class.getName());
     private CheckUpdateLinksUseCase checkUpdateLinksUseCase;
+
     @Scheduled(fixedDelayString = "#{@scheduler.interval}")
-    void update(){
+    void update() {
         log.info("Check update link");
         checkUpdateLinksUseCase.checkUpdateLinks();
     }

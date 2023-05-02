@@ -12,10 +12,12 @@ public enum Command {
     Command(String description) {
         this.description = description;
     }
-    public String getComandSyntax(){
+
+    public String getComandSyntax() {
         return description.substring(0, description.indexOf(" "));
     }
-    public String getComandDescription(){
+
+    public String getComandDescription() {
         return description.substring(description.indexOf("-") + 2);
     }
 }

@@ -1,5 +1,8 @@
 package ru.tinkoff.edu.java.scrapper.usecases.impl.managelinks;
 
+import java.security.InvalidParameterException;
+import java.util.List;
+import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
@@ -14,15 +17,12 @@ import ru.tinkoff.edu.java.scrapper.entities.websiteinfo.WebsiteInfo;
 import ru.tinkoff.edu.java.scrapper.usecases.ManageLinksUseCase;
 import ru.tinkoff.edu.java.scrapper.webclients.websiteinfowebclient.WebsiteInfoWebClient;
 
-import java.security.InvalidParameterException;
-import java.util.List;
-import java.util.Optional;
-
 @Component
 public class ManageLinksUseCaseImpl implements ManageLinksUseCase {
     private ParserLinks parserLinks;
     private TrackedLinkDAService trackedLinkDAService;
     private WebsiteInfoWebClient websiteInfoWebClient;
+
     @Autowired
     public ManageLinksUseCaseImpl(ParserLinks parserLinks,
                                   TrackedLinkDAService trackedLinkDAService,
@@ -46,14 +46,15 @@ public class ManageLinksUseCaseImpl implements ManageLinksUseCase {
 
         boolean isAlreadyContainsTrackedLink =
                 trackedLinkDAService.containsTrackedLinkWithIdChatAndLinkInfo(idChat, linkInfoForAdd);
-        if(isAlreadyContainsTrackedLink)
-            throw new InvalidParameterException("Link with path " + addLinkRequest.getLink() + " already " +
-                    "tracked in chat with id " + idChat);
+        if (isAlreadyContainsTrackedLink) {
+            throw new InvalidParameterException("Link with path" + " " + addLinkRequest.getLink() + " already "
+                + "tracked in chat with id " + idChat);
+        }
 
         Optional<Integer> optionalIdAlreadySavedWebsiteInfo =
                 trackedLinkDAService.containsWebsiteInfoWithLinkInfo(linkInfoForAdd);
         int idAlreadySavedWebsiteInfo = optionalIdAlreadySavedWebsiteInfo.orElse(0);
-        if(optionalIdAlreadySavedWebsiteInfo.isEmpty()){
+        if (optionalIdAlreadySavedWebsiteInfo.isEmpty()) {
             WebsiteInfo newWebsiteInfo = websiteInfoWebClient.getWebSiteInfoByLinkInfo(linkInfoForAdd);
             trackedLinkDAService.createWebsiteInfo(newWebsiteInfo);
             idAlreadySavedWebsiteInfo = newWebsiteInfo.getId();
@@ -74,20 +75,27 @@ public class ManageLinksUseCaseImpl implements ManageLinksUseCase {
         Optional<TrackedLink> optionalRemovableTrackedLink =
                 trackedLinkDAService.deleteTrackedLinkByIdChatAndLinkInfo(idChat, linkInfoForRemove);
 
-        if(optionalRemovableTrackedLink.isEmpty())
-            throw new NotFoundException("Link with path " + removeLinkRequest.getLink() +
-                    " already is not tracked in chat with id " + idChat);
+        if (optionalRemovableTrackedLink.isEmpty()) {
+            throw new NotFoundException("Link with path " + removeLinkRequest.getLink()
+                + " already is not tracked in chat with id " + idChat);
+        }
 
         return optionalRemovableTrackedLink.get();
     }
-    private LinkInfo getLinkInfoFromParser(String path){
+
+    private LinkInfo getLinkInfoFromParser(String path) {
         LinkInfo linkInfo = parserLinks.parse(path);
-        if(linkInfo == null)
-            throw new InvalidParameterException("Path " + path + " can not be parsed");
+        if (linkInfo == null) {
+            throw new InvalidParameterException("Path " + path
+                + " can not be parsed");
+        }
         return linkInfo;
     }
-    private void checkIfChatExist(int idChat){
-        if(!trackedLinkDAService.containsChatWithId(idChat))
-            throw new InvalidParameterException("Chat with id " + idChat + " is not registered");
+
+    private void checkIfChatExist(int idChat) {
+        if (!trackedLinkDAService.containsChatWithId(idChat)) {
+            throw new InvalidParameterException("Chat with id " + idChat
+                + " is not registered");
+        }
     }
 }

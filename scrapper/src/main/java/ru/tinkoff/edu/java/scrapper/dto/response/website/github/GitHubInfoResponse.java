@@ -1,8 +1,12 @@
 package ru.tinkoff.edu.java.scrapper.dto.response.website.github;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import lombok.*;
 import java.time.OffsetDateTime;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 
 @Data

@@ -62,12 +62,5 @@ public abstract class IntegrationEnvironment {
             throw new RuntimeException(e);
         }
     }
-//    @DynamicPropertySource
-//    static void jdbcProperties(DynamicPropertyRegistry registry){
-//        registry.add("spring.datasource.url", singletonPostgreSQLContainer::getJdbcUrl);
-//        registry.add("spring.datasource.username", singletonPostgreSQLContainer::getUsername);
-//        registry.add("spring.datasource.password", singletonPostgreSQLContainer::getPassword);
-//
-//    }
 }
 

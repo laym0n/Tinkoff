@@ -10,15 +10,24 @@ import ru.tinkoff.edu.java.scrapper.usecases.impl.checkupdatelinks.handlerswebsi
 import ru.tinkoff.edu.java.scrapper.usecases.impl.checkupdatelinks.handlerswebsiteinfo.impl.strategies.CompareInfoStrategy;
 import ru.tinkoff.edu.java.scrapper.webclients.githubclient.GitHubClient;
 
-public class HandlerUpdateGitHubInfoChain extends HandlerUpdateWebsiteInfoImplChain<GitHubInfo, GitHubResponse, ResultOfCompareGitHubInfo>{
+public class HandlerUpdateGitHubInfoChain
+    extends HandlerUpdateWebsiteInfoImplChain<GitHubInfo, GitHubResponse, ResultOfCompareGitHubInfo> {
     private GitHubClient gitHubClient;
 
-    public HandlerUpdateGitHubInfoChain(HandlerUpdateWebsiteInfo nextHandler, UpdateWebsiteInfoDAService<ResultOfCompareGitHubInfo> daService, CompareInfoStrategy<GitHubInfo, GitHubResponse, ResultOfCompareGitHubInfo> compareInfoStrategy, BuilderLinkUpdateRequestStrategy<ResultOfCompareGitHubInfo> builderLinkUpdateRequestStrategy, GitHubClient gitHubClient) {
+    public HandlerUpdateGitHubInfoChain(HandlerUpdateWebsiteInfo nextHandler,
+            UpdateWebsiteInfoDAService<ResultOfCompareGitHubInfo> daService,
+            CompareInfoStrategy<GitHubInfo, GitHubResponse,
+            ResultOfCompareGitHubInfo> compareInfoStrategy,
+            BuilderLinkUpdateRequestStrategy<ResultOfCompareGitHubInfo> builderLinkUpdateRequestStrategy,
+            GitHubClient gitHubClient) {
         super(nextHandler, daService, compareInfoStrategy, builderLinkUpdateRequestStrategy);
         this.gitHubClient = gitHubClient;
     }
 
-    public HandlerUpdateGitHubInfoChain(UpdateWebsiteInfoDAService<ResultOfCompareGitHubInfo> daService, CompareInfoStrategy<GitHubInfo, GitHubResponse, ResultOfCompareGitHubInfo> compareInfoStrategy, BuilderLinkUpdateRequestStrategy<ResultOfCompareGitHubInfo> builderLinkUpdateRequestStrategy, GitHubClient gitHubClient) {
+    public HandlerUpdateGitHubInfoChain(UpdateWebsiteInfoDAService<ResultOfCompareGitHubInfo> daService,
+            CompareInfoStrategy<GitHubInfo, GitHubResponse, ResultOfCompareGitHubInfo> compareInfoStrategy,
+            BuilderLinkUpdateRequestStrategy<ResultOfCompareGitHubInfo> builderLinkUpdateRequestStrategy,
+            GitHubClient gitHubClient) {
         super(daService, compareInfoStrategy, builderLinkUpdateRequestStrategy);
         this.gitHubClient = gitHubClient;
     }

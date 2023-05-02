@@ -90,16 +90,23 @@ class JPAGitHubDAOTest extends JPAIntegrationEnvironment {
         GitHubInfoEntity initialInfoEntity = new GitHubInfoEntity(initialInfo);
         SUT.add(initialInfoEntity);
 
-        ResultOfCompareGitHubInfo argumentForSUT = new ResultOfCompareGitHubInfo(true,
-                linkInfoForInitialInfo, initialInfoEntity.getId(),
-                new GitHubCommit[] {new GitHubCommit("12345"), new GitHubCommit("abcde")},
-                new GitHubCommitResponse[] {
-                        new GitHubCommitResponse("first", new GitHubNestedCommitResponse(new GitHubCommiterResponse(dateForCommitsAndBranches))),
-                        new GitHubCommitResponse("second", new GitHubNestedCommitResponse(new GitHubCommiterResponse(dateForCommitsAndBranches)))
-        },
-                new GitHubBranch[] {new GitHubBranch("hw1")},
-                new GitHubBranchResponse[]{new GitHubBranchResponse("hw3"), new GitHubBranchResponse("hw4")},
-                Optional.of(lastActiveTimeForArgument));
+        ResultOfCompareGitHubInfo argumentForSUT = new ResultOfCompareGitHubInfo(
+            initialInfoEntity.getId(),
+                linkInfoForInitialInfo);
+        argumentForSUT.setDifferent(true);
+        argumentForSUT.setDroppedCommits(
+            new GitHubCommit[] {new GitHubCommit("12345"), new GitHubCommit("abcde")}
+            );
+        argumentForSUT.setPushedCommits(new GitHubCommitResponse[] {
+                new GitHubCommitResponse("first", new GitHubNestedCommitResponse(new GitHubCommiterResponse(dateForCommitsAndBranches))),
+                new GitHubCommitResponse("second", new GitHubNestedCommitResponse(new GitHubCommiterResponse(dateForCommitsAndBranches)))
+            });
+        argumentForSUT.setDroppedBranches(
+            new GitHubBranch[] {new GitHubBranch("hw1")});
+        argumentForSUT.setAddedBranches(
+            new GitHubBranchResponse[]{new GitHubBranchResponse("hw3"), new GitHubBranchResponse("hw4")});
+        argumentForSUT.setLastActivityDate(
+            Optional.of(lastActiveTimeForArgument));
 
         //Action
         SUT.applyChanges(argumentForSUT);
@@ -120,6 +127,7 @@ class JPAGitHubDAOTest extends JPAIntegrationEnvironment {
                 new GitHubCommitEntity(new GitHubCommitPrimaryKey("second", initialInfoEntity.getId()))
         );
         assertEquals(expectedCommits, resultFromSUT.getCommits().stream().collect(Collectors.toSet()));
+
 
         assertEquals(linkInfoForInitialInfo.userName(), resultFromSUT.getUserName(),
                 ()->"Expected user name is " + linkInfoForInitialInfo.userName() +

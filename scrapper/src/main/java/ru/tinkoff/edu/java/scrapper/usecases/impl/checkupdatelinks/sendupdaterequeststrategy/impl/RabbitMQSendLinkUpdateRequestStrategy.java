@@ -8,7 +8,6 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Component;
 import ru.tinkoff.edu.java.scrapper.dto.request.LinkUpdateRequest;
 import ru.tinkoff.edu.java.scrapper.usecases.impl.checkupdatelinks.sendupdaterequeststrategy.SendLinkUpdateRequestStrategy;
-import ru.tinkoff.edu.java.scrapper.webclients.bot.BotWebClient;
 
 @AllArgsConstructor
 @Component
@@ -16,6 +15,7 @@ import ru.tinkoff.edu.java.scrapper.webclients.bot.BotWebClient;
 public class RabbitMQSendLinkUpdateRequestStrategy extends SendLinkUpdateRequestStrategy {
     private static @Value("#{rabbitMQInfo.routingKey}") String routingKey;
     private RabbitTemplate rabbitTemplate;
+
     @Override
     public void sendLinkUpdateRequest(LinkUpdateRequest linkUpdateRequest) {
         LinkUpdateDTO dto = new LinkUpdateDTO(
@@ -24,6 +24,6 @@ public class RabbitMQSendLinkUpdateRequestStrategy extends SendLinkUpdateRequest
                 linkUpdateRequest.getDescription(),
                 linkUpdateRequest.getTgChatIds()
         );
-        rabbitTemplate.convertAndSend("foo.bar", dto);
+        rabbitTemplate.convertAndSend(routingKey, dto);
     }
 }

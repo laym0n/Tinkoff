@@ -122,34 +122,41 @@ class JPAStackoverflowDAOTest extends JPAIntegrationEnvironment {
         StackOverflowInfoEntity initialEntity = new StackOverflowInfoEntity(initialInfo);
         SUT.add(initialEntity);
 
-        ResultOfCompareStackOverflowInfo argumentForSUT = new ResultOfCompareStackOverflowInfo(true,
-                linkInfoForInitial, initialEntity.getId(),
-                new StackOverflowAnswer[]{
-                        new StackOverflowAnswer(1, "test1", lastEditDateOfAnswersForInitial),
-                        new StackOverflowAnswer(2, "test2", lastEditDateOfAnswersForInitial)
-                },
-                new StackOverflowAnswerResponse[]{
-                        new StackOverflowAnswerResponse(new StackOverflowUserResponse("test6"), lastEditDateOfAnswersForArgument,
-                                lastEditDateOfAnswersForArgument, 6),
-                        new StackOverflowAnswerResponse(new StackOverflowUserResponse("test7"), lastEditDateOfAnswersForArgument,
-                                lastEditDateOfAnswersForArgument, 7)
-                },
-                new StackOverflowAnswerResponse[]{
-                        new StackOverflowAnswerResponse(new StackOverflowUserResponse("test4"), lastEditDateOfAnswersForArgument,
-                                lastEditDateOfAnswersForArgument, 4),
-                        new StackOverflowAnswerResponse(new StackOverflowUserResponse("test5"), lastEditDateOfAnswersForArgument,
-                                lastEditDateOfAnswersForArgument, 5)
-                },
-                new StackOverflowComment[]{
-                        new StackOverflowComment(1),
-                        new StackOverflowComment(3)
-                },
-                new StackOverflowCommentResponse[]{
-                        new StackOverflowCommentResponse(new StackOverflowUserResponse("test8"), lastEditDateOfAnswersForArgument,
-                                4),
-                        new StackOverflowCommentResponse(new StackOverflowUserResponse("test9"), lastEditDateOfAnswersForArgument,
-                                5)
-                });
+        ResultOfCompareStackOverflowInfo argumentForSUT = new ResultOfCompareStackOverflowInfo(
+            initialEntity.getId(),
+                linkInfoForInitial);
+        argumentForSUT.setDifferent(true);
+        argumentForSUT.setDeletedAnswers(
+            new StackOverflowAnswer[]{
+                new StackOverflowAnswer(1, "test1", lastEditDateOfAnswersForInitial),
+                new StackOverflowAnswer(2, "test2", lastEditDateOfAnswersForInitial)
+            });
+        argumentForSUT.setAddedAnswers(
+            new StackOverflowAnswerResponse[]{
+                new StackOverflowAnswerResponse(new StackOverflowUserResponse("test6"), lastEditDateOfAnswersForArgument,
+                    lastEditDateOfAnswersForArgument, 6),
+                new StackOverflowAnswerResponse(new StackOverflowUserResponse("test7"), lastEditDateOfAnswersForArgument,
+                    lastEditDateOfAnswersForArgument, 7)
+            });
+        argumentForSUT.setEditedAnswers(
+            new StackOverflowAnswerResponse[]{
+                new StackOverflowAnswerResponse(new StackOverflowUserResponse("test4"), lastEditDateOfAnswersForArgument,
+                    lastEditDateOfAnswersForArgument, 4),
+                new StackOverflowAnswerResponse(new StackOverflowUserResponse("test5"), lastEditDateOfAnswersForArgument,
+                    lastEditDateOfAnswersForArgument, 5)
+            });
+        argumentForSUT.setDeletedComments(
+            new StackOverflowComment[]{
+                new StackOverflowComment(1),
+                new StackOverflowComment(3)
+            });
+        argumentForSUT.setAddedComments(
+            new StackOverflowCommentResponse[]{
+                new StackOverflowCommentResponse(new StackOverflowUserResponse("test8"), lastEditDateOfAnswersForArgument,
+                    4),
+                new StackOverflowCommentResponse(new StackOverflowUserResponse("test9"), lastEditDateOfAnswersForArgument,
+                    5)
+            });
 
         //Action
         SUT.applyChanges(argumentForSUT);

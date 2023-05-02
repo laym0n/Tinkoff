@@ -10,7 +10,7 @@ import ru.tinkoff.edu.java.scrapper.dataaccess.impl.jdbc.dao.websiteinfochaindao
 @ConditionalOnProperty(prefix = "app", name = "database-access-type", havingValue = "jdbc")
 public class JDBCAccessConfiguration {
     @Bean
-    public JDBCChainWebsiteInfoDAO jdbcChainWebsiteInfoDAO(JDBCChainWebsiteInfoDAOFactory factory){
+    public JDBCChainWebsiteInfoDAO jdbcChainWebsiteInfoDAO(JDBCChainWebsiteInfoDAOFactory factory) {
         return factory.getJDBCWebsiteInfoInfoDAO();
     }
 }

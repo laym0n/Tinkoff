@@ -1,25 +1,30 @@
 package ru.tinkoff.edu.java.scrapper.usecases.impl.checkupdatelinks.handlerswebsiteinfo.impl;
 
+import java.util.Optional;
 import lombok.AllArgsConstructor;
 import ru.tinkoff.edu.java.scrapper.dataaccess.UpdateWebsiteInfoDAService;
-import ru.tinkoff.edu.java.scrapper.dto.resultofcomparewebsiteinfo.ResultOfCompareWebsiteInfo;
 import ru.tinkoff.edu.java.scrapper.dto.request.LinkUpdateRequest;
 import ru.tinkoff.edu.java.scrapper.dto.response.website.WebsiteResponse;
+import ru.tinkoff.edu.java.scrapper.dto.resultofcomparewebsiteinfo.ResultOfCompareWebsiteInfo;
 import ru.tinkoff.edu.java.scrapper.entities.websiteinfo.WebsiteInfo;
 import ru.tinkoff.edu.java.scrapper.usecases.impl.checkupdatelinks.handlerswebsiteinfo.HandlerUpdateWebsiteInfo;
 import ru.tinkoff.edu.java.scrapper.usecases.impl.checkupdatelinks.handlerswebsiteinfo.impl.strategies.BuilderLinkUpdateRequestStrategy;
 import ru.tinkoff.edu.java.scrapper.usecases.impl.checkupdatelinks.handlerswebsiteinfo.impl.strategies.CompareInfoStrategy;
 
-import java.util.Optional;
-
 @AllArgsConstructor
-public abstract class HandlerUpdateWebsiteInfoImplChain<W extends WebsiteInfo, R extends WebsiteResponse, C extends ResultOfCompareWebsiteInfo> implements HandlerUpdateWebsiteInfo {
+public abstract class HandlerUpdateWebsiteInfoImplChain
+    <W extends WebsiteInfo,
+    R extends WebsiteResponse,
+    C extends ResultOfCompareWebsiteInfo>
+    implements HandlerUpdateWebsiteInfo {
     private HandlerUpdateWebsiteInfo nextHandler;
     private UpdateWebsiteInfoDAService<C> daService;
     private CompareInfoStrategy<W, R, C> compareInfoStrategy;
     private BuilderLinkUpdateRequestStrategy<C> builderLinkUpdateRequestStrategy;
 
-    protected HandlerUpdateWebsiteInfoImplChain(UpdateWebsiteInfoDAService<C> daService, CompareInfoStrategy<W, R, C> compareInfoStrategy, BuilderLinkUpdateRequestStrategy<C> builderLinkUpdateRequestStrategy) {
+    protected HandlerUpdateWebsiteInfoImplChain(UpdateWebsiteInfoDAService<C> daService,
+            CompareInfoStrategy<W, R, C> compareInfoStrategy,
+            BuilderLinkUpdateRequestStrategy<C> builderLinkUpdateRequestStrategy) {
         this.daService = daService;
         this.compareInfoStrategy = compareInfoStrategy;
         this.builderLinkUpdateRequestStrategy = builderLinkUpdateRequestStrategy;
@@ -27,8 +32,9 @@ public abstract class HandlerUpdateWebsiteInfoImplChain<W extends WebsiteInfo, R
 
     @Override
     public Optional<LinkUpdateRequest> updateWebsiteInfo(WebsiteInfo savedWebsiteInfo) {
-        if(!canHandle(savedWebsiteInfo))
+        if (!canHandle(savedWebsiteInfo)) {
             return nextHandler.updateWebsiteInfo(savedWebsiteInfo);
+        }
 
         W savedConcreteWebsiteInfo = getConcreteWebsiteInfo(savedWebsiteInfo);
         R websiteResponse = getWebsiteResponse(savedConcreteWebsiteInfo);
@@ -36,7 +42,7 @@ public abstract class HandlerUpdateWebsiteInfoImplChain<W extends WebsiteInfo, R
                 .compare(savedConcreteWebsiteInfo, websiteResponse);
 
         LinkUpdateRequest linkUpdateRequest = null;
-        if(resultOfCompare.isDifferent()){
+        if (resultOfCompare.isDifferent()) {
             daService.applyChanges(resultOfCompare);
             int[] chatIds = daService.getAllChatIdWithTrackedIdWebsiteInfo(savedWebsiteInfo.getId());
             linkUpdateRequest = builderLinkUpdateRequestStrategy
@@ -45,7 +51,10 @@ public abstract class HandlerUpdateWebsiteInfoImplChain<W extends WebsiteInfo, R
         }
         return Optional.ofNullable(linkUpdateRequest);
     }
+
     protected abstract R getWebsiteResponse(W savedWebsiteInfo);
+
     protected abstract boolean canHandle(WebsiteInfo savedWebsiteInfo);
+
     protected abstract W getConcreteWebsiteInfo(WebsiteInfo savedWebsiteInfo);
 }
