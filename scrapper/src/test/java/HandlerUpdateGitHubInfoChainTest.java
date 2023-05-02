@@ -183,6 +183,7 @@ class HandlerUpdateGitHubInfoChainTest {
                         .toArray(GitHubCommitResponse[]::new);
                 ResultOfCompareGitHubInfo expectedResultOfCompare =
                         new ResultOfCompareGitHubInfo(idWebSiteInfo, expectedLinkInfoInExpectedResult);
+
                 expectedResultOfCompare.setDifferent(true);
                 expectedResultOfCompare.setDroppedCommits(expectedDroppedCommits);
                 expectedResultOfCompare.setPushedCommits(expectedPushedCommit);
