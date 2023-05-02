@@ -55,5 +55,5 @@ jobs:
         context: ./bot
         file: ./bot/Dockerfile
         push: true
-        tags: ${{ secrets.DOCKERHUB_USERNAME }}/Tinkoff
+        tags: ${{ secrets.DOCKERHUB_USERNAME }}/tinkoff
     
