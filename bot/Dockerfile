@@ -6,6 +6,8 @@ ENTRYPOINT ["java","-jar","/app.jar"]
 # COPY entrypoint.sh /entrypoint.sh
 # ENTRYPOINT ["/entrypoint.sh"]
 
+
+
 #FROM busybox:latest
 #COPY --chmod=755 <<EOF /app/run.sh
 #!/bin/sh
