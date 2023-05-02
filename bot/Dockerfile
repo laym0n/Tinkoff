@@ -8,6 +8,10 @@ ENTRYPOINT ["java","-jar","/app.jar"]
 
 
 
+
+
+
+
 #FROM busybox:latest
 #COPY --chmod=755 <<EOF /app/run.sh
 #!/bin/sh
