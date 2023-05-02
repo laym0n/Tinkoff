@@ -19,4 +19,6 @@ ENTRYPOINT ["java","-jar","/app.jar"]
 
 
 
+
+
 #ENTRYPOINT /app/run.sh
