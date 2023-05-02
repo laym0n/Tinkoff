@@ -47,5 +47,5 @@ jobs:
         context: ./bot
         file: ./bot/Dockerfile
         push: true
-        tags: ${{ secrets.DOCKERHUB_USERNAME }}/clockbox:latest
+        tags: ${{ secrets.DOCKERHUB_USERNAME }}/bot
     
