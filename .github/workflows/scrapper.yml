@@ -27,7 +27,7 @@ jobs:
         distribution: 'adopt'
 
     - name: Build with Maven
-      run: mvn package -pl bot -am
+      run: mvn package -pl scrapper -am
       
     - name: Log in to Docker Hub
       uses: docker/login-action@65b78e6e13532edd9afa3aa52ac7964289d1a9c1
