@@ -15,6 +15,4 @@ ENTRYPOINT ["java","-jar","/app.jar"]
 #done
 #EOF
 
-
-
 #ENTRYPOINT /app/run.sh
