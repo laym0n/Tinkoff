@@ -1,4 +1,4 @@
-package dataaccess.jdbc;
+package dataaccess.jooq;
 
 import dataaccess.IntegrationEnvironment;
 import org.springframework.amqp.rabbit.connection.CachingConnectionFactory;
@@ -13,8 +13,8 @@ import ru.tinkoff.edu.java.scrapper.ScrapperApplication;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-@SpringBootTest(classes = {ScrapperApplication.class, JDBCIntegrationEnvironment.RabbitMQTestConfig.class})
-public class JDBCIntegrationEnvironment extends IntegrationEnvironment {
+@SpringBootTest(classes = {ScrapperApplication.class, JPAIntegrationEnvironment.RabbitMQTestConfig.class})
+public class JPAIntegrationEnvironment extends IntegrationEnvironment {
     @TestConfiguration
     static class RabbitMQTestConfig {
         @MockBean
@@ -27,13 +27,16 @@ public class JDBCIntegrationEnvironment extends IntegrationEnvironment {
         }
 
     }
-
     @DynamicPropertySource
-    static void jdbcProperties(DynamicPropertyRegistry registry){
-        registry.add("app.database-access-type", ()-> "jdbc");
+    static void jpaProperties(DynamicPropertyRegistry registry){
         registry.add("spring.liquibase.enabled", ()-> "false");
+        registry.add("app.database-access-type", ()-> "jpa");
         registry.add("spring.datasource.url", singletonPostgreSQLContainer::getJdbcUrl);
         registry.add("spring.datasource.username", singletonPostgreSQLContainer::getUsername);
         registry.add("spring.datasource.password", singletonPostgreSQLContainer::getPassword);
+        registry.add("spring.jpa.properties.hibernate.jdbc.lob.non_contextual_creation",
+                ()->Boolean.TRUE);
+        registry.add("spring.jpa.properties.hibernate.dialect",
+                ()-> "org.hibernate.dialect.PostgreSQLDialect");
     }
 }

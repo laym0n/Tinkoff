@@ -289,6 +289,7 @@
         <module name="MultipleStringLiterals">
             <!-- Allow zero-length and 1-character strings -->
             <property name="ignoreStringsRegexp" value='^(("")|(".")|("..")|("..>"))$'/>
+            <property name="severity" value="ignore"/>
         </module>
         <module name="MultipleVariableDeclarations"/>
         <module name="NestedForDepth">

@@ -1,65 +1,35 @@
 package dataaccess.jpa;
 
 import dataaccess.IntegrationEnvironment;
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.EntityManagerFactory;
-import jakarta.persistence.PersistenceContext;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Test;
+import org.springframework.amqp.rabbit.connection.CachingConnectionFactory;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.context.TestConfiguration;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.ComponentScan;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.jdbc.datasource.DataSourceTransactionManager;
-import org.springframework.jdbc.datasource.DriverManagerDataSource;
-import org.springframework.orm.jpa.JpaTransactionManager;
-import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
-import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
-import org.springframework.transaction.PlatformTransactionManager;
-import ru.tinkoff.edu.java.scrapper.configuration.JPAAccessConfiguration;
+import ru.tinkoff.edu.java.scrapper.ScrapperApplication;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
-import javax.sql.DataSource;
-import java.util.Properties;
-
-@SpringBootTest(classes = {JPAIntegrationEnvironment.JPAConfigClass.class, JPAAccessConfiguration.class})
+@SpringBootTest(classes = {ScrapperApplication.class, JPAIntegrationEnvironment.RabbitMQTestConfig.class})
 public class JPAIntegrationEnvironment extends IntegrationEnvironment {
-    @Configuration
-    @ComponentScan(basePackages = {"ru.tinkoff.edu.java.scrapper.dataaccess.impl.jpa"})
-    static class JPAConfigClass {
+    @TestConfiguration
+    static class RabbitMQTestConfig {
+        @MockBean
+        public CachingConnectionFactory connectionFactory;
         @Bean
-        public DataSource dataSource(){
-            return new DriverManagerDataSource(singletonPostgreSQLContainer.getJdbcUrl(),
-                    singletonPostgreSQLContainer.getUsername(),
-                    singletonPostgreSQLContainer.getPassword());
+        public RabbitTemplate rabbitTemplate() {
+            RabbitTemplate rabbitTemplateMock = mock(RabbitTemplate.class);
+            when(rabbitTemplateMock.getConnectionFactory()).thenReturn(connectionFactory);
+            return rabbitTemplateMock;
         }
 
-        @Bean
-        public LocalContainerEntityManagerFactoryBean entityManagerFactory(DataSource dataSource) {
-            LocalContainerEntityManagerFactoryBean entityManagerFactory =
-                    new LocalContainerEntityManagerFactoryBean();
-            entityManagerFactory.setDataSource(dataSource);
-            entityManagerFactory.setPackagesToScan("ru.tinkoff.edu.java.scrapper.dataaccess.impl.jpa.entities");
-            entityManagerFactory.setJpaVendorAdapter(new HibernateJpaVendorAdapter());
-            entityManagerFactory.setJpaProperties(jpaProperties());
-            return entityManagerFactory;
-        }
-
-        @Bean
-        public PlatformTransactionManager transactionManager(EntityManagerFactory entityManagerFactory) {
-            return new JpaTransactionManager(entityManagerFactory);
-        }
-
-        private Properties jpaProperties() {
-            Properties props = new Properties();
-            props.setProperty("hibernate.show_sql", "true");
-            props.setProperty("hibernate.format_sql", "true");
-            return props;
-        }
     }
     @DynamicPropertySource
     static void jpaProperties(DynamicPropertyRegistry registry){
+        registry.add("spring.liquibase.enabled", ()-> "false");
         registry.add("app.database-access-type", ()-> "jpa");
         registry.add("spring.datasource.url", singletonPostgreSQLContainer::getJdbcUrl);
         registry.add("spring.datasource.username", singletonPostgreSQLContainer::getUsername);

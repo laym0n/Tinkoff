@@ -23,8 +23,8 @@ public class RabbitMQConfiguration {
     private ApplicationConfig.RabbitMQInfo rabbitMQInfo;
 
     @Bean
-    public RabbitAdmin rabbitAdmin(RabbitTemplate connectionFactory) {
-        return new RabbitAdmin(connectionFactory);
+    public RabbitAdmin rabbitAdmin(RabbitTemplate rabbitTemplate) {
+        return new RabbitAdmin(rabbitTemplate);
     }
 
     @Bean
