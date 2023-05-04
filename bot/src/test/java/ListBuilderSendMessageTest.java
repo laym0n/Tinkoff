@@ -46,6 +46,7 @@ class ListBuilderSendMessageTest {
 
         ParsedCommand commandForArgument = new ParsedCommand(chatId, Command.LIST, "");
 
+
         LinkResponse[] arrayOfLinkResponse = new LinkResponse[1];
         arrayOfLinkResponse[0] =  new LinkResponse(1, null, "", "", "", "", new String[0]);
         ListLinksResponse listLinksResponseForMock = new ListLinksResponse(

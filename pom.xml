@@ -12,7 +12,6 @@
     <module>link-parser</module>
     <module>scrapper</module>
       <module>shareddto</module>
-      <module>scrapper-jooq</module>
   </modules>
 
   <dependencyManagement>
