@@ -17,12 +17,12 @@ services:
         restart: unless-stopped
     pgadmin:
         image : dpage/pgadmin4:6
-        ports : 
+        ports :
             - 8081:80
         environment:
             PGADMIN_DEFAULT_EMAIL: victor_k02@mail.ru
             PGADMIN_DEFAULT_PASSWORD: password
-        volumes: 
+        volumes:
             - pgadmin_data:/var/lib/pgadmin
         restart: unless-stopped
         networks:
@@ -59,16 +59,6 @@ services:
             interval: 5s
             timeout: 15s
             retries: 1
-        networks:
-            backend:
-    scrapper:
-        container_name: scrapper
-        image : scrapper
-        depends_on:
-            - rabbitmq
-        ports:
-            - 8082:8082
-        restart: on-failure
         networks:
             backend:
 networks:
