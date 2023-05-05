@@ -2,17 +2,11 @@ package ru.tinkoff.edu.java.scrapper.entities;
 
 import java.net.URI;
 import lombok.AllArgsConstructor;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.Data;
 import parserservice.dto.LinkInfo;
 
 @AllArgsConstructor
-@EqualsAndHashCode
-@Getter
-@Setter
-@ToString
+@Data
 public class TrackedLink {
     private int id;
     private int idChat;

@@ -1,9 +1,11 @@
 package ru.tinkoff.edu.java.scrapper.entities.websiteinfo;
 
 import java.time.OffsetDateTime;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
+import java.util.stream.Collectors;
 import lombok.Data;
 import lombok.ToString;
 import parserservice.dto.StackOverflowLinkInfo;
@@ -17,11 +19,13 @@ public final class StackOverflowInfo extends WebsiteInfo {
     private Map<Integer, StackOverflowComment> comments;
     private Map<Integer, StackOverflowAnswer> answers;
 
-    public StackOverflowInfo(int id,
-            OffsetDateTime lastCheckUpdateDateTime,
-            StackOverflowLinkInfo linkInfo,
-            Map<Integer, StackOverflowComment> comments,
-            Map<Integer, StackOverflowAnswer> answers) {
+    public StackOverflowInfo(
+        int id,
+        OffsetDateTime lastCheckUpdateDateTime,
+        StackOverflowLinkInfo linkInfo,
+        Map<Integer, StackOverflowComment> comments,
+        Map<Integer, StackOverflowAnswer> answers
+    ) {
         super(id, lastCheckUpdateDateTime);
         this.linkInfo = linkInfo;
         this.comments = comments;
@@ -60,5 +64,13 @@ public final class StackOverflowInfo extends WebsiteInfo {
     @Override
     public int hashCode() {
         return Objects.hash(super.hashCode(), getLinkInfo());
+    }
+
+    public void setAnswersByCollection(Collection<StackOverflowAnswer> answers) {
+        this.answers = answers.stream().collect(Collectors.toMap(i -> i.getIdAnswer(), i -> i));
+    }
+
+    public void setCommentsByCollection(Collection<StackOverflowComment> comments) {
+        this.comments = comments.stream().collect(Collectors.toMap(i -> i.getIdComment(), i -> i));
     }
 }

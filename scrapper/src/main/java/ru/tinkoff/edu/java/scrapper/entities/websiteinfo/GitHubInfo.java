@@ -1,16 +1,17 @@
 package ru.tinkoff.edu.java.scrapper.entities.websiteinfo;
 
 import java.time.OffsetDateTime;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
+import java.util.stream.Collectors;
 import lombok.Data;
 import lombok.ToString;
 import org.apache.commons.lang3.builder.EqualsExclude;
 import parserservice.dto.GitHubLinkInfo;
 import ru.tinkoff.edu.java.scrapper.entities.websiteinfo.github.GitHubBranch;
 import ru.tinkoff.edu.java.scrapper.entities.websiteinfo.github.GitHubCommit;
-
 
 @Data
 @ToString(callSuper = true)
@@ -21,10 +22,12 @@ public final class GitHubInfo extends WebsiteInfo {
     @EqualsExclude
     private OffsetDateTime lastActiveTime;
 
-    public GitHubInfo(int id,
-            OffsetDateTime lastCheckUpdateDateTime,
-            GitHubLinkInfo linkInfo,
-            OffsetDateTime lastActiveTime) {
+    public GitHubInfo(
+        int id,
+        OffsetDateTime lastCheckUpdateDateTime,
+        GitHubLinkInfo linkInfo,
+        OffsetDateTime lastActiveTime
+    ) {
         super(id, lastCheckUpdateDateTime);
         this.linkInfo = linkInfo;
         this.lastActiveTime = lastActiveTime;
@@ -32,12 +35,14 @@ public final class GitHubInfo extends WebsiteInfo {
         this.commits = new HashMap<>();
     }
 
-    public GitHubInfo(int id,
-            OffsetDateTime lastCheckUpdateDateTime,
-            GitHubLinkInfo linkInfo,
-            Map<String, GitHubBranch> branches,
-            Map<String, GitHubCommit> commits,
-            OffsetDateTime lastActiveTime) {
+    public GitHubInfo(
+        int id,
+        OffsetDateTime lastCheckUpdateDateTime,
+        GitHubLinkInfo linkInfo,
+        Map<String, GitHubBranch> branches,
+        Map<String, GitHubCommit> commits,
+        OffsetDateTime lastActiveTime
+    ) {
         super(id, lastCheckUpdateDateTime);
         this.linkInfo = linkInfo;
         this.branches = branches;
@@ -69,5 +74,13 @@ public final class GitHubInfo extends WebsiteInfo {
     @Override
     public int hashCode() {
         return Objects.hash(super.hashCode(), getLinkInfo());
+    }
+
+    public void setCommitsByCollection(Collection<GitHubCommit> commits) {
+        this.commits = commits.stream().collect(Collectors.toMap(i -> i.getSha(), i -> i));
+    }
+
+    public void setBranchesByCollection(Collection<GitHubBranch> branches) {
+        this.branches = branches.stream().collect(Collectors.toMap(i -> i.getBranchName(), i -> i));
     }
 }

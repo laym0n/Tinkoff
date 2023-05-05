@@ -27,11 +27,12 @@ public class LinkUpdateCheckerBot extends TelegramLongPollingBot {
     private ParserCommands parserCommands;
     private BuilderSendMessage builderSendMessage;
 
-
-    public LinkUpdateCheckerBot(@Value("#{@telegramBotInfo.botName}") String botName,
-            @Value("#{@telegramBotInfo.botToken}") String botToken,
-            ParserCommands parserCommands,
-            @Qualifier("builderSendMessage") BuilderSendMessage builderSendMessage) {
+    public LinkUpdateCheckerBot(
+        @Value("#{@telegramBotInfo.botName}") String botName,
+        @Value("#{@telegramBotInfo.botToken}") String botToken,
+        ParserCommands parserCommands,
+        @Qualifier("builderSendMessage") BuilderSendMessage builderSendMessage
+    ) {
         this.botName = botName;
         this.botToken = botToken;
         this.builderSendMessage = builderSendMessage;

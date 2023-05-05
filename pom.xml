@@ -12,9 +12,14 @@
     <module>link-parser</module>
     <module>scrapper</module>
       <module>shareddto</module>
+      <module>scrapper-jooq</module>
   </modules>
+    <properties>
+        <maven.compiler.source>17</maven.compiler.source>
+        <maven.compiler.target>17</maven.compiler.target>
+    </properties>
 
-  <dependencyManagement>
+    <dependencyManagement>
     <dependencies>
 
       <dependency>
@@ -109,11 +114,16 @@
         <version>3.0.6</version>
       </dependency>
 
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-jooq</artifactId>
+            <version>3.0.6</version>
+        </dependency>
 
     </dependencies>
   </dependencyManagement>
 
-  <build>
+    <build>
     <pluginManagement>
       <plugins>
 

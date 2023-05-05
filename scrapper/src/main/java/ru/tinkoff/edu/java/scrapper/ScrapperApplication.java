@@ -8,6 +8,7 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 import ru.tinkoff.edu.java.scrapper.configuration.ApplicationConfig;
 import ru.tinkoff.edu.java.scrapper.configuration.CheckerUpdateConfiguration;
 import ru.tinkoff.edu.java.scrapper.configuration.JDBCAccessConfiguration;
+import ru.tinkoff.edu.java.scrapper.configuration.JOOQAccessConfiguration;
 import ru.tinkoff.edu.java.scrapper.configuration.JPAAccessConfiguration;
 import ru.tinkoff.edu.java.scrapper.configuration.ParserLinksConfiguration;
 import ru.tinkoff.edu.java.scrapper.configuration.RabbitMQConfiguration;
@@ -20,7 +21,9 @@ import ru.tinkoff.edu.java.scrapper.configuration.RabbitMQConfiguration;
     CheckerUpdateConfiguration.class,
     JDBCAccessConfiguration.class,
     JPAAccessConfiguration.class,
-    RabbitMQConfiguration.class})
+    RabbitMQConfiguration.class,
+    JOOQAccessConfiguration.class
+})
 public class ScrapperApplication {
     private static Logger log = Logger.getLogger(ScrapperApplication.class.getName());
 
