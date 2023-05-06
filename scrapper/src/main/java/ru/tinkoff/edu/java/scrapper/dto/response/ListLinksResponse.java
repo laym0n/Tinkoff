@@ -17,7 +17,7 @@ public class ListLinksResponse {
     private int size;
     private LinkResponse[] links;
     public ListLinksResponse(List<TrackedLink> links){
-        this.links =  links.stream().map(trackedLink -> new LinkResponse(trackedLink)).toArray(LinkResponse[]::new);
+        this.links =  links.stream().map(LinkResponse::new).toArray(LinkResponse[]::new);
         size = links.size();
     }
 

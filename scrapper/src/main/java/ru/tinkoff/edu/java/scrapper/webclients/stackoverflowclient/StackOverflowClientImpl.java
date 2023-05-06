@@ -3,44 +3,58 @@ package ru.tinkoff.edu.java.scrapper.webclients.stackoverflowclient;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
-import parserservice.dto.StackOverflowInfo;
-import parserservice.dto.WebsiteInfo;
-import ru.tinkoff.edu.java.scrapper.dto.response.StackoverflowResponse;
-import ru.tinkoff.edu.java.scrapper.dto.response.StackOverflowInfoResponse;
-import ru.tinkoff.edu.java.scrapper.webclients.CheckerUpdateOfWebsite;
-
-import java.time.OffsetDateTime;
+import parserservice.dto.StackOverflowLinkInfo;
+import ru.tinkoff.edu.java.scrapper.dto.response.website.StackOverflowResponse;
+import ru.tinkoff.edu.java.scrapper.dto.response.website.stackoverflow.StackOverflowAnswersResponse;
+import ru.tinkoff.edu.java.scrapper.dto.response.website.stackoverflow.StackOverflowCommentsResponse;
+import ru.tinkoff.edu.java.scrapper.dto.response.website.stackoverflow.StackOverflowQuestionsResponse;
 
 @Component
 public class StackOverflowClientImpl implements StackOverflowClient {
-    private String baseURL;
+    private WebClient webClient;
     public StackOverflowClientImpl(){
         this("https://api.stackexchange.com");
     }
     public StackOverflowClientImpl(String baseURL){
-        this.baseURL = baseURL;
+        webClient = WebClient.create(baseURL);
     }
     @Override
-    public StackOverflowInfoResponse getUpdateInfo(StackOverflowInfo stackOverflowInfo) {
-        WebClient webClient = WebClient.create(baseURL);
-        StackoverflowResponse stackoverflowResponse = webClient
+    public StackOverflowResponse getStackOverflowResponse(StackOverflowLinkInfo linkInfo) {
+        StackOverflowCommentsResponse comments = getStackOverflowCommentsResponse(linkInfo);
+        StackOverflowAnswersResponse answers = getStackOverflowAnswersResponse(linkInfo);
+
+        StackOverflowResponse result = new StackOverflowResponse(answers, comments);
+
+        return result;
+    }
+    private StackOverflowQuestionsResponse getStackoverflowQuestionsResponse(StackOverflowLinkInfo linkInfo){
+        StackOverflowQuestionsResponse stackoverflowQuestionsResponse = webClient
                 .get()
-                .uri("/2.3/posts/{idAnswer}?order=desc&sort=activity&site=stackoverflow", stackOverflowInfo.idAnswer())
+                .uri("/2.3/questions/{idAnswer}?order=desc&sort=activity&site=stackoverflow",
+                        linkInfo.idQuestion())
                 .accept(MediaType.APPLICATION_JSON)
                 .retrieve()
-                .bodyToMono(StackoverflowResponse.class).block();
-        if(stackoverflowResponse.getItems().equals(null) || stackoverflowResponse.getItems().length == 0)
-            new RuntimeException(stackOverflowInfo.getDescriptionOfParsedWebsite() +
-                    " don't exist");
-        return stackoverflowResponse != null && stackoverflowResponse.getItems().length >= 1? stackoverflowResponse.getItems()[0] : null;
+                .bodyToMono(StackOverflowQuestionsResponse.class).block();
+        return stackoverflowQuestionsResponse;
     }
-
-    @Override
-    public OffsetDateTime checkUpdateOfWebsite(WebsiteInfo websiteInfo) {
-        if(!(websiteInfo instanceof StackOverflowInfo))
-            return null;
-        StackOverflowInfo stackOverflowInfo = (StackOverflowInfo) websiteInfo;
-        StackOverflowInfoResponse stackOverflowInfoResponse = getUpdateInfo(stackOverflowInfo);
-        return stackOverflowInfoResponse.getLastEditDate();
+    private StackOverflowAnswersResponse getStackOverflowAnswersResponse(StackOverflowLinkInfo linkInfo){
+        StackOverflowAnswersResponse answersResponse = webClient
+                .get()
+                .uri("/2.3/questions/{ids}/answers?order=desc&sort=activity&site=stackoverflow",
+                        linkInfo.idQuestion())
+                .accept(MediaType.APPLICATION_JSON)
+                .retrieve()
+                .bodyToMono(StackOverflowAnswersResponse.class).block();
+        return answersResponse;
+    }
+    private StackOverflowCommentsResponse getStackOverflowCommentsResponse(StackOverflowLinkInfo linkInfo){
+        StackOverflowCommentsResponse commentsResponse = webClient
+                .get()
+                .uri("/2.3/questions/{idAnswer}/comments?order=desc&sort=creation&site=stackoverflow",
+                        linkInfo.idQuestion())
+                .accept(MediaType.APPLICATION_JSON)
+                .retrieve()
+                .bodyToMono(StackOverflowCommentsResponse.class).block();
+        return commentsResponse;
     }
 }

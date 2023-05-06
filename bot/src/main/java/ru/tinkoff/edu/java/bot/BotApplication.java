@@ -5,6 +5,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import ru.tinkoff.edu.java.bot.configuration.ApplicationConfig;
+import ru.tinkoff.edu.java.bot.configuration.RabbitMQConfiguration;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -12,7 +13,7 @@ import java.util.logging.Logger;
 
 @SpringBootApplication()
 @EnableScheduling
-@EnableConfigurationProperties(ApplicationConfig.class)
+@EnableConfigurationProperties({ApplicationConfig.class, RabbitMQConfiguration.class})
 public class BotApplication {
 
     private static Logger log = Logger.getLogger(BotApplication.class.getName());

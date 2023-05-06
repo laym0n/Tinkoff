@@ -13,9 +13,9 @@ import org.telegram.telegrambots.meta.api.objects.commands.BotCommand;
 import org.telegram.telegrambots.meta.api.objects.commands.scope.BotCommandScopeDefault;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import org.telegram.telegrambots.updatesreceivers.DefaultBotSession;
-import ru.tinkoff.edu.java.bot.telegrambotimpl.buildersendmessage.BuilderSendMessage;
+import ru.tinkoff.edu.java.bot.dto.response.LinkUpdateResponse;
+import ru.tinkoff.edu.java.bot.telegrambotimpl.builder.send.message.BuilderSendMessage;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.logging.Logger;
@@ -77,6 +77,15 @@ public class LinkUpdateCheckerBot extends TelegramLongPollingBot {
             this.execute(new SetMyCommands(botCommands, new BotCommandScopeDefault(), "ru"));
         } catch (TelegramApiException e) {
             throw new RuntimeException(e);
+        }
+    }
+    public void sendUpdateMessages(LinkUpdateResponse request){
+        for(int idChat : request.getTgChatIds()){
+            try {
+                this.execute(new SendMessage(Integer.toString(idChat), request.getDescription()));
+            } catch (TelegramApiException e) {
+                throw new RuntimeException(e);
+            }
         }
     }
 }

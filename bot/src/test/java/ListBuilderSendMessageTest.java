@@ -4,15 +4,15 @@ import ru.tinkoff.edu.java.bot.dto.response.LinkResponse;
 import ru.tinkoff.edu.java.bot.dto.response.ListLinksResponse;
 import ru.tinkoff.edu.java.bot.telegrambotimpl.Command;
 import ru.tinkoff.edu.java.bot.telegrambotimpl.ParsedCommand;
-import ru.tinkoff.edu.java.bot.telegrambotimpl.buildersendmessage.buildersendmessageimpl.buildersforeachcommand.ListBuilderSendMessage;
+import ru.tinkoff.edu.java.bot.telegrambotimpl.builder.send.message.impl.buildersforeachcommand.ListBuilderSendMessage;
 import ru.tinkoff.edu.java.bot.webclients.ScrapperClient;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
-public class ListBuilderSendMessageTest {
+class ListBuilderSendMessageTest {
     @Test
-    public void testZeroLinksTracked(){
+    void testZeroLinksTracked(){
         //Assign
         final long chatId = 1;
 
@@ -40,7 +40,7 @@ public class ListBuilderSendMessageTest {
                 ()->"Expected chatId is " + expectedMessage.getChatId() + " but result chatId is " + resultFromSUT.getChatId());
     }
     @Test
-    public void testNotZeroLinksTracked(){
+    void testNotZeroLinksTracked(){
         //Assign
         final long chatId = 1;
 

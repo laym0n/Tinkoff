@@ -10,7 +10,6 @@ public class ParserLinksFactoryImpl implements ParserLinksFactory {
     @Override
     public ParserLinks getParserLinks() {
         ParserLinks githubParserLinks = new ParserLinksImpl(new GitHubParserStrategy());
-        ParserLinks stackOverflowParserLinks = new ParserLinksImpl(new StackOverflowParserStrategy(), githubParserLinks);
-        return stackOverflowParserLinks;
+        return new ParserLinksImpl(new StackOverflowParserStrategy(), githubParserLinks);
     }
 }

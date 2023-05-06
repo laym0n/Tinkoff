@@ -14,7 +14,6 @@ public class ParserLinksConfiguration {
     }
     @Bean
     public ParserLinks parserLinks(ParserLinksFactory parserLinksFactory){
-        ParserLinks firstParser = parserLinksFactory.getParserLinks();
-        return firstParser;
+        return parserLinksFactory.getParserLinks();
     }
 }

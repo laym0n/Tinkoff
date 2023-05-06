@@ -4,12 +4,25 @@ import jakarta.validation.constraints.NotNull;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.validation.annotation.Validated;
-import parserservice.ParserLinks;
-import parserservice.factories.ParserLinksFactory;
-import parserservice.factories.factoryimpl.ParserLinksFactoryImpl;
+
+import java.time.Duration;
 
 @Validated
-@ConfigurationProperties(prefix = "app", ignoreUnknownFields = false)
-public record ApplicationConfig(@NotNull String test) {
+@ConfigurationProperties(prefix = "app", ignoreUnknownFields = true)
+public record ApplicationConfig(@NotNull String test, @Bean Scheduler scheduler, @Bean BotInfo botInfo,
+                                @Bean RabbitMQInfo rabbitMQInfo) {
+    record Scheduler(Duration interval){
 
+    }
+    record BotInfo(String path){
+
+    }
+    public record RabbitMQInfo(String queueName,
+                        boolean queueDurable,
+                        String exchangeName,
+                        boolean exchangeDurable,
+                        boolean exchangeAutoDelete,
+                        String routingKey){
+
+    }
 }

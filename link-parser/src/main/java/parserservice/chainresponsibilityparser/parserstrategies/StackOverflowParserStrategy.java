@@ -1,8 +1,8 @@
 package parserservice.chainresponsibilityparser.parserstrategies;
 
-import parserservice.dto.StackOverflowInfo;
+import parserservice.dto.StackOverflowLinkInfo;
 
-public class StackOverflowParserStrategy extends ParserStrategy<StackOverflowInfo> {
+public class StackOverflowParserStrategy extends ParserStrategy<StackOverflowLinkInfo> {
     public StackOverflowParserStrategy() {
         super("stackoverflow.com");
     }
@@ -22,8 +22,8 @@ public class StackOverflowParserStrategy extends ParserStrategy<StackOverflowInf
     }
 
     @Override
-    public StackOverflowInfo parse(String path) {
+    public StackOverflowLinkInfo parse(String path) {
         String[] separatedPath = path.split("/");
-        return new StackOverflowInfo(Integer.parseInt(separatedPath[4]));
+        return new StackOverflowLinkInfo(Integer.parseInt(separatedPath[4]));
     }
 }

@@ -28,7 +28,7 @@ public class ScrapperClientImpl implements ScrapperClient {
     @Override
     public LinkResponse addLink(long idChat, AddLinkRequest addLinkRequest) {
         WebClient webClient = WebClient.create(baseURL);
-        LinkResponse result = webClient
+        return webClient
                 .post().uri("/links")
                 .body(Mono.just(addLinkRequest), AddLinkRequest.class)
                 .header("Tg-Chat-Id", Long.valueOf(idChat).toString())
@@ -39,13 +39,12 @@ public class ScrapperClientImpl implements ScrapperClient {
                     });
                 })
                 .bodyToMono(LinkResponse.class).block();
-        return result;
     }
 
     @Override
     public LinkResponse removeLink(long idChat, RemoveLinkRequest removeLinkRequest) {
         WebClient webClient = WebClient.create(baseURL);
-        LinkResponse result = webClient
+        return webClient
                 .method(HttpMethod.DELETE).uri("/links")
                 .body(Mono.just(removeLinkRequest), RemoveLinkRequest.class)
                 .header("Tg-Chat-Id", Long.toString(idChat))
@@ -56,13 +55,12 @@ public class ScrapperClientImpl implements ScrapperClient {
                     });
                 })
                 .bodyToMono(LinkResponse.class).block();
-        return result;
     }
 
     @Override
     public ListLinksResponse allLinksFromChat(long idChat) {
         WebClient webClient = WebClient.create(baseURL);
-        ListLinksResponse result = webClient
+        return webClient
                 .get().uri("/links").header("Tg-Chat-Id", Long.valueOf(idChat).toString())
                 .retrieve()
                 .onStatus(HttpStatusCode::is4xxClientError, response -> {
@@ -71,7 +69,6 @@ public class ScrapperClientImpl implements ScrapperClient {
                     });
                 })
                 .bodyToMono(ListLinksResponse.class).block();
-        return result;
     }
 
     @Override

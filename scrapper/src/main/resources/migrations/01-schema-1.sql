@@ -30,8 +30,8 @@ id SERIAL PRIMARY KEY,
 website_info_id INT NOT NULL,
 chat_id INT NOT NULL,
 last_update_date_time TIMESTAMP NOT NULL,
-FOREIGN KEY (website_info_id) REFERENCES website_info(id),
-FOREIGN KEY (chat_id) REFERENCES chat(id)
+FOREIGN KEY (website_info_id) REFERENCES website_info(id) on delete cascade,
+FOREIGN KEY (chat_id) REFERENCES chat(id) on delete cascade
 );
 --rollback drop table tracked_link;
 
@@ -40,14 +40,16 @@ CREATE TABLE github_info (
 website_info_id INT PRIMARY KEY,
 user_name VARCHAR(255) NOT NULL,
 repository_name VARCHAR(255) NOT NULL,
-FOREIGN KEY (website_info_id) REFERENCES website_info(id)
+FOREIGN KEY (website_info_id) REFERENCES website_info(id)  on delete cascade,
+constraint link_info_git_hub_info unique (user_name, repository_name)
 );
 --rollback drop table github_info;
 
 --changeset nvoxland:7
 CREATE TABLE stackoverflow_info (
 website_info_id INT PRIMARY KEY,
-answer_id INT NOT NULL,
-FOREIGN KEY (website_info_id) REFERENCES website_info(id)
+question_id INT NOT NULL,
+FOREIGN KEY (website_info_id) REFERENCES website_info(id) on delete cascade,
+constraint link_info_stack_overflow_info unique (question_id)
 );
 --rollback drop table stackoverflow_info;

@@ -2,6 +2,9 @@ package ru.tinkoff.edu.java.scrapper.dataaccess;
 
 import ru.tinkoff.edu.java.scrapper.entities.Chat;
 
-public interface ChatDAService extends CRUDService<Chat, Integer>{
-    boolean containsChatWithId(int chatId);
+public interface ChatDAService{
+
+    void createChat(Chat newChat);
+
+    void deleteChat(int idChat);
 }

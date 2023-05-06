@@ -18,7 +18,7 @@ services:
     pgadmin:
         image : dpage/pgadmin4:6
         ports : 
-            - 8080:80
+            - 8081:80
         environment:
             PGADMIN_DEFAULT_EMAIL: victor_k02@mail.ru
             PGADMIN_DEFAULT_PASSWORD: password
@@ -43,6 +43,17 @@ services:
             - ./scrapper/src/main/resources/migrations:/liquibase/changelog
         networks:
             backend:
+    rabbitmq:
+        image: rabbitmq:3-management
+        hostname: rabbitmq
+        restart: always
+        environment:
+            - RABBITMQ_SERVER_ADDITIONAL_ERL_ARGS=-rabbit disk_free_limit 2147483648
+        volumes:
+            - ./rabbitmq:/var/lib/rabbitmq
+        ports:
+            - 15672:15672
+            - 5672:5672
 networks:
     test-network:
     backend:

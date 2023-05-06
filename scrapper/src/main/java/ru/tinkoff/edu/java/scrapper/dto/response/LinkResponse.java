@@ -17,6 +17,6 @@ public class LinkResponse {
     private URI uri;
     public LinkResponse(TrackedLink trackedLink){
         id = trackedLink.getId();
-        uri = trackedLink.getLinkPathInURI();
+        uri = trackedLink.getURI();
     }
 }

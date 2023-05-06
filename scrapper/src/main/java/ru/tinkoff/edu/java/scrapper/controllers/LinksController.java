@@ -11,8 +11,6 @@ import ru.tinkoff.edu.java.scrapper.dto.response.ListLinksResponse;
 import ru.tinkoff.edu.java.scrapper.entities.TrackedLink;
 import ru.tinkoff.edu.java.scrapper.usecases.ManageLinksUseCase;
 
-import java.security.InvalidParameterException;
-import java.util.ArrayList;
 import java.util.List;
 
 @RestController
