@@ -4,12 +4,11 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.transaction.annotation.Transactional;
-import ru.tinkoff.edu.java.scrapper.dataaccess.impl.jdbc.dao.JDBCChatDAO;
 import ru.tinkoff.edu.java.scrapper.dataaccess.impl.jpa.dao.JPAChatDAO;
 import ru.tinkoff.edu.java.scrapper.dataaccess.impl.jpa.entities.ChatEntity;
-import ru.tinkoff.edu.java.scrapper.entities.Chat;
-
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class JPAChatDAOTest extends JPAIntegrationEnvironment {
     @Autowired
@@ -18,7 +17,7 @@ class JPAChatDAOTest extends JPAIntegrationEnvironment {
     @Test
     @Transactional
     @Rollback
-    void validAddTest(){
+    void validAddTest() {
         //Assign
         final int idChat = 100;
         ChatEntity argumentForSUT = new ChatEntity();
@@ -31,10 +30,11 @@ class JPAChatDAOTest extends JPAIntegrationEnvironment {
         ChatEntity chatFromDB = SUT.findByID(idChat);
         assertEquals(chatFromDB, argumentForSUT);
     }
+
     @Test
     @Transactional
     @Rollback
-    void containsChatTest(){
+    void containsChatTest() {
         //Assign
         final int idChat = 100;
         ChatEntity argumentForSUT = new ChatEntity(idChat);
@@ -44,10 +44,11 @@ class JPAChatDAOTest extends JPAIntegrationEnvironment {
         boolean contains = SUT.containsChatWithId(idChat);
 
         //Assert
-        assertTrue(contains, ()->"DB must contain chat with id " + idChat);
+        assertTrue(contains, () -> "DB must contain chat with id " + idChat);
     }
+
     @Test
-    void notContainsChatTest(){
+    void notContainsChatTest() {
         //Assign
         final int idOfChat = 100;
 
@@ -55,12 +56,13 @@ class JPAChatDAOTest extends JPAIntegrationEnvironment {
         boolean contains = SUT.containsChatWithId(idOfChat);
 
         //Assert
-        assertFalse(contains, ()->"DB must not contain chat with id " + idOfChat);
+        assertFalse(contains, () -> "DB must not contain chat with id " + idOfChat);
     }
+
     @Test
     @Transactional
     @Rollback
-    void validRemoveChatTest(){
+    void validRemoveChatTest() {
         //Assign
         final int idOfChat = 100;
         ChatEntity addedChat = new ChatEntity(idOfChat);
@@ -70,7 +72,7 @@ class JPAChatDAOTest extends JPAIntegrationEnvironment {
         SUT.remove(idOfChat);
 
         //Assert
-        assertFalse(SUT.containsChatWithId(idOfChat), ()->"Chat with id " +
-                idOfChat + " must be removed");
+        assertFalse(SUT.containsChatWithId(idOfChat), () -> "Chat with id " +
+            idOfChat + " must be removed");
     }
 }

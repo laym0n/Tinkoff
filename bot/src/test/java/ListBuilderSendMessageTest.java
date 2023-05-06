@@ -16,6 +16,7 @@ class ListBuilderSendMessageTest {
         //Assign
         final long chatId = 1;
 
+
         ParsedCommand commandForArgument = new ParsedCommand(chatId, Command.LIST, "");
 
         SendMessage expectedMessage =
