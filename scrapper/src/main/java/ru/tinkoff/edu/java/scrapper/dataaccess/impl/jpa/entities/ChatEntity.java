@@ -18,10 +18,12 @@ public class ChatEntity {
     @Id
     @Column(name = "id")
     private int id;
-    public ChatEntity(Chat chat){
+
+    public ChatEntity(Chat chat) {
         this.id = chat.getId();
     }
-    public Chat getChat(){
+
+    public Chat getChat() {
         return new Chat(id);
     }
 }

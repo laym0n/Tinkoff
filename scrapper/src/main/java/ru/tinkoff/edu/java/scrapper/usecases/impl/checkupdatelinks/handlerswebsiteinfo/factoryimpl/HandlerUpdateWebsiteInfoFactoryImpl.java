@@ -27,6 +27,7 @@ public class HandlerUpdateWebsiteInfoFactoryImpl implements HandlerUpdateWebsite
     private StackOverflowBuilderLinkUpdateRequest stackOverflowBuilderLinkUpdateRequest;
     private UpdateWebsiteInfoDAService<ResultOfCompareStackOverflowInfo> stackOverflowDAService;
     private StackOverflowClient stackOverflowClient;
+
     @Override
     public HandlerUpdateWebsiteInfo getHandlerUpdateWebsiteInfo() {
         HandlerUpdateGitHubInfoChain gitHubInfoHandler = new HandlerUpdateGitHubInfoChain(gitHubDAService,

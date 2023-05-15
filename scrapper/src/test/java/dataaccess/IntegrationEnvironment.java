@@ -48,8 +48,11 @@ public abstract class IntegrationEnvironment {
         }
         DirectoryResourceAccessor directoryResourceAccessor = null;
         try {
-            directoryResourceAccessor = new DirectoryResourceAccessor(new File("").toPath().resolve("src").resolve("main").resolve("resources")
-                    .resolve("migrations"));
+            directoryResourceAccessor = new DirectoryResourceAccessor(new File("").toPath()
+                .resolve("src")
+                .resolve("main")
+                .resolve("resources")
+                .resolve("migrations"));
         } catch (FileNotFoundException e) {
             throw new RuntimeException(e);
         }
@@ -62,12 +65,5 @@ public abstract class IntegrationEnvironment {
             throw new RuntimeException(e);
         }
     }
-//    @DynamicPropertySource
-//    static void jdbcProperties(DynamicPropertyRegistry registry){
-//        registry.add("spring.datasource.url", singletonPostgreSQLContainer::getJdbcUrl);
-//        registry.add("spring.datasource.username", singletonPostgreSQLContainer::getUsername);
-//        registry.add("spring.datasource.password", singletonPostgreSQLContainer::getPassword);
-//
-//    }
 }
 

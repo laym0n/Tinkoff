@@ -7,21 +7,29 @@ import ru.tinkoff.edu.java.scrapper.dataaccess.impl.jpa.entities.ChatEntity;
 @Component
 @ConditionalOnProperty(prefix = "app", name = "database-access-type", havingValue = "jpa")
 public class JPAChatDAO extends JPADAO {
-    public void add(ChatEntity newChat){
+    private static final String NAME_OF_PARAMETER_FOR_CHAT_ID = "idChat";
+
+    public void add(ChatEntity newChat) {
         entityManager.persist(newChat);
     }
-    public void remove(int idChat){
+
+    public void remove(int idChat) {
         entityManager.createQuery("delete from ChatEntity ch where ch.id = :idChat")
-                .setParameter("idChat", idChat).executeUpdate();
+                .setParameter(NAME_OF_PARAMETER_FOR_CHAT_ID, idChat).executeUpdate();
     }
-    public boolean containsChatWithId(int chatId){
+
+    public boolean containsChatWithId(int chatId) {
         long countRows = (Long) entityManager.createQuery("SELECT COUNT(*) FROM ChatEntity WHERE id = :idChat")
-                .setParameter("idChat", chatId).getSingleResult();
-        return (countRows != 0l);
+                .setParameter(NAME_OF_PARAMETER_FOR_CHAT_ID, chatId).getSingleResult();
+        return (countRows != 0L);
     }
-    public ChatEntity findByID(int id){
-        return entityManager.createQuery(
-                "SELECT ch FROM ChatEntity ch WHERE ch.id = :idChat", ChatEntity.class
-        ).setParameter("idChat", id).getSingleResult();
+
+    public ChatEntity findByID(int id) {
+        return entityManager
+            .createQuery(
+                "SELECT ch FROM ChatEntity ch WHERE ch.id = :idChat",
+                ChatEntity.class
+            )
+            .setParameter(NAME_OF_PARAMETER_FOR_CHAT_ID, id).getSingleResult();
     }
 }

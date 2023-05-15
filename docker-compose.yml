@@ -17,12 +17,12 @@ services:
         restart: unless-stopped
     pgadmin:
         image : dpage/pgadmin4:6
-        ports : 
+        ports :
             - 8081:80
         environment:
             PGADMIN_DEFAULT_EMAIL: victor_k02@mail.ru
             PGADMIN_DEFAULT_PASSWORD: password
-        volumes: 
+        volumes:
             - pgadmin_data:/var/lib/pgadmin
         restart: unless-stopped
         networks:
@@ -54,6 +54,13 @@ services:
         ports:
             - 15672:15672
             - 5672:5672
+        healthcheck:
+            test: [ "CMD", "nc", "-z", "localhost", "5672" ]
+            interval: 5s
+            timeout: 15s
+            retries: 1
+        networks:
+            backend:
 networks:
     test-network:
     backend:

@@ -12,7 +12,8 @@ import ru.tinkoff.edu.java.scrapper.dto.resultofcomparewebsiteinfo.ResultOfCompa
 public class JPAUpdateStackOverflowInfoDAService extends JPAUpdateWebsiteInfo<ResultOfCompareStackOverflowInfo> {
     private JPAStackOverflowInfoDAO stackOverflowDAO;
 
-    public JPAUpdateStackOverflowInfoDAService(JPATrackedLinkDAO trackedLinkDAO, JPAStackOverflowInfoDAO stackOverflowDAO) {
+    public JPAUpdateStackOverflowInfoDAService(JPATrackedLinkDAO trackedLinkDAO,
+            JPAStackOverflowInfoDAO stackOverflowDAO) {
         super(trackedLinkDAO);
         this.stackOverflowDAO = stackOverflowDAO;
     }

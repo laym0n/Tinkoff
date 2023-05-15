@@ -182,8 +182,14 @@ class HandlerUpdateGitHubInfoChainTest {
                                 new GitHubCommitResponse("zxcvb", new GitHubNestedCommitResponse(new GitHubCommiterResponse(lastCheckUpdateDate))))
                         .toArray(GitHubCommitResponse[]::new);
                 ResultOfCompareGitHubInfo expectedResultOfCompare =
-                        new ResultOfCompareGitHubInfo(true, expectedLinkInfoInExpectedResult, idWebSiteInfo, expectedDroppedCommits, expectedPushedCommit,
-                                expectedDroppedBranches, expectedPushedBranches, Optional.empty());
+                        new ResultOfCompareGitHubInfo(idWebSiteInfo, expectedLinkInfoInExpectedResult);
+
+                expectedResultOfCompare.setDifferent(true);
+                expectedResultOfCompare.setDroppedCommits(expectedDroppedCommits);
+                expectedResultOfCompare.setPushedCommits(expectedPushedCommit);
+                expectedResultOfCompare.setDroppedBranches(expectedDroppedBranches);
+                expectedResultOfCompare.setAddedBranches(expectedPushedBranches);
+                expectedResultOfCompare.setLastActivityDate(Optional.empty());
 
                 LinkUpdateRequest expectedResultRequest = new GitHubBuilderLinkUpdateRequest().buildLinkUpdateRequest(expectedResultOfCompare,
                         chatIdsForFirstTest);

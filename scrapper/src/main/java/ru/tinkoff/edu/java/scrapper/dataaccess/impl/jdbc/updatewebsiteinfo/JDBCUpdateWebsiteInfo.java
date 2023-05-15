@@ -6,7 +6,8 @@ import ru.tinkoff.edu.java.scrapper.dataaccess.impl.jdbc.dao.JDBCTrackedLinkDAO;
 import ru.tinkoff.edu.java.scrapper.dto.resultofcomparewebsiteinfo.ResultOfCompareWebsiteInfo;
 
 @AllArgsConstructor
-public abstract class JDBCUpdateWebsiteInfo<T extends ResultOfCompareWebsiteInfo> implements UpdateWebsiteInfoDAService<T> {
+public abstract class JDBCUpdateWebsiteInfo<T extends ResultOfCompareWebsiteInfo>
+        implements UpdateWebsiteInfoDAService<T> {
     private JDBCTrackedLinkDAO trackedLinkDAO;
 
     @Override

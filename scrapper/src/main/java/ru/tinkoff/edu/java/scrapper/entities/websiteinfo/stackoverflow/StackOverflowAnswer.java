@@ -1,12 +1,14 @@
 package ru.tinkoff.edu.java.scrapper.entities.websiteinfo.stackoverflow;
 
-import lombok.*;
-import org.apache.commons.lang3.builder.EqualsExclude;
-import org.apache.commons.lang3.builder.HashCodeExclude;
-
 import java.time.OffsetDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.Objects;
+import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -21,11 +23,15 @@ public class StackOverflowAnswer {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
         StackOverflowAnswer answer = (StackOverflowAnswer) o;
-        return getIdAnswer() == answer.getIdAnswer() && getUserName().equals(answer.getUserName()) &&
-                lastEditDate.toLocalDateTime().truncatedTo(ChronoUnit.SECONDS)
+        return getIdAnswer() == answer.getIdAnswer() && getUserName().equals(answer.getUserName())
+            && lastEditDate.toLocalDateTime().truncatedTo(ChronoUnit.SECONDS)
                         .equals(answer.getLastEditDate().toLocalDateTime().truncatedTo(ChronoUnit.SECONDS));
     }
 

@@ -97,16 +97,21 @@ class JDBCGitHubDAOTest extends JDBCIntegrationEnvironment {
 
         SUT.add(initialInfo);
 
-        ResultOfCompareGitHubInfo argumentForSUT = new ResultOfCompareGitHubInfo(true,
-                linkInfoForInitialInfo, initialInfo.getId(),
-                new GitHubCommit[] {new GitHubCommit("12345"), new GitHubCommit("abcde")},
-                new GitHubCommitResponse[] {
-                        new GitHubCommitResponse("first", new GitHubNestedCommitResponse(new GitHubCommiterResponse(dateForCommitsAndBranches))),
-                        new GitHubCommitResponse("second", new GitHubNestedCommitResponse(new GitHubCommiterResponse(dateForCommitsAndBranches)))
-        },
-                new GitHubBranch[] {new GitHubBranch("hw1")},
-                new GitHubBranchResponse[]{new GitHubBranchResponse("hw3"), new GitHubBranchResponse("hw4")},
-                Optional.of(lastActiveTimeForArgument));
+        ResultOfCompareGitHubInfo argumentForSUT = new ResultOfCompareGitHubInfo(initialInfo.getId(),
+                linkInfoForInitialInfo);
+        argumentForSUT.setDifferent(true);
+        argumentForSUT.setDroppedCommits(
+            new GitHubCommit[] {new GitHubCommit("12345"), new GitHubCommit("abcde")});
+        argumentForSUT.setPushedCommits(
+            new GitHubCommitResponse[] {
+                new GitHubCommitResponse("first", new GitHubNestedCommitResponse(new GitHubCommiterResponse(dateForCommitsAndBranches))),
+                new GitHubCommitResponse("second", new GitHubNestedCommitResponse(new GitHubCommiterResponse(dateForCommitsAndBranches)))
+            });
+        argumentForSUT.setDroppedBranches(
+            new GitHubBranch[] {new GitHubBranch("hw1")});
+        argumentForSUT.setAddedBranches(
+            new GitHubBranchResponse[]{new GitHubBranchResponse("hw3"), new GitHubBranchResponse("hw4")});
+        argumentForSUT.setLastActivityDate(Optional.of(lastActiveTimeForArgument));
 
         //Action
         SUT.applyChanges(argumentForSUT);

@@ -1,6 +1,10 @@
 package ru.tinkoff.edu.java.scrapper.dto.resultofcomparewebsiteinfo;
 
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
 import parserservice.dto.LinkInfo;
 
 @AllArgsConstructor
@@ -8,10 +12,13 @@ import parserservice.dto.LinkInfo;
 @ToString
 @Getter
 @Setter
-public abstract sealed class ResultOfCompareWebsiteInfo permits ResultOfCompareGitHubInfo, ResultOfCompareStackOverflowInfo {
+public abstract sealed class ResultOfCompareWebsiteInfo
+    permits ResultOfCompareGitHubInfo, ResultOfCompareStackOverflowInfo {
     protected boolean isDifferent = false;
     private int idWebsiteInfo;
+
     public abstract LinkInfo getLinkInfo();
+
     protected ResultOfCompareWebsiteInfo(int idWebsiteInfo) {
         this.idWebsiteInfo = idWebsiteInfo;
     }

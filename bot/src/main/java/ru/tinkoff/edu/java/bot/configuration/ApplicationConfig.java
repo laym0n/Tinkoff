@@ -13,22 +13,25 @@ public record ApplicationConfig(@NotNull String test, @Bean TelegramBotInfo tele
                                 @Bean ScrapperInfo scrapperInfo,
                                 @Bean RabbitMQInfo rabbitMQInfo) {
 
-    record TelegramBotInfo(String botName, String botToken){
-
-    }
-    record ScrapperInfo(String pathForRequests){
-
-    }
     @Bean
-    public BuilderSendMessage builderSendMessage(BuilderSendMessageFactory factory){
+    public BuilderSendMessage builderSendMessage(BuilderSendMessageFactory factory) {
         return factory.getBuilderSendMessage();
     }
+
+    record TelegramBotInfo(String botName, String botToken) {
+
+    }
+
+    record ScrapperInfo(String pathForRequests) {
+
+    }
+
     record RabbitMQInfo(String queueName,
                         boolean queueDurable,
                         String exchangeName,
                         boolean exchangeDurable,
                         boolean exchangeAutoDelete,
-                        String routingKey){
+                        String routingKey) {
 
     }
 }

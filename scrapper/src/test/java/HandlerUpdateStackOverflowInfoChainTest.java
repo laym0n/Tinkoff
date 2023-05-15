@@ -208,10 +208,14 @@ class HandlerUpdateStackOverflowInfoChainTest {
                                         lastEditDateForSavedAnswer,
                                         lastEditDateForLoadedAnswer, 10)
                         ).toArray(StackOverflowAnswerResponse[]::new);
-                ResultOfCompareStackOverflowInfo expectedResultOfCompare = new ResultOfCompareStackOverflowInfo(true, linkInfoForExpectedResultOfCompare,
-                        idWebSiteInfo, deletedAnswersExpectedForResultOfCompare, addedAnswersResponsesForExpectedCompareResult,
-                        editedAnswersResponsesForExpectedCompareResult, deletedCommentsForExpectedResultOfCompare,
-                        addedCommentsResponsesForExpectedCompareResult);
+                ResultOfCompareStackOverflowInfo expectedResultOfCompare =
+                    new ResultOfCompareStackOverflowInfo(idWebSiteInfo, linkInfoForExpectedResultOfCompare);
+                expectedResultOfCompare.setDeletedAnswers(deletedAnswersExpectedForResultOfCompare);
+                expectedResultOfCompare.setAddedAnswers(addedAnswersResponsesForExpectedCompareResult);
+                expectedResultOfCompare.setEditedAnswers(editedAnswersResponsesForExpectedCompareResult);
+                expectedResultOfCompare.setDeletedComments(deletedCommentsForExpectedResultOfCompare);
+                expectedResultOfCompare.setAddedComments(addedCommentsResponsesForExpectedCompareResult);
+                expectedResultOfCompare.setDifferent(true);
 
                 LinkUpdateRequest expectedResultRequest = new StackOverflowBuilderLinkUpdateRequest().buildLinkUpdateRequest(expectedResultOfCompare, chatIdsForFirstTest);
 

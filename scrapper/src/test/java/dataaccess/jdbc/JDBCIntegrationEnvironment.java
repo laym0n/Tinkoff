@@ -1,45 +1,39 @@
 package dataaccess.jdbc;
 
 import dataaccess.IntegrationEnvironment;
+import org.springframework.amqp.rabbit.connection.CachingConnectionFactory;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.context.TestConfiguration;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.ComponentScan;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.jdbc.datasource.DataSourceTransactionManager;
-import org.springframework.jdbc.datasource.DriverManagerDataSource;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
-import org.springframework.transaction.PlatformTransactionManager;
-import org.springframework.transaction.support.TransactionTemplate;
-import ru.tinkoff.edu.java.scrapper.configuration.JDBCAccessConfiguration;
+import ru.tinkoff.edu.java.scrapper.ScrapperApplication;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
-import javax.sql.DataSource;
-
-@SpringBootTest(classes = {JDBCIntegrationEnvironment.JDBCConfigClass.class, JDBCAccessConfiguration.class})
+@SpringBootTest(classes = {ScrapperApplication.class, JDBCIntegrationEnvironment.RabbitMQTestConfig.class})
 public class JDBCIntegrationEnvironment extends IntegrationEnvironment {
-    @Configuration
-    @ComponentScan(basePackages = {"ru.tinkoff.edu.java.scrapper.dataaccess.impl.jdbc"})
-    static class JDBCConfigClass{
+    @TestConfiguration
+    static class RabbitMQTestConfig {
+        @MockBean
+        public CachingConnectionFactory connectionFactory;
         @Bean
-        public DataSource dataSource(){
-            return new DriverManagerDataSource(singletonPostgreSQLContainer.getJdbcUrl(),
-                    singletonPostgreSQLContainer.getUsername(),
-                    singletonPostgreSQLContainer.getPassword());
+        public RabbitTemplate rabbitTemplate() {
+            RabbitTemplate rabbitTemplateMock = mock(RabbitTemplate.class);
+            when(rabbitTemplateMock.getConnectionFactory()).thenReturn(connectionFactory);
+            return rabbitTemplateMock;
         }
-        @Bean
-        public PlatformTransactionManager platformTransactionManager(DataSource dataSource){
-            return new DataSourceTransactionManager(dataSource);
-        }
-        @Bean
-        public TransactionTemplate transactionTemplate(PlatformTransactionManager platformTransactionManager){
-            return new TransactionTemplate(platformTransactionManager);
-        }
+
     }
+
     @DynamicPropertySource
     static void jdbcProperties(DynamicPropertyRegistry registry){
         registry.add("app.database-access-type", ()-> "jdbc");
-//        registry.add("spring.datasource.url", singletonPostgreSQLContainer::getJdbcUrl);
-//        registry.add("spring.datasource.username", singletonPostgreSQLContainer::getUsername);
-//        registry.add("spring.datasource.password", singletonPostgreSQLContainer::getPassword);
+        registry.add("spring.liquibase.enabled", ()-> "false");
+        registry.add("spring.datasource.url", singletonPostgreSQLContainer::getJdbcUrl);
+        registry.add("spring.datasource.username", singletonPostgreSQLContainer::getUsername);
+        registry.add("spring.datasource.password", singletonPostgreSQLContainer::getPassword);
     }
 }

@@ -1,11 +1,13 @@
 package ru.tinkoff.edu.java.scrapper.entities.websiteinfo;
 
-import lombok.*;
-import org.apache.commons.lang3.builder.EqualsExclude;
-import parserservice.dto.LinkInfo;
-
 import java.time.OffsetDateTime;
 import java.util.Objects;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
+import org.apache.commons.lang3.builder.EqualsExclude;
+import parserservice.dto.LinkInfo;
 
 @AllArgsConstructor
 @ToString
@@ -15,6 +17,7 @@ public sealed abstract class WebsiteInfo permits GitHubInfo, StackOverflowInfo {
     private int id;
     @EqualsExclude
     private OffsetDateTime lastCheckUpdateDateTime;
+
     public WebsiteInfo() {
         this(OffsetDateTime.now());
     }
@@ -27,8 +30,12 @@ public sealed abstract class WebsiteInfo permits GitHubInfo, StackOverflowInfo {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
         WebsiteInfo that = (WebsiteInfo) o;
         return getId() == that.getId();
     }

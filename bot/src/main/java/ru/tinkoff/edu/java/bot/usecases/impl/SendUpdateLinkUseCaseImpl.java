@@ -10,6 +10,7 @@ import ru.tinkoff.edu.java.bot.usecases.SendUpdateLinkUseCase;
 @Service
 public class SendUpdateLinkUseCaseImpl implements SendUpdateLinkUseCase {
     private LinkUpdateCheckerBot myBot;
+
     @Override
     public void sendUpdateLink(LinkUpdateResponse linkUpdateResponse) {
         myBot.sendUpdateMessages(linkUpdateResponse);

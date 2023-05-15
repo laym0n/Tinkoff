@@ -9,12 +9,14 @@ public class ParserCommands {
 
     public ParsedCommand getParsedCommand(String text) {
         String trimText = "";
-        if (text != null)
+        if (text != null) {
             trimText = text.trim();
+        }
         ParsedCommand result = new ParsedCommand(Command.UKNOWN, trimText);
 
-        if ("".equals(trimText))
+        if ("".equals(trimText)) {
             return result;
+        }
         Pair<String, String> commandAndText = getDelimitedCommandFromText(trimText);
         if (isCommand(commandAndText.getFirst())) {
             String commandForParse = cutCommandFromFullText(commandAndText.getFirst());
@@ -46,8 +48,9 @@ public class ParserCommands {
         if (trimText.contains(" ")) {
             int indexOfSpace = trimText.indexOf(" ");
             commandText = new Pair(trimText.substring(0, indexOfSpace), trimText.substring(indexOfSpace + 1).trim());
-        } else
+        } else {
             commandText = new Pair(trimText, "");
+        }
         return commandText;
     }
 

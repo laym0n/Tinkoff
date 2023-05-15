@@ -17,10 +17,12 @@ import ru.tinkoff.edu.java.scrapper.entities.websiteinfo.stackoverflow.StackOver
 public class StackOverflowCommentEntity {
     @EmbeddedId
     private StackOverflowCommentPrimaryKey primaryKey;
-    public StackOverflowCommentEntity(StackOverflowComment comment, int idWebsiteInfo){
+
+    public StackOverflowCommentEntity(StackOverflowComment comment, int idWebsiteInfo) {
         primaryKey = new StackOverflowCommentPrimaryKey(comment.getIdComment(), idWebsiteInfo);
     }
-    public StackOverflowComment getStackOverflowComment(){
+
+    public StackOverflowComment getStackOverflowComment() {
         return new StackOverflowComment(primaryKey.getId());
     }
 }

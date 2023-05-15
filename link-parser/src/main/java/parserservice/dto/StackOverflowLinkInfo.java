@@ -6,7 +6,8 @@ public record StackOverflowLinkInfo(int idQuestion) implements LinkInfo {
     public String getPath() {
         return "https://stackoverflow.com/questions/" + idQuestion + "/";
     }
-    public String getDescriptionOfParsedLink(){
+
+    public String getDescriptionOfParsedLink() {
         return "StackOverflow answer with id of answer " + idQuestion;
     }
 }

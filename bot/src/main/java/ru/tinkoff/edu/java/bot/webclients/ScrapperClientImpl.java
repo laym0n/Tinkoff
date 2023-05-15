@@ -1,6 +1,5 @@
 package ru.tinkoff.edu.java.bot.webclients;
 
-
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
@@ -15,13 +14,14 @@ import ru.tinkoff.edu.java.bot.dto.response.ApiErrorResponse;
 import ru.tinkoff.edu.java.bot.dto.response.LinkResponse;
 import ru.tinkoff.edu.java.bot.dto.response.ListLinksResponse;
 
-import java.security.InvalidParameterException;
-import java.util.Arrays;
-
 @Component
 public class ScrapperClientImpl implements ScrapperClient {
+    private static final String HEADER_NAME_OF_TG_CHAT_ID = "Tg-Chat-Id";
+    private static final String LINK_FOR_REST_TO_CHAT_CONTROLLER = "/tg-chat/{idChat}";
+    private static final String LINK_FOR_REST_TO_LINK_CONTROLLER = "/links";
     private String baseURL;
-    public ScrapperClientImpl(@Value("#{@scrapperInfo.pathForRequests}") String baseURL){
+
+    public ScrapperClientImpl(@Value("#{@scrapperInfo.pathForRequests}") String baseURL) {
         this.baseURL = baseURL;
     }
 
@@ -29,15 +29,16 @@ public class ScrapperClientImpl implements ScrapperClient {
     public LinkResponse addLink(long idChat, AddLinkRequest addLinkRequest) {
         WebClient webClient = WebClient.create(baseURL);
         return webClient
-                .post().uri("/links")
+                .post()
+                .uri(LINK_FOR_REST_TO_LINK_CONTROLLER)
                 .body(Mono.just(addLinkRequest), AddLinkRequest.class)
-                .header("Tg-Chat-Id", Long.valueOf(idChat).toString())
+                .header(HEADER_NAME_OF_TG_CHAT_ID, Long.valueOf(idChat).toString())
                 .retrieve()
-                .onStatus(HttpStatusCode::is4xxClientError, response -> {
-                    return response.bodyToMono(LinkResponse.class).flatMap(error -> {
-                            return Mono.error(new RuntimeException(error.getExceptionMessage()));
-                    });
-                })
+                .onStatus(HttpStatusCode::is4xxClientError,
+                    response -> response.bodyToMono(LinkResponse.class)
+                        .flatMap(error ->
+                            Mono.error(new RuntimeException(error.getExceptionMessage())))
+                )
                 .bodyToMono(LinkResponse.class).block();
     }
 
@@ -45,15 +46,17 @@ public class ScrapperClientImpl implements ScrapperClient {
     public LinkResponse removeLink(long idChat, RemoveLinkRequest removeLinkRequest) {
         WebClient webClient = WebClient.create(baseURL);
         return webClient
-                .method(HttpMethod.DELETE).uri("/links")
+                .method(HttpMethod.DELETE).uri(LINK_FOR_REST_TO_LINK_CONTROLLER)
                 .body(Mono.just(removeLinkRequest), RemoveLinkRequest.class)
-                .header("Tg-Chat-Id", Long.toString(idChat))
+                .header(HEADER_NAME_OF_TG_CHAT_ID, Long.toString(idChat))
                 .retrieve()
-                .onStatus(HttpStatusCode::is4xxClientError, response -> {
-                    return response.bodyToMono(LinkResponse.class).flatMap(error -> {
-                            return Mono.error(new RuntimeException(error.getExceptionMessage()));
-                    });
-                })
+                .onStatus(HttpStatusCode::is4xxClientError,
+                    response -> response
+                        .bodyToMono(LinkResponse.class)
+                        .flatMap(error ->
+                            Mono.error(new RuntimeException(error.getExceptionMessage()))
+                        )
+                )
                 .bodyToMono(LinkResponse.class).block();
     }
 
@@ -61,13 +64,17 @@ public class ScrapperClientImpl implements ScrapperClient {
     public ListLinksResponse allLinksFromChat(long idChat) {
         WebClient webClient = WebClient.create(baseURL);
         return webClient
-                .get().uri("/links").header("Tg-Chat-Id", Long.valueOf(idChat).toString())
+                .get().uri(LINK_FOR_REST_TO_LINK_CONTROLLER)
+                .header(HEADER_NAME_OF_TG_CHAT_ID, Long.valueOf(idChat).toString())
                 .retrieve()
-                .onStatus(HttpStatusCode::is4xxClientError, response -> {
-                    return response.bodyToMono(ListLinksResponse.class).flatMap(error -> {
-                            return Mono.error(new RuntimeException(error.getExceptionMessage()));
-                    });
-                })
+                .onStatus(HttpStatusCode::is4xxClientError,
+                    response ->
+                        response
+                            .bodyToMono(ListLinksResponse.class)
+                            .flatMap(error ->
+                                Mono.error(new RuntimeException(error.getExceptionMessage()))
+                            )
+                )
                 .bodyToMono(ListLinksResponse.class).block();
     }
 
@@ -75,28 +82,34 @@ public class ScrapperClientImpl implements ScrapperClient {
     public void registryChat(long idChat) {
         WebClient webClient = WebClient.create(baseURL);
         webClient
-                .post().uri("/tg-chat/{idChat}", (int)idChat)
+                .post()
+                .uri(LINK_FOR_REST_TO_CHAT_CONTROLLER, (int) idChat)
                 .exchangeToMono(clientResponse -> {
-                    if(clientResponse.statusCode().equals(HttpStatus.BAD_REQUEST)){
+                    if (clientResponse.statusCode().equals(HttpStatus.BAD_REQUEST)) {
                         return clientResponse.bodyToMono(ApiErrorResponse.class)
                                 .flatMap(error -> Mono.error(new RuntimeException(error.exceptionMessage())));
                     }
                     return Mono.empty();
-                }).block();
+                })
+                .block();
     }
 
     @Override
     public void removeChat(long idChat) {
         WebClient webClient = WebClient.create(baseURL);
         webClient
-                .delete().uri("/tg-chat/{idChat}", idChat)
+                .delete()
+                .uri(LINK_FOR_REST_TO_CHAT_CONTROLLER, idChat)
                 .accept(MediaType.APPLICATION_JSON)
                 .exchangeToMono(clientResponse -> {
-                    if(clientResponse.statusCode().equals(HttpStatus.BAD_REQUEST)){
+                    if (clientResponse.statusCode().equals(HttpStatus.BAD_REQUEST)) {
                         return clientResponse.bodyToMono(ApiErrorResponse.class)
-                                .flatMap(error -> Mono.error(new RuntimeException(error.exceptionMessage())));
+                                .flatMap(error ->
+                                    Mono.error(new RuntimeException(error.exceptionMessage()))
+                                );
                     }
                     return Mono.empty();
-                }).block();
+                })
+                .block();
     }
 }

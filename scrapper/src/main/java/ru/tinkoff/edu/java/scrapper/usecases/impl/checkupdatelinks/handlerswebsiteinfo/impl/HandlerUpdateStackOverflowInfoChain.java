@@ -10,15 +10,27 @@ import ru.tinkoff.edu.java.scrapper.usecases.impl.checkupdatelinks.handlerswebsi
 import ru.tinkoff.edu.java.scrapper.usecases.impl.checkupdatelinks.handlerswebsiteinfo.impl.strategies.CompareInfoStrategy;
 import ru.tinkoff.edu.java.scrapper.webclients.stackoverflowclient.StackOverflowClient;
 
-public class HandlerUpdateStackOverflowInfoChain extends HandlerUpdateWebsiteInfoImplChain<StackOverflowInfo, StackOverflowResponse, ResultOfCompareStackOverflowInfo>{
+public class HandlerUpdateStackOverflowInfoChain
+    extends
+    HandlerUpdateWebsiteInfoImplChain<StackOverflowInfo, StackOverflowResponse, ResultOfCompareStackOverflowInfo> {
     private StackOverflowClient stackOverflowClient;
 
-    public HandlerUpdateStackOverflowInfoChain(HandlerUpdateWebsiteInfo nextHandler, UpdateWebsiteInfoDAService<ResultOfCompareStackOverflowInfo> daService, CompareInfoStrategy<StackOverflowInfo, StackOverflowResponse, ResultOfCompareStackOverflowInfo> compareInfoStrategy, BuilderLinkUpdateRequestStrategy<ResultOfCompareStackOverflowInfo> builderLinkUpdateRequestStrategy, StackOverflowClient stackOverflowClient) {
+    public HandlerUpdateStackOverflowInfoChain(HandlerUpdateWebsiteInfo nextHandler,
+            UpdateWebsiteInfoDAService<ResultOfCompareStackOverflowInfo> daService,
+            CompareInfoStrategy<StackOverflowInfo, StackOverflowResponse,
+            ResultOfCompareStackOverflowInfo> compareInfoStrategy,
+            BuilderLinkUpdateRequestStrategy<ResultOfCompareStackOverflowInfo> builderLinkUpdateRequestStrategy,
+            StackOverflowClient stackOverflowClient) {
         super(nextHandler, daService, compareInfoStrategy, builderLinkUpdateRequestStrategy);
         this.stackOverflowClient = stackOverflowClient;
     }
 
-    public HandlerUpdateStackOverflowInfoChain(UpdateWebsiteInfoDAService<ResultOfCompareStackOverflowInfo> daService, CompareInfoStrategy<StackOverflowInfo, StackOverflowResponse, ResultOfCompareStackOverflowInfo> compareInfoStrategy, BuilderLinkUpdateRequestStrategy<ResultOfCompareStackOverflowInfo> builderLinkUpdateRequestStrategy, StackOverflowClient stackOverflowClient) {
+    public HandlerUpdateStackOverflowInfoChain(
+            UpdateWebsiteInfoDAService<ResultOfCompareStackOverflowInfo> daService,
+            CompareInfoStrategy<StackOverflowInfo, StackOverflowResponse,
+            ResultOfCompareStackOverflowInfo> compareInfoStrategy,
+            BuilderLinkUpdateRequestStrategy<ResultOfCompareStackOverflowInfo> builderLinkUpdateRequestStrategy,
+            StackOverflowClient stackOverflowClient) {
         super(daService, compareInfoStrategy, builderLinkUpdateRequestStrategy);
         this.stackOverflowClient = stackOverflowClient;
     }

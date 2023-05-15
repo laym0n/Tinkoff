@@ -16,6 +16,7 @@ class ListBuilderSendMessageTest {
         //Assign
         final long chatId = 1;
 
+
         ParsedCommand commandForArgument = new ParsedCommand(chatId, Command.LIST, "");
 
         SendMessage expectedMessage =
@@ -45,6 +46,7 @@ class ListBuilderSendMessageTest {
         final long chatId = 1;
 
         ParsedCommand commandForArgument = new ParsedCommand(chatId, Command.LIST, "");
+
 
         LinkResponse[] arrayOfLinkResponse = new LinkResponse[1];
         arrayOfLinkResponse[0] =  new LinkResponse(1, null, "", "", "", "", new String[0]);

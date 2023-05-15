@@ -1,5 +1,9 @@
 package ru.tinkoff.edu.java.scrapper.usecases.impl.checkupdatelinks;
 
+import java.util.List;
+import java.util.Optional;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import ru.tinkoff.edu.java.scrapper.dataaccess.CheckUpdateLinksDAService;
@@ -9,19 +13,18 @@ import ru.tinkoff.edu.java.scrapper.usecases.CheckUpdateLinksUseCase;
 import ru.tinkoff.edu.java.scrapper.usecases.impl.checkupdatelinks.handlerswebsiteinfo.HandlerUpdateWebsiteInfo;
 import ru.tinkoff.edu.java.scrapper.usecases.impl.checkupdatelinks.sendupdaterequeststrategy.SendLinkUpdateRequestStrategy;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-
 @Component
 public class CheckUpdateLinksUseCaseImpl implements CheckUpdateLinksUseCase {
+    private static Logger log = Logger.getLogger(CheckUpdateLinksUseCaseImpl.class.getName());
     @Value("${checker-update.count-sites-for-check-per-iteration}")
     private int countSites;
     private CheckUpdateLinksDAService checkUpdateLinksDAService;
     private HandlerUpdateWebsiteInfo handlerUpdateWebsiteInfo;
     private SendLinkUpdateRequestStrategy sendLinkUpdateRequestStrategy;
 
-    public CheckUpdateLinksUseCaseImpl(CheckUpdateLinksDAService checkUpdateLinksDAService, HandlerUpdateWebsiteInfo handlerUpdateWebsiteInfo, SendLinkUpdateRequestStrategy sendLinkUpdateRequestStrategy) {
+    public CheckUpdateLinksUseCaseImpl(CheckUpdateLinksDAService checkUpdateLinksDAService,
+            HandlerUpdateWebsiteInfo handlerUpdateWebsiteInfo,
+            SendLinkUpdateRequestStrategy sendLinkUpdateRequestStrategy) {
         this.checkUpdateLinksDAService = checkUpdateLinksDAService;
         this.handlerUpdateWebsiteInfo = handlerUpdateWebsiteInfo;
         this.sendLinkUpdateRequestStrategy = sendLinkUpdateRequestStrategy;
@@ -34,12 +37,11 @@ public class CheckUpdateLinksUseCaseImpl implements CheckUpdateLinksUseCase {
             try {
                 Optional<LinkUpdateRequest> optionalLinkUpdateRequest = handlerUpdateWebsiteInfo
                         .updateWebsiteInfo(savedWebsiteInfo);
-                if(optionalLinkUpdateRequest.isPresent()){
+                if (optionalLinkUpdateRequest.isPresent()) {
                     sendLinkUpdateRequestStrategy.sendLinkUpdateRequest(optionalLinkUpdateRequest.get());
                 }
-            }
-            catch (Exception ex){
-                System.out.println(ex.getMessage());
+            } catch (Exception ex) {
+                log.log(Level.INFO, ex.getMessage());
             }
         }
     }

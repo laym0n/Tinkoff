@@ -14,20 +14,26 @@ class ParserLinksCommandsTest {
     @ParameterizedTest
     @ArgumentsSource(ValidCommandsArgumentsProvider.class)
     void testParseValidCommandsFromUser(String inputText, ParsedCommand expectedResultParsedCommand){
+        //Assign
         ParserCommands parserCommands = new ParserCommands();
 
+        //Action
         ParsedCommand resultParsedCommand = parserCommands.getParsedCommand(inputText);
 
+        //Assert
         assertEquals(expectedResultParsedCommand, resultParsedCommand,
                 ()->"Result of parse valid command (" + inputText + ") is " + resultParsedCommand.toString() + " but expected " + expectedResultParsedCommand.toString());
     }
     @ParameterizedTest
     @ArgumentsSource(InvalidCommandsArgumentsProvider.class)
     void testParseInvalidCommandsFromUser(String inputText, ParsedCommand expectedResultParsedCommand){
+        //Assign
         ParserCommands parserCommands = new ParserCommands();
 
+        //Action
         ParsedCommand resultParsedCommand = parserCommands.getParsedCommand(inputText);
 
+        //Assert
         assertEquals(expectedResultParsedCommand, resultParsedCommand,
                 ()->"Result of parse invalid command (" + inputText + ") is " + resultParsedCommand.toString() + " but expected " + expectedResultParsedCommand.toString());
     }

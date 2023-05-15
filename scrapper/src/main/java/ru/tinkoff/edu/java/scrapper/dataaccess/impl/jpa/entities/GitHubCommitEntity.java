@@ -17,10 +17,12 @@ import ru.tinkoff.edu.java.scrapper.entities.websiteinfo.github.GitHubCommit;
 public class GitHubCommitEntity {
     @EmbeddedId
     private GitHubCommitPrimaryKey primaryKey;
-    public GitHubCommitEntity(GitHubCommit commit, int gitHubInfoId){
+
+    public GitHubCommitEntity(GitHubCommit commit, int gitHubInfoId) {
         this.primaryKey = new GitHubCommitPrimaryKey(commit.getSha(), gitHubInfoId);
     }
-    public GitHubCommit getGitHubCommit(){
+
+    public GitHubCommit getGitHubCommit() {
         return new GitHubCommit(primaryKey.getSha());
     }
 }
