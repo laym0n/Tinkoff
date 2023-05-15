@@ -7,7 +7,7 @@ on:
       - 'shareddto/**'
 env:
   REGISTRY: ghcr.io
-  IMAGE_NAME: LinkUpdateCheckerBot_Bot
+  IMAGE_NAME: bot
 jobs:
   build:
     runs-on: ubuntu-latest
