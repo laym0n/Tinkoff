@@ -1,5 +1,6 @@
 package ru.tinkoff.edu.java.bot.telegrambotimpl;
 
+import io.micrometer.core.instrument.Counter;
 import jakarta.annotation.PostConstruct;
 import java.util.Arrays;
 import java.util.List;
@@ -26,17 +27,20 @@ public class LinkUpdateCheckerBot extends TelegramLongPollingBot {
     private String botToken;
     private ParserCommands parserCommands;
     private BuilderSendMessage builderSendMessage;
+    private Counter messagesProcessedCounter;
 
     public LinkUpdateCheckerBot(
         @Value("#{@telegramBotInfo.botName}") String botName,
         @Value("#{@telegramBotInfo.botToken}") String botToken,
         ParserCommands parserCommands,
-        @Qualifier("builderSendMessage") BuilderSendMessage builderSendMessage
+        @Qualifier("builderSendMessage") BuilderSendMessage builderSendMessage,
+        Counter messagesProcessedCounter
     ) {
         this.botName = botName;
         this.botToken = botToken;
         this.builderSendMessage = builderSendMessage;
         this.parserCommands = parserCommands;
+        this.messagesProcessedCounter = messagesProcessedCounter;
     }
 
     @Override
@@ -55,6 +59,7 @@ public class LinkUpdateCheckerBot extends TelegramLongPollingBot {
         ParsedCommand parsedCommand = parserCommands.getParsedCommand(update.getMessage().getText());
         parsedCommand.setChatId(update.getMessage().getChatId());
         SendMessage message = builderSendMessage.getSendMessage(parsedCommand);
+        messagesProcessedCounter.increment();
         try {
             execute(message);
         } catch (TelegramApiException e) {

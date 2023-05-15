@@ -1,69 +1,101 @@
 services:
     postgresql:
-        container_name: postgresql
-        image : postgres:15
-        environment:
-            POSTGRES_USER: user
-            POSTGRES_PASSWORD: pass
-            PGDATA: "/var/lib/postgresql/data/pgdata"
-            POSTGRES_DB: scrapper
-        ports:
-            - 5433:5432
-        networks:
-            backend:
-            test-network:
-        volumes:
-            - postgres:/var/lib/postgresql/data
-        restart: unless-stopped
+      container_name: postgresql
+      image : postgres:15
+      environment:
+          POSTGRES_USER: user
+          POSTGRES_PASSWORD: pass
+          PGDATA: "/var/lib/postgresql/data/pgdata"
+          POSTGRES_DB: scrapper
+      ports:
+          - 5433:5432
+      networks:
+          backend:
+          test-network:
+      volumes:
+          - postgres:/var/lib/postgresql/data
+      restart: unless-stopped
     pgadmin:
-        image : dpage/pgadmin4:6
-        ports :
-            - 8081:80
-        environment:
-            PGADMIN_DEFAULT_EMAIL: victor_k02@mail.ru
-            PGADMIN_DEFAULT_PASSWORD: password
-        volumes:
-            - pgadmin_data:/var/lib/pgadmin
-        restart: unless-stopped
-        networks:
-            test-network:
+      image : dpage/pgadmin4:6
+      ports :
+          - 8081:80
+      environment:
+          PGADMIN_DEFAULT_EMAIL: victor_k02@mail.ru
+          PGADMIN_DEFAULT_PASSWORD: password
+      volumes:
+          - pgadmin_data:/var/lib/pgadmin
+      restart: unless-stopped
+      networks:
+          test-network:
     liquibase-migrations:
-        image: liquibase/liquibase:4.18
-        depends_on:
-            - postgresql
-        command:
-            - --hub-mode=off
-            - --changelog-file=master.xml
-            - --driver=org.postgresql.Driver
-            - --url=jdbc:postgresql://postgresql:5432/scrapper
-            - --username=user
-            - --password=pass
-            - update
-        volumes:
-            - ./scrapper/src/main/resources/migrations:/liquibase/changelog
-        networks:
-            backend:
+      image: liquibase/liquibase:4.18
+      depends_on:
+          - postgresql
+      command:
+          - --hub-mode=off
+          - --changelog-file=master.xml
+          - --driver=org.postgresql.Driver
+          - --url=jdbc:postgresql://postgresql:5432/scrapper
+          - --username=user
+          - --password=pass
+          - update
+      volumes:
+          - ./scrapper/src/main/resources/migrations:/liquibase/changelog
+      networks:
+          backend:
     rabbitmq:
-        image: rabbitmq:3-management
-        hostname: rabbitmq
-        restart: always
-        environment:
-            - RABBITMQ_SERVER_ADDITIONAL_ERL_ARGS=-rabbit disk_free_limit 2147483648
-        volumes:
-            - ./rabbitmq:/var/lib/rabbitmq
-        ports:
-            - 15672:15672
-            - 5672:5672
-        healthcheck:
-            test: [ "CMD", "nc", "-z", "localhost", "5672" ]
-            interval: 5s
-            timeout: 15s
-            retries: 1
-        networks:
-            backend:
+      image: rabbitmq:3-management
+      hostname: rabbitmq
+      restart: always
+      environment:
+          - RABBITMQ_SERVER_ADDITIONAL_ERL_ARGS=-rabbit disk_free_limit 2147483648
+      volumes:
+          - ./rabbitmq:/var/lib/rabbitmq
+      ports:
+          - 15672:15672
+          - 5672:5672
+      healthcheck:
+          test: [ "CMD", "nc", "-z", "localhost", "5672" ]
+          interval: 5s
+          timeout: 15s
+          retries: 1
+      networks:
+          backend:
+
+    prometheus:
+      image: prom/prometheus:latest
+      hostname: prometheus
+      volumes:
+        - ./prometheus.yml:/etc/prometheus/prometheus.yml
+        - prometheus:/prometheus
+      command:
+        - '--config.file=/etc/prometheus/prometheus.yml'
+        - '--storage.tsdb.path=/prometheus'
+        - '--web.console.libraries=/etc/prometheus/console_libraries'
+        - '--web.console.templates=/etc/prometheus/consoles'
+        - '--web.enable-lifecycle'
+      ports:
+        - 9090:9090
+      networks:
+        backend:
+
+    grafana:
+      image: grafana/grafana-oss
+      volumes:
+        - grafana:/var/lib/grafana
+      environment:
+        - GF_SECURITY_ADMIN_USER=admin
+        - GF_SECURITY_ADMIN_PASSWORD=admin
+        - GF_USERS_ALLOW_SIGN_UP=false
+      ports:
+        - 3000:3000
+      networks:
+        backend:
 networks:
     test-network:
     backend:
 volumes:
     postgres:
     pgadmin_data:
+    prometheus:
+    grafana:
